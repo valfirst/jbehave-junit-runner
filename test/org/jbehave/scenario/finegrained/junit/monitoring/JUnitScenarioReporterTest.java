@@ -44,5 +44,6 @@ public class JUnitScenarioReporterTest {
 	verify(notifier).fireTestStarted(child3);
 	
     }
+    
 
 }

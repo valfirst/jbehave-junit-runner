@@ -17,7 +17,7 @@ public class JUnitDescriptionGenerator {
                 for (CandidateStep candidate : candidates.getSteps()) {
                     if (candidate.matches(stringStep)) {
                 	String uniqueString = uniquefier.getUniqueDescription(getJunitSafeString(stringStep));
-			scenarioDescription.addChild(Description.createTestDescription(candidates.getClass(), uniqueString));
+			scenarioDescription.addChild(Description.createTestDescription(candidates.getClass(), uniqueString + " - Scenario: " + scenario.getTitle() + ""));
                     }
                 }
             }

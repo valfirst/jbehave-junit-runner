@@ -4,11 +4,11 @@ Given a variable x with value 2
 When I multiply x by 2
 Then x should equal 4
 
-Scenario: 3 squared
+Scenario: 2x3
 
 Given a variable x with value 3
-When I multiply x by 3
-Then x should equal 9
+When I multiply x by 2
+Then x should equal 6
 
 Scenario: 5 multiplied by 1
 

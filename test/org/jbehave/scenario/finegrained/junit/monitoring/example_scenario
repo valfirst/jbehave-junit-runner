@@ -15,3 +15,9 @@ Scenario: 5 multiplied by 1
 Given a variable x with value 5
 When I multiply x by 1
 Then x should equal 5 
+
+Scenario: 6 multiplied by 2
+
+Given a variable x with value 6
+When I multiply x by 2
+Then x should equal 12

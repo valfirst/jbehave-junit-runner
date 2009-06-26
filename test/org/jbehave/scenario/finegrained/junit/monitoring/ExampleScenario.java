@@ -2,8 +2,6 @@ package org.jbehave.scenario.finegrained.junit.monitoring;
 
 import org.jbehave.scenario.JUnitScenario;
 import org.jbehave.scenario.PropertyBasedConfiguration;
-import org.jbehave.scenario.finegrained.junit.monitoring.annotations.UseConfiguration;
-import org.jbehave.scenario.finegrained.junit.monitoring.annotations.UseSteps;
 import org.jbehave.scenario.parser.ClasspathScenarioDefiner;
 import org.jbehave.scenario.parser.PatternScenarioParser;
 import org.jbehave.scenario.parser.UnderscoredCamelCaseResolver;

@@ -1,4 +1,4 @@
-package org.jbehave.scenario.finegrained.junit.monitoring.annotations;
+package org.jbehave.scenario.finegrained.junit.monitoring;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

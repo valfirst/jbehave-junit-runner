@@ -22,10 +22,9 @@ public class JUnitReportingRunner extends Runner {
 
     @Override
     public Description getDescription() {
-	return storyDescription; //bum
+	return storyDescription;
     }
 
-//e it
     @Override
     public void run(RunNotifier notifier) {
 	JUnitScenarioReporter reporter = new JUnitScenarioReporter(notifier, storyDescription);

@@ -80,7 +80,6 @@ public class JUnitDescriptionGeneratorTest {
 	Description description = generator.createDescriptionFrom(scenario, steps);
 	ensureThat(description.getChildren().size(), equalTo(5));
 	ensureThat(description, allChildrenHaveUniqueDisplayNames());
-        ensureThat(false, equalTo(true));
     }
 
     private Matcher<Description> allChildrenHaveUniqueDisplayNames() {

@@ -4,6 +4,8 @@ import java.lang.annotation.Annotation;
 
 import org.jbehave.scenario.Configuration;
 import org.jbehave.scenario.JUnitScenario;
+import org.jbehave.scenario.finegrained.junit.monitoring.annotations.UseConfiguration;
+import org.jbehave.scenario.finegrained.junit.monitoring.annotations.UseSteps;
 import org.jbehave.scenario.reporters.ScenarioReporter;
 import org.jbehave.scenario.steps.Steps;
 

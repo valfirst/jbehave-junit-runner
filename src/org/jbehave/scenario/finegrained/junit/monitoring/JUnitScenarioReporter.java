@@ -11,15 +11,16 @@ import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 
 public class JUnitScenarioReporter implements ScenarioReporter {
-	
+
 	private RunNotifier notifier;
 	private Description currentScenario;
 	private Description currentStep;
 	private final Iterator<Description> scenarioDescriptions;
 	private final Description storyDescription;
 	List<Description> finishedDescriptions = new ArrayList<Description>();
-	
-	public JUnitScenarioReporter(RunNotifier notifier, Description storyDescription) {
+
+	public JUnitScenarioReporter(RunNotifier notifier,
+			Description storyDescription) {
 		this.notifier = notifier;
 		this.storyDescription = storyDescription;
 		this.scenarioDescriptions = storyDescription.getChildren().iterator();
@@ -28,7 +29,7 @@ public class JUnitScenarioReporter implements ScenarioReporter {
 
 	public void afterScenario() {
 		notifier.fireTestFinished(currentScenario);
-		if(scenarioDescriptions.hasNext()) {
+		if (scenarioDescriptions.hasNext()) {
 			currentScenario = scenarioDescriptions.next();
 			finishedDescriptions.clear();
 		}
@@ -41,7 +42,6 @@ public class JUnitScenarioReporter implements ScenarioReporter {
 	public void beforeScenario(String title) {
 		notifier.fireTestStarted(currentScenario);
 	}
-
 
 	public void beforeStory(Blurb blurb) {
 		notifier.fireTestStarted(storyDescription);
@@ -66,10 +66,11 @@ public class JUnitScenarioReporter implements ScenarioReporter {
 		notifier.fireTestFinished(currentStep);
 		finishedDescriptions.add(currentStep);
 	}
-	
+
 	private Description getStepDescription(String step) {
-		for(Description description : currentScenario.getChildren())	{
-			if(!finishedDescriptions.contains(description) && match(step, description)) {
+		for (Description description : currentScenario.getChildren()) {
+			if (!finishedDescriptions.contains(description)
+					&& match(step, description)) {
 				return description;
 			}
 		}
@@ -77,7 +78,8 @@ public class JUnitScenarioReporter implements ScenarioReporter {
 	}
 
 	private boolean match(String step, Description description) {
-	    return description.getDisplayName().startsWith(JUnitDescriptionGenerator.getJunitSafeString(step));
+		return description.getDisplayName().startsWith(
+				JUnitDescriptionGenerator.getJunitSafeString(step));
 	}
 
 }

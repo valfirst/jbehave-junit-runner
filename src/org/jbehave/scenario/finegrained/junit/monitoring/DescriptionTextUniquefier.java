@@ -5,14 +5,14 @@ import java.util.Set;
 
 public class DescriptionTextUniquefier {
 
-    Set<String> strings = new HashSet<String>();
-    
-    public String getUniqueDescription(String junitSafeString) {
-	while(strings.contains(junitSafeString)) {
-	    junitSafeString = junitSafeString + ".";
+	Set<String> strings = new HashSet<String>();
+
+	public String getUniqueDescription(String junitSafeString) {
+		while (strings.contains(junitSafeString)) {
+			junitSafeString = junitSafeString + ".";
+		}
+		strings.add(junitSafeString);
+		return junitSafeString;
 	}
-	strings.add(junitSafeString);
-	return junitSafeString;
-    }
 
 }

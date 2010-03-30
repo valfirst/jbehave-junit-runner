@@ -11,8 +11,8 @@ public class JUnitDescriptionGenerator {
 
 	public Description createDescriptionFrom(ScenarioDefinition scenario,
 			Steps... candidateSteps) {
-		Description scenarioDescription = Description.createTestDescription(
-				candidateSteps[0].getClass(), scenario.getTitle());
+		Description scenarioDescription = Description
+				.createSuiteDescription("Scenario: " + scenario.getTitle());
 		DescriptionTextUniquefier uniquefier = new DescriptionTextUniquefier();
 		for (String stringStep : scenario.getSteps()) {
 			for (Steps candidates : candidateSteps) {

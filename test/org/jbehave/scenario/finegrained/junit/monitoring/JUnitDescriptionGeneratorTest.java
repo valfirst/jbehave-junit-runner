@@ -47,8 +47,7 @@ public class JUnitDescriptionGeneratorTest {
 		ScenarioDefinition scenario = new ScenarioDefinition("MyTitle");
 		Description description = generator.createDescriptionFrom(scenario,
 				steps);
-		ensureThat(description, equalTo(Description.createTestDescription(steps
-				.getClass(), "MyTitle")));
+		ensureThat(description, equalTo(Description.createSuiteDescription("Scenario: MyTitle")));
 	}
 
 	@Test
@@ -80,7 +79,7 @@ public class JUnitDescriptionGeneratorTest {
 				JUnitScenario.class);
 		ensureThat(description.getChildren().size(), equalTo(1));
 		ensureThat(description.getChildren().get(0), equalTo(Description
-				.createTestDescription(steps.getClass(), "MyTitle")));
+				.createSuiteDescription("Scenario: MyTitle")));
 	}
 
 	@Test

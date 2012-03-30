@@ -2,18 +2,18 @@ package org.jbehave.scenario.finegrained.junit.monitoring;
 
 import java.lang.annotation.Annotation;
 
-import org.jbehave.scenario.Configuration;
-import org.jbehave.scenario.JUnitScenario;
-import org.jbehave.scenario.reporters.ScenarioReporter;
-import org.jbehave.scenario.steps.Steps;
+import org.jbehave.core.configuration.Configuration;
+import org.jbehave.core.junit.JUnitStory;
+import org.jbehave.core.reporters.StoryReporter;
+import org.jbehave.core.steps.Steps;
 
 public class ReflectionHelper {
 
 	private final Class<?> invokingClass;
-	private final Class<? extends JUnitScenario> testClass;
+	private final Class<? extends JUnitStory> testClass;
 
 	public ReflectionHelper(Class<?> invokingClass,
-			Class<? extends JUnitScenario> testClass) {
+			Class<? extends JUnitStory> testClass) {
 		this.invokingClass = invokingClass;
 		this.testClass = testClass;
 
@@ -52,15 +52,15 @@ public class ReflectionHelper {
 		return getInstance(StepsClass);
 	}
 
-	public JUnitScenario reflectMeATestInstance(JUnitScenarioReporter reporter) {
+	public JUnitStory reflectMeATestInstance(JUnitScenarioReporter reporter) {
 		try {
-			return testClass.getConstructor(ScenarioReporter.class)
+			return testClass.getConstructor(StoryReporter.class)
 					.newInstance(reporter);
 		} catch (Exception e) {
 			throw new IllegalArgumentException(testClass.toString()
 					+ "must have constructor with the following args: ("
 					+ ClassLoader.class.toString() + ", "
-					+ ScenarioReporter.class.toString()
+					+ StoryReporter.class.toString()
 					+ ") in order to use custom runner "
 					+ this.getClass().toString(), e);
 		}

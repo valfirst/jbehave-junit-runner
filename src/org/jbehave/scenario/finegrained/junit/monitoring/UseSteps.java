@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.jbehave.scenario.steps.Steps;
+import org.jbehave.core.steps.Steps;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

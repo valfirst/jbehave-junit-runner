@@ -43,7 +43,6 @@ public class JUnitScenarioReporter implements StoryReporter {
         // this.currentScenario = this.scenarioDescriptions.next();
     }
 
-    @Override
     public void beforeStory(Story story, boolean arg1) {
         System.out.println("JUnitScenarioReporter.beforeStory()");
         for (Description storyDescription : storyDescriptions) {
@@ -85,7 +84,6 @@ public class JUnitScenarioReporter implements StoryReporter {
         }
     }
 
-    @Override
     public void beforeStep(String arg0) {
         System.out.println("JUnitScenarioReporter.beforeStep()");
         notifier.fireTestStarted(currentStep);
@@ -109,30 +107,25 @@ public class JUnitScenarioReporter implements StoryReporter {
         }
     }
 
-    @Override
     public void afterStory(boolean arg0) {
         System.out.println("JBehave2JunitReporter.afterStory():: " + arg0);
     }
 
-    @Override
     public void afterExamples() {
         System.out.println("JBehave2JunitReporter.afterExamples()");
 
     }
 
-    @Override
     public void beforeExamples(List<String> arg0, ExamplesTable arg1) {
         System.out.println("JBehave2JunitReporter.beforeExamples()");
         // exampleDescriptions = currentScenario.getChildren().iterator();
 
     }
 
-    @Override
     public void dryRun() {
 
     }
 
-    @Override
     public void example(Map<String, String> arg0) {
         System.out.println("JBehave2JunitReporter.example()");
 
@@ -147,68 +140,55 @@ public class JUnitScenarioReporter implements StoryReporter {
 
     }
 
-    @Override
     public void failedOutcomes(String arg0, OutcomesTable arg1) {
         System.out.println("JBehave2JunitReporter.failedOutcomes()");
     }
 
-    @Override
     public void givenStories(GivenStories arg0) {
         System.out.println("JBehave2JunitReporter.givenStories()");
     }
 
-    @Override
     public void givenStories(List<String> arg0) {
         System.out.println("JBehave2JunitReporter.givenStories()");
     }
 
-    @Override
     public void ignorable(String arg0) {
         System.out.println("JBehave2JunitReporter.ignorable()");
     }
 
-    @Override
     public void narrative(Narrative arg0) {
         // TODO Auto-generated method stub
         System.out.println("JBehave2JunitReporter.narrative()");
     }
 
-    @Override
     public void notPerformed(String arg0) {
         System.out.println("JBehave2JunitReporter.notPerformed()");
     }
 
-    @Override
     public void pending(String arg0) {
         System.out.println("JBehave2JunitReporter.pending()");
     }
 
-    @Override
     public void pendingMethods(List<String> arg0) {
         System.out.println("JBehave2JunitReporter.pendingMethods()");
     }
 
-    @Override
     public void restarted(String arg0, Throwable arg1) {
         System.out.println("JBehave2JunitReporter.restarted()");
     }
 
-    @Override
     public void scenarioMeta(Meta arg0) {
         System.out.println("JBehave2JunitReporter.scenarioMeta()");
     }
 
-    @Override
     public void scenarioNotAllowed(Scenario arg0, String arg1) {
         System.out.println("JBehave2JunitReporter.scenarioNotAllowed()");
     }
 
-    @Override
     public void storyCancelled(Story arg0, StoryDuration arg1) {
         System.out.println("JBehave2JunitReporter.storyCancelled()");
     }
 
-    @Override
     public void storyNotAllowed(Story arg0, String arg1) {
         System.out.println("JBehave2JunitReporter.storyNotAllowed()");
     }

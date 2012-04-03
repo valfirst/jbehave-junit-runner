@@ -3,3 +3,5 @@ bin
 .settings
 test_output
 /target
+/.project
+/.classpath

@@ -29,8 +29,13 @@ public class JUnitReportingRunner extends Runner {
         junitStories = testClass.newInstance();
         configuredEmbedder = junitStories.configuredEmbedder();
         configuration = configuredEmbedder.configuration();
-
-        Method method = testClass.getDeclaredMethod("storyPaths", (Class[]) null);
+        Method method;
+        try {
+            method = testClass.getDeclaredMethod("storyPaths", (Class[]) null);
+        } catch (NoSuchMethodException e) {
+            method = testClass.getMethod("storyPaths", (Class[]) null);
+        }
+        
         method.setAccessible(true);
         storyPaths = ((List<String>) method.invoke(junitStories, (Object[]) null));
 

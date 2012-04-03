@@ -20,7 +20,7 @@ public class JUnitReportingRunner extends Runner {
     private List<String> storyPaths;
     private JUnitStories junitStories;
     private Configuration configuration;
-	private int testCases;
+	private int numberOfTestCases;
 	private Description rootDescription;
 
     @SuppressWarnings("unchecked")
@@ -35,7 +35,6 @@ public class JUnitReportingRunner extends Runner {
         storyPaths = ((List<String>) method.invoke(junitStories, (Object[]) null));
 
         storyDescriptions = buildDescriptionFromStories();
-
     }
 
 	@Override
@@ -47,13 +46,13 @@ public class JUnitReportingRunner extends Runner {
 
     @Override
     public int testCount() {
-        return testCases;
+        return numberOfTestCases;
     }
 
     @Override
     public void run(RunNotifier notifier) {
 
-        JUnitScenarioReporter reporter = new JUnitScenarioReporter(notifier, testCases, rootDescription);
+        JUnitScenarioReporter reporter = new JUnitScenarioReporter(notifier, numberOfTestCases, rootDescription);
 
         StoryReporterBuilder reporterBuilder = new StoryReporterBuilder().withReporters(reporter);
         Configuration junitReportingConfiguration = junitStories.configuration().useStoryReporterBuilder(reporterBuilder);
@@ -75,15 +74,15 @@ public class JUnitReportingRunner extends Runner {
         List<Description> storyDescriptions = new ArrayList<Description>();
 
         storyDescriptions.add(Description.createTestDescription(Object.class, "BeforeStories"));
-        testCases++;
+        numberOfTestCases++;
         for (String storyPath : storyPaths) {
             Story parseStory = storyRunner.storyOfPath(configuration, storyPath);
             Description descr = gen.createDescriptionFrom(parseStory);
             storyDescriptions.add(descr);
         }
         storyDescriptions.add(Description.createTestDescription(Object.class, "AfterStories"));
-        testCases++;
-        testCases += gen.getTestCases();
+        numberOfTestCases++;
+        numberOfTestCases += gen.getTestCases();
         return storyDescriptions;
     }
 }

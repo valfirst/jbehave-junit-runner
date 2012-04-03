@@ -99,7 +99,7 @@ Once you are all set, you use the regular `Run As -> JUnit Test`
 command in Eclipse. The JUnit view should appear and display something
 like this:
 
-![Screenshot](/doc/img/JBehaveJUnitScreenshot.png)
+![Screenshot](doc/img/JBehaveJUnitScreenshot.png)
 
 
 Open Issues

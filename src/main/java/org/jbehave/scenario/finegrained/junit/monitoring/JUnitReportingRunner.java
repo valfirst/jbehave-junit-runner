@@ -4,7 +4,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jbehave.core.annotations.BeforeStories;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.StoryRunner;

@@ -41,7 +41,7 @@ public class JUnitDescriptionGenerator {
     }
 
 	private boolean hasExamples(Scenario scenario) {
-		return scenario.getExamplesTable() != null;
+		return scenario.getExamplesTable().getRowCount() > 0;
 	}
 
 	private void insertDescriptionForExamples(Scenario scenario,

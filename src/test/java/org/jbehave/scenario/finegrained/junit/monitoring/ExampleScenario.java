@@ -45,7 +45,7 @@ public class ExampleScenario extends JUnitStories {
 	@Override
 	protected List<String> storyPaths() {
 		List<String> stories = new ArrayList<String>();
-		stories.add("org/jbehave/scenario/finegrained/junit/monitoring/example_scenario");
+		stories.add("org/jbehave/scenario/finegrained/junit/monitoring/Multiplication.story");
 		return stories;
 	}
 

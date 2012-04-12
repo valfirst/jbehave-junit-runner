@@ -86,10 +86,10 @@ however in case you pulled up the `storyPaths()` method
 into that common base class, you
 
   1. either need to make it public _OR_
-  1. override it in all your base classes 
+  1. override it in all descendants of that base class 
      (just calling the super implementation is fine).
      
-This is due to a reflection issue. This might be fixed in
+This is due to a reflection issue and might be fixed in
 future versions.
 
 

@@ -1,12 +1,16 @@
 package org.jbehave.scenario.finegrained.junit.monitoring;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 
 import org.hamcrest.BaseMatcher;
+import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.matchers.JUnitMatchers;
 import org.junit.runner.Description;
 import org.junit.runner.notification.RunNotifier;
 import org.mockito.Mock;
@@ -21,55 +25,60 @@ public class JUnitReportingRunnerTest {
 	private Description description;
 
 	@Before
-	public void setUp() {
+	public void setUp() throws Throwable {
 		MockitoAnnotations.initMocks(this);
-//		runner = new JUnitReportingRunner(
-//				ExampleScenario.class);
-//		description = runner.getDescription();
+		runner = new JUnitReportingRunner(
+				ExampleScenario.class);
+		description = runner.getDescription();
 	}
 
 	@Test
 	public void runUpExampleScenarioAndCheckNotifications() {
-//		runner.run(notifier);
-//		verifyAllChildDescriptionsFired(description);
+		runner.run(notifier);
+		verifyAllChildDescriptionsFired(description, true);
 	}
 
-	private void verifyAllChildDescriptionsFired(Description description) {
-		verify(notifier).fireTestStarted(description);
-		verify(notifier).fireTestFinished(description);
+	private void verifyAllChildDescriptionsFired(Description description, boolean onlyChildren) {
+		if (!onlyChildren) {
+			verify(notifier).fireTestStarted(description);
+			System.out.println("verified start "+description.getDisplayName());
+		}
 		for (Description child : description.getChildren()) {
-			verifyAllChildDescriptionsFired(child);
+			verifyAllChildDescriptionsFired(child, false);
+		}
+		if (!onlyChildren) {
+			verify(notifier).fireTestFinished(description);
+			System.out.println("verified finish "+description.getDisplayName());
 		}
 	}
 	
 	@Test
 	public void topLevelDescriptionForExample() {
-//		ensureThat(description.getDisplayName(), equalTo("org.jbehave.scenario.finegrained.junit.monitoring.ExampleScenario"));
+		assertThat(description.getDisplayName(), equalTo("org.jbehave.scenario.finegrained.junit.monitoring.ExampleScenario"));
 	}
 	
+	@Test
+	public void storyDescriptionsForExample() {
+		assertThat(getFirstStory().getDisplayName(), equalTo("Multiplication.story"));
+	}
+
 	@Test
 	public void scenarioDescriptionsForExample() {
-//		ensureThat(description.getChildren().get(0).getDisplayName(), equalTo("Scenario: 2 squared"));
+		assertThat(getFirstScenario().getDisplayName(), equalTo("Scenario: 2 squared"));
 	}
-	
+
 	@Test
 	public void stepDescriptionsForExample() {
-//		ensureThat(description.getChildren().get(0).getChildren().get(0).getDisplayName(), startsWith("Given a variable x with value 2"));
+		assertThat(getFirstScenario().getChildren().get(0).getDisplayName(), Matchers.startsWith("Given a variable x with value 2"));
 	}
 	
-	private Matcher<String> startsWith(final String prefix) {
-		return new BaseMatcher<String>() {
+	private Description getFirstStory() {
+		return description.getChildren().get(1);
+	}
 
-			public boolean matches(Object item) {
-				return item.toString().indexOf(prefix) == 0;
-			}
-
-			public void describeTo(org.hamcrest.Description description) {
-				description.appendText("A String starting with \"" + prefix + "\"");
-			}
-			
-		};
-		
+	private Description getFirstScenario() {
+		return getFirstStory().getChildren().get(0);
 	}
 
 }
+

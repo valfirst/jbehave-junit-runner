@@ -5,21 +5,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jbehave.core.Embeddable;
+import org.jbehave.core.annotations.Configure;
+import org.jbehave.core.annotations.UsingEmbedder;
+import org.jbehave.core.annotations.UsingSteps;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.LoadFromClasspath;
+import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.parsers.RegexStoryParser;
+import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
 import org.jbehave.core.steps.ParameterConverters.ExamplesTableConverter;
+import org.junit.runner.RunWith;
 
 //@RunWith(JUnitReportingRunner.class)
+
 public class ExampleScenario extends JUnitStories {
 
 	public ExampleScenario() {
+		useStepsFactory(new InstanceStepsFactory(configuration(), new ExampleSteps()));
 	}
 
 	@Override
@@ -48,5 +57,7 @@ public class ExampleScenario extends JUnitStories {
 		stories.add("org/jbehave/scenario/finegrained/junit/monitoring/Multiplication.story");
 		return stories;
 	}
+	
+	
 
 }

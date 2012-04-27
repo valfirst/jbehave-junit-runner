@@ -80,10 +80,8 @@ public class JUnitScenarioReporter implements StoryReporter {
 
     public void afterStory(boolean isGivenStory) {
         logger.info("After Story: {} {}", currentStoryDescription.getDisplayName(), isGivenStory ? "(given story)" : "");
-        if (currentStoryDescription.isTest()) {
-            notifier.fireTestFinished(currentStoryDescription);
-            testCounter++;
-        }
+        notifier.fireTestFinished(currentStoryDescription);
+        testCounter++;
 
         if (testCounter == totalTests) {
             Result result = new Result();
@@ -123,7 +121,7 @@ public class JUnitScenarioReporter implements StoryReporter {
 
         if (stepDescriptions.hasNext()) {
             currentStep = stepDescriptions.next();
-        }
+        } 
         testCounter++;
     }
 

@@ -52,7 +52,7 @@ public class JUnitScenarioReporter implements StoryReporter {
             notifier.fireTestRunStarted(rootDescription);
         }
         for (Description storyDescription : storyDescriptions) {
-            if (storyDescription.isSuite() && storyDescription.getDisplayName().equals(story.getName())) {
+        	if (storyDescription.isSuite() && storyDescription.getDisplayName().equals(story.getName())) {
                 currentStoryDescription = storyDescription;
                 notifier.fireTestStarted(storyDescription);
 

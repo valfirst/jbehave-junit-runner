@@ -41,7 +41,8 @@ public class JUnitDescriptionGenerator {
     }
 
 	private boolean hasExamples(Scenario scenario) {
-		return scenario.getExamplesTable().getRowCount() > 0;
+		ExamplesTable examplesTable = scenario.getExamplesTable();
+		return examplesTable!= null && examplesTable.getRowCount() > 0;
 	}
 
 	private void insertDescriptionForExamples(Scenario scenario,
@@ -61,11 +62,10 @@ public class JUnitDescriptionGenerator {
 			testCases++;
 			for (StepCandidate step : allCandidates) {
 				if (step.matches(stringStep)) {
-					Method method = step.getMethod();
 					// JUnit and the Eclipse JUnit view needs to be touched/fixed in order to make the JUnit view
 					// jump to the corresponding test accordingnly. For now we have to live, that we end up in 
 					// the correct class.
-					Description testDescription = Description.createTestDescription(method.getDeclaringClass(), getJunitSafeString(stringStep));
+					Description testDescription = Description.createTestDescription(step.getStepsInstance().getClass(), getJunitSafeString(stringStep));
 					description.addChild(testDescription);
 				}
 			}

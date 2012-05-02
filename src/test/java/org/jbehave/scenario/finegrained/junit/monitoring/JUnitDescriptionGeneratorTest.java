@@ -50,7 +50,6 @@ public class JUnitDescriptionGeneratorTest {
 		when(steps.listCandidates()).thenReturn(Arrays.asList(new StepCandidate[] {stepCandidate}));
 		when(stepCandidate.matches(anyString())).thenReturn(true);
 		when(stepCandidate.getStepsInstance()).thenReturn(new Object());
-//		stub(stepCandidate.matches((String) anyObject())).toReturn(true);
 		when(story.getName()).thenReturn(DEFAULT_STORY_NAME);
 		when(scenario.getTitle()).thenReturn(DEFAULT_SCENARIO_TITLE);
 		generator = new JUnitDescriptionGenerator(Arrays.asList(new CandidateSteps[] {steps}));

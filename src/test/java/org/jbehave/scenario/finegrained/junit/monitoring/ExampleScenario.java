@@ -12,14 +12,18 @@ import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.parsers.RegexStoryParser;
+import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
 import org.jbehave.core.steps.ParameterConverters.ExamplesTableConverter;
+import org.jbehave.scenario.finegrained.junit.monitoring.step.ExampleSteps;
 
 //@RunWith(JUnitReportingRunner.class)
+
 public class ExampleScenario extends JUnitStories {
 
 	public ExampleScenario() {
+		useStepsFactory(new InstanceStepsFactory(configuration(), new ExampleSteps()));
 	}
 
 	@Override
@@ -48,5 +52,7 @@ public class ExampleScenario extends JUnitStories {
 		stories.add("org/jbehave/scenario/finegrained/junit/monitoring/Multiplication.story");
 		return stories;
 	}
+	
+	
 
 }

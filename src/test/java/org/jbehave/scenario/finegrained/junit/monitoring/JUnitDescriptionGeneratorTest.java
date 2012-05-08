@@ -12,7 +12,6 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -72,6 +71,7 @@ public class JUnitDescriptionGeneratorTest {
 		when(scenario.getTitle()).thenReturn("MyTitle");
 		Description description = generator.createDescriptionFrom(scenario);
 		assertThat(description, equalTo(Description.createSuiteDescription("Scenario: MyTitle")));
+		assertThat(generator.getTestCases(), is(0));
 	}
 
 	@Test
@@ -79,6 +79,7 @@ public class JUnitDescriptionGeneratorTest {
 		addStepToScenario();
 		Description description = generator.createDescriptionFrom(scenario);
 		assertThat(description.getChildren(), hasItem(step1Description()));
+		assertThat(generator.getTestCases(), is(1));
 	}
 
 	private void addStepToScenario() {
@@ -110,6 +111,7 @@ public class JUnitDescriptionGeneratorTest {
 		assertThat(description.getChildren(), everyItem(Matchers.<Description>hasProperty("displayName", startsWith("Step1"))));
 		assertThat(description.getChildren().size(), is(2));
 		assertThat(description.getChildren(), allChildrenHaveUniqueDisplayNames());
+		assertThat(generator.getTestCases(), is(2));
 	}
 
 	@Test
@@ -117,27 +119,35 @@ public class JUnitDescriptionGeneratorTest {
 		when(givenStories.getPaths()).thenReturn(Arrays.asList("/some/path/to/GivenStory.story"));
 		Description description = generator.createDescriptionFrom(scenario);
 		assertThat(description.getChildren().get(0), hasProperty("displayName", is("GivenStory.story")));
+		assertThat(generator.getTestCases(), is(1));
 	}
 	
 	@Test
 	public void shouldGenerateDescriptionForExampleTablesOnScenario() {
 		addStepToScenario();
-		ExamplesTable examplesTable = mock(ExamplesTable.class);
 		int NUM_ROWS = 2;
-		when(examplesTable.getRowCount()).thenReturn(NUM_ROWS);
-		Map<String, String> row = new TreeMap<String, String>();
-		row.put("key1", "value1");
-		row.put("key2", "value2");
-		when(examplesTable.getRow(anyInt())).thenReturn(row);
-		when(scenario.getExamplesTable()).thenReturn(examplesTable);
+		Map<String, String> row = addExamplesTableToScenario(NUM_ROWS);
+		
 		Description description = generator.createDescriptionFrom(scenario);
-		ArrayList<Description> exampleDescriptions = description.getChildren();
-		assertThat(exampleDescriptions.size(), is(NUM_ROWS));
-		for (Description exampleDescription : exampleDescriptions) {
+		
+		assertThat(description.getChildren().size(), is(NUM_ROWS));
+		for (Description exampleDescription : description.getChildren()) {
 			assertThat(exampleDescription.getChildren(), hasItem(Matchers.<Description>hasProperty("displayName", startsWith("Step1"))));
 			assertThat(exampleDescription, hasProperty("displayName", startsWith("Example: " + row)));
 		}
 		
+	}
+
+	private Map<String, String> addExamplesTableToScenario(int NUM_ROWS) {
+		ExamplesTable examplesTable = mock(ExamplesTable.class);
+		when(examplesTable.getRowCount()).thenReturn(NUM_ROWS);
+		Map<String, String> row = new TreeMap<String, String>();
+		for(int i=1; i<=NUM_ROWS; i++) {
+			row.put("key"+i, "value"+i);
+		}
+		when(examplesTable.getRow(anyInt())).thenReturn(row);
+		when(scenario.getExamplesTable()).thenReturn(examplesTable);
+		return row;
 	}
 	
 	private Matcher<List<Description>> allChildrenHaveUniqueDisplayNames() {

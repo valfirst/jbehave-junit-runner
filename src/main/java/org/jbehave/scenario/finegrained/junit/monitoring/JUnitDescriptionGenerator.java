@@ -56,6 +56,7 @@ public class JUnitDescriptionGenerator {
 			scenarioDescription.addChild(
 					Description.createSuiteDescription(name)
 			);
+			testCases++;
 		}
 	}
 

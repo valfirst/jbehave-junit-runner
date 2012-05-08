@@ -51,20 +51,24 @@ public class JUnitScenarioReporter implements StoryReporter {
         if (testCounter == 0) {
             notifier.fireTestRunStarted(rootDescription);
         }
-        for (Description storyDescription : storyDescriptions) {
-        	if (storyDescription.isSuite() && storyDescription.getDisplayName().equals(story.getName())) {
-                currentStoryDescription = storyDescription;
-                notifier.fireTestStarted(storyDescription);
-
-                scenarioDescriptions = storyDescription.getChildren().iterator();
-                if (scenarioDescriptions.hasNext()) {
-                    currentScenario = scenarioDescriptions.next();
-                }
-            } else if (storyDescription.isTest() && storyDescription.getMethodName().equals(story.getName())) {
-                // Story BeforeStories or After Stories
-                currentStoryDescription = storyDescription;
-                notifier.fireTestStarted(currentStoryDescription);
-            }
+        if (isGivenStory) {
+        
+        } else {
+	        for (Description storyDescription : storyDescriptions) {
+	        	if (storyDescription.isSuite() && storyDescription.getDisplayName().equals(story.getName())) {
+	                currentStoryDescription = storyDescription;
+	                notifier.fireTestStarted(storyDescription);
+	
+	                scenarioDescriptions = storyDescription.getChildren().iterator();
+	                if (scenarioDescriptions.hasNext()) {
+	                    currentScenario = scenarioDescriptions.next();
+	                }
+	            } else if (storyDescription.isTest() && storyDescription.getMethodName().equals(story.getName())) {
+	                // Story BeforeStories or After Stories
+	                currentStoryDescription = storyDescription;
+	                notifier.fireTestStarted(currentStoryDescription);
+	            }
+	        }
         }
 
     }

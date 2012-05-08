@@ -7,17 +7,25 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.everyItem;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
+import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.steps.CandidateSteps;
@@ -41,6 +49,8 @@ public class JUnitDescriptionGeneratorTest {
 	Story story;
 	@Mock 
 	Scenario scenario;
+	@Mock
+	GivenStories givenStories;
 
 	private JUnitDescriptionGenerator generator;
 
@@ -52,6 +62,8 @@ public class JUnitDescriptionGeneratorTest {
 		when(stepCandidate.getStepsInstance()).thenReturn(new Object());
 		when(story.getName()).thenReturn(DEFAULT_STORY_NAME);
 		when(scenario.getTitle()).thenReturn(DEFAULT_SCENARIO_TITLE);
+		when(givenStories.getPaths()).thenReturn(Collections.<String>emptyList());
+		when(scenario.getGivenStories()).thenReturn(givenStories);
 		generator = new JUnitDescriptionGenerator(Arrays.asList(new CandidateSteps[] {steps}));
 	}
 
@@ -64,9 +76,13 @@ public class JUnitDescriptionGeneratorTest {
 
 	@Test
 	public void shouldGenerateDescriptionForStep() {
-		when(scenario.getSteps()).thenReturn(Arrays.asList("Step1"));
+		addStepToScenario();
 		Description description = generator.createDescriptionFrom(scenario);
 		assertThat(description.getChildren(), hasItem(step1Description()));
+	}
+
+	private void addStepToScenario() {
+		when(scenario.getSteps()).thenReturn(Arrays.asList("Step1"));
 	}
 
 	private Description step1Description() {
@@ -96,6 +112,34 @@ public class JUnitDescriptionGeneratorTest {
 		assertThat(description.getChildren(), allChildrenHaveUniqueDisplayNames());
 	}
 
+	@Test
+	public void shouldGenerateDescriptionForGivenStories() {
+		when(givenStories.getPaths()).thenReturn(Arrays.asList("/some/path/to/GivenStory.story"));
+		Description description = generator.createDescriptionFrom(scenario);
+		assertThat(description.getChildren().get(0), hasProperty("displayName", is("GivenStory.story")));
+	}
+	
+	@Test
+	public void shouldGenerateDescriptionForExampleTablesOnScenario() {
+		addStepToScenario();
+		ExamplesTable examplesTable = mock(ExamplesTable.class);
+		int NUM_ROWS = 2;
+		when(examplesTable.getRowCount()).thenReturn(NUM_ROWS);
+		Map<String, String> row = new TreeMap<String, String>();
+		row.put("key1", "value1");
+		row.put("key2", "value2");
+		when(examplesTable.getRow(anyInt())).thenReturn(row);
+		when(scenario.getExamplesTable()).thenReturn(examplesTable);
+		Description description = generator.createDescriptionFrom(scenario);
+		ArrayList<Description> exampleDescriptions = description.getChildren();
+		assertThat(exampleDescriptions.size(), is(NUM_ROWS));
+		for (Description exampleDescription : exampleDescriptions) {
+			assertThat(exampleDescription.getChildren(), hasItem(Matchers.<Description>hasProperty("displayName", startsWith("Step1"))));
+			assertThat(exampleDescription, hasProperty("displayName", startsWith("Example: " + row)));
+		}
+		
+	}
+	
 	private Matcher<List<Description>> allChildrenHaveUniqueDisplayNames() {
 		return new BaseMatcher<List<Description>>() {
 

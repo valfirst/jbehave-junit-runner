@@ -47,8 +47,7 @@ public class MathStories extends JUnitStories {
 
 	@Override
 	protected List<String> storyPaths() {
-		return Arrays.asList("org/jbehave/scenario/finegrained/junit/monitoring/Multiplication.story",
-				"org/jbehave/scenario/finegrained/junit/monitoring/Division.story");
+		return Arrays.asList("org/jbehave/scenario/finegrained/junit/monitoring/Multiplication.story");
 	}
 
 }

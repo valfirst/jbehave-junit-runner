@@ -54,7 +54,7 @@ public class JUnitDescriptionGenerator {
 		for (String path: scenario.getGivenStories().getPaths()) {
 			String name = path.substring(path.lastIndexOf("/")+1, path.length());
 			scenarioDescription.addChild(
-					Description.createSuiteDescription(name)
+					Description.createSuiteDescription(getJunitSafeString(name))
 			);
 			testCases++;
 		}

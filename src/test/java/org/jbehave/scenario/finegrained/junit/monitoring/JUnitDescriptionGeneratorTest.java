@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.everyItem;
@@ -12,6 +13,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -114,6 +116,16 @@ public class JUnitDescriptionGeneratorTest {
 		assertThat(generator.getTestCases(), is(2));
 	}
 
+	@Test
+	public void shouldCopeWithDuplicateGivenStories() throws Exception {
+		when(story.getScenarios()).thenReturn(Arrays.asList(new Scenario[] {scenario, scenario}));
+		when(givenStories.getPaths()).thenReturn(Arrays.asList("/some/path/to/GivenStory.story"));
+		Description description = generator.createDescriptionFrom(story);
+		Description firstScenario = description.getChildren().get(0);
+		Description secondScenario = description.getChildren().get(1);
+		assertThat(firstScenario.getChildren().get(0).getDisplayName(), is(not(secondScenario.getChildren().get(0).getDisplayName())));
+	}
+	
 	@Test
 	public void shouldGenerateDescriptionForGivenStories() {
 		when(givenStories.getPaths()).thenReturn(Arrays.asList("/some/path/to/GivenStory.story"));

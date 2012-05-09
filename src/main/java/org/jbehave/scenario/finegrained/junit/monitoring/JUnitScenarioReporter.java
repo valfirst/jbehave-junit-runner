@@ -39,6 +39,8 @@ public class JUnitScenarioReporter implements StoryReporter {
     int testCounter = 0;
     private final int totalTests;
 
+	private boolean givenStoryContext;
+
     public JUnitScenarioReporter(RunNotifier notifier, int totalTests, Description rootDescription) {
         this.totalTests = totalTests;
         this.rootDescription = rootDescription;
@@ -48,62 +50,103 @@ public class JUnitScenarioReporter implements StoryReporter {
 
     public void beforeStory(Story story, boolean isGivenStory) {
         logger.info("Before Story: {} {}", story.getName(), isGivenStory ? "(given story)" : "");
-        if (testCounter == 0) {
-            notifier.fireTestRunStarted(rootDescription);
+        if (isGivenStory) {
+            notifier.fireTestStarted(currentStep);
+            givenStoryContext = true;
+        	
+        } else {
+        	if (testCounter == 0) {
+        		notifier.fireTestRunStarted(rootDescription);
+        	}
+	        for (Description storyDescription : storyDescriptions) {
+	        	if (storyDescription.isSuite() && storyDescription.getDisplayName().equals(story.getName())) {
+	                currentStoryDescription = storyDescription;
+	                notifier.fireTestStarted(storyDescription);
+	
+	                scenarioDescriptions = storyDescription.getChildren().iterator();
+	                if (scenarioDescriptions.hasNext()) {
+	                    currentScenario = scenarioDescriptions.next();
+	                }
+	            } else if (storyDescription.isTest() && storyDescription.getMethodName().equals(story.getName())) {
+	                // Story BeforeStories or After Stories
+	                currentStoryDescription = storyDescription;
+	                notifier.fireTestStarted(currentStoryDescription);
+	            }
+	        }
         }
-        for (Description storyDescription : storyDescriptions) {
-        	if (storyDescription.isSuite() && storyDescription.getDisplayName().equals(story.getName())) {
-                currentStoryDescription = storyDescription;
-                notifier.fireTestStarted(storyDescription);
 
-                scenarioDescriptions = storyDescription.getChildren().iterator();
-                if (scenarioDescriptions.hasNext()) {
-                    currentScenario = scenarioDescriptions.next();
-                }
-            } else if (storyDescription.isTest() && storyDescription.getMethodName().equals(story.getName())) {
-                // Story BeforeStories or After Stories
-                currentStoryDescription = storyDescription;
-                notifier.fireTestStarted(currentStoryDescription);
-            }
-        }
-
-    }
-
-    public void afterScenario() {
-        logger.info("After Scenario: {}", currentScenario.getDisplayName());
-        notifier.fireTestFinished(currentScenario);
-        if (scenarioDescriptions.hasNext()) {
-            currentScenario = scenarioDescriptions.next();
-            logger.debug("--> updating current scenario to {}", currentScenario.getDisplayName());
-        }
     }
 
     public void afterStory(boolean isGivenStory) {
-        logger.info("After Story: {} {}", currentStoryDescription.getDisplayName(), isGivenStory ? "(given story)" : "");
-        notifier.fireTestFinished(currentStoryDescription);
-        testCounter++;
+	    logger.info("After Story: {} {}", currentStoryDescription.getDisplayName(), isGivenStory ? "(given story)" : "");
+	    if (isGivenStory) {
+	    	givenStoryContext = false;
+	    	notifier.fireTestFinished(currentStep);
+	    	prepareNextStep();
+	    } else {
+		    notifier.fireTestFinished(currentStoryDescription);
+		    testCounter++;
+		
+		    if (testCounter == totalTests) {
+		        Result result = new Result();
+		        notifier.fireTestRunFinished(result);
+		    }
+	    }
+	}
 
-        if (testCounter == totalTests) {
-            Result result = new Result();
-            notifier.fireTestRunFinished(result);
-        }
+	public void beforeScenario(String title) {
+	    logger.info("Before Scenario: {}", title);
+	    if (!givenStoryContext) {
+		    notifier.fireTestStarted(currentScenario);
+		
+		    stepDescriptions = currentScenario.getChildren().iterator();
+		    exampleDescriptions = stepDescriptions;
+		    if (stepDescriptions.hasNext()) {
+		        currentStep = stepDescriptions.next();
+		        nextExample = currentStep;
+		    }
+	    }
+	}
+
+	public void afterScenario() {
+        logger.info("After Scenario: {}", currentScenario.getDisplayName());
+	    if (!givenStoryContext) {
+	        notifier.fireTestFinished(currentScenario);
+	        if (scenarioDescriptions.hasNext()) {
+	            currentScenario = scenarioDescriptions.next();
+	            logger.debug("--> updating current scenario to {}", currentScenario.getDisplayName());
+	        }
+	    }
     }
 
-    public void beforeScenario(String title) {
-        logger.info("Before Scenario: {}", title);
-        notifier.fireTestStarted(currentScenario);
+    public void beforeExamples(List<String> arg0, ExamplesTable arg1) {
+	    logger.info("Before Examples: {}", arg0 != null ? arg0 : "n/a");
+	}
 
-        stepDescriptions = currentScenario.getChildren().iterator();
-        exampleDescriptions = stepDescriptions;
-        if (stepDescriptions.hasNext()) {
-            currentStep = stepDescriptions.next();
-            nextExample = currentStep;
-        }
-    }
+	public void example(Map<String, String> arg0) {
+	    logger.info("Example: {}", arg0);
+	
+	    stepDescriptions = nextExample.getChildren().iterator();
+	    if (stepDescriptions.hasNext()) {
+	        currentStep = stepDescriptions.next();
+	    }
+	
+	    if (exampleDescriptions.hasNext()) {
+	        nextExample = exampleDescriptions.next();
+	    }
+	
+	}
 
-    public void beforeStep(String title) {
+	public void afterExamples() {
+	    logger.info("{}", "afterExamples");
+	
+	}
+
+	public void beforeStep(String title) {
         logger.info("Before Step: {}", title);
-        notifier.fireTestStarted(currentStep);
+	    if (!givenStoryContext) {
+	    	notifier.fireTestStarted(currentStep);
+	    }
     }
 
     public void failed(String step, Throwable e) {
@@ -111,45 +154,33 @@ public class JUnitScenarioReporter implements StoryReporter {
             e = ((UUIDExceptionWrapper) e).getCause();
         }
         logger.info("Step Failed: {} (cause: {})", step, e.getMessage());
-        notifier.fireTestFailure(new Failure(currentStep, e));
-        testCounter++;
+	    if (!givenStoryContext) {
+	    	notifier.fireTestFailure(new Failure(currentStep, e));
+	    	testCounter++;
+	    }
     }
 
     public void successful(String step) {
         logger.info("Step Succesful: {}", step);
-        notifier.fireTestFinished(currentStep);
-
-        if (stepDescriptions.hasNext()) {
-            currentStep = stepDescriptions.next();
-        } 
-        testCounter++;
+	    if (!givenStoryContext) {
+	        notifier.fireTestFinished(currentStep);
+	
+	        prepareNextStep();
+	    }
     }
 
-    public void afterExamples() {
-        logger.info("{}", "afterExamples");
+    private void prepareNextStep() {
+		if (stepDescriptions.hasNext()) {
+	        currentStep = stepDescriptions.next();
+	    } 
+	    testCounter++;
+	}
 
-    }
-
-    public void beforeExamples(List<String> arg0, ExamplesTable arg1) {
-        logger.info("Before Examples: {}", arg0 != null ? arg0 : "n/a");
-    }
-
-    public void dryRun() {
+    
+    // BASICALLY UN-IMPLEMENTED METHODS
+    
+	public void dryRun() {
         logger.info("{}", "dryRun");
-    }
-
-    public void example(Map<String, String> arg0) {
-        logger.info("Example: {}", arg0);
-
-        stepDescriptions = nextExample.getChildren().iterator();
-        if (stepDescriptions.hasNext()) {
-            currentStep = stepDescriptions.next();
-        }
-
-        if (exampleDescriptions.hasNext()) {
-            nextExample = exampleDescriptions.next();
-        }
-
     }
 
     public void failedOutcomes(String arg0, OutcomesTable arg1) {
@@ -204,5 +235,6 @@ public class JUnitScenarioReporter implements StoryReporter {
     public void storyNotAllowed(Story arg0, String arg1) {
         logger.info("Story not allowed: {}, {}", arg0, arg1);
     }
+
 
 }

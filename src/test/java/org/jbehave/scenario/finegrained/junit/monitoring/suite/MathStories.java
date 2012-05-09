@@ -1,27 +1,15 @@
 package org.jbehave.scenario.finegrained.junit.monitoring.suite;
 
-import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
-import static org.jbehave.core.reporters.Format.CONSOLE;
-
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
-import org.jbehave.core.i18n.LocalizedKeywords;
-import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.LoadFromClasspath;
-import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.JUnitStories;
-import org.jbehave.core.model.ExamplesTableFactory;
-import org.jbehave.core.parsers.RegexStoryParser;
-import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.InjectableStepsFactory;
-import org.jbehave.core.steps.ParameterConverters;
-import org.jbehave.core.steps.ParameterConverters.DateConverter;
-import org.jbehave.core.steps.ParameterConverters.ExamplesTableConverter;
+import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.guice.GuiceStepsFactory;
 import org.jbehave.scenario.finegrained.junit.monitoring.JUnitReportingRunner;
 import org.jbehave.scenario.finegrained.junit.monitoring.step.ExampleSteps;
@@ -41,9 +29,9 @@ import com.google.inject.Scopes;
  * </p>
  */
 @RunWith(JUnitReportingRunner.class)
-public class AllAcceptanceTestStories extends JUnitStories {
+public class MathStories extends JUnitStories {
 
-	public AllAcceptanceTestStories() {
+	public MathStories() {
 		configuredEmbedder().embedderControls().useThreads(1);
 	}
 
@@ -54,24 +42,12 @@ public class AllAcceptanceTestStories extends JUnitStories {
 
 	@Override
 	public InjectableStepsFactory stepsFactory() {
-		return new GuiceStepsFactory(configuration(), Guice.createInjector(new StepsModule()));
+		return new InstanceStepsFactory(configuration(), new ExampleSteps());
 	}
 
 	@Override
 	protected List<String> storyPaths() {
 		return Arrays.asList("org/jbehave/scenario/finegrained/junit/monitoring/Multiplication.story");
-	}
-
-	/**
-	 * Defines the classes that contain the Steps of the Scenarios.
-	 */
-	public static class StepsModule extends AbstractModule {
-
-		@Override
-		protected void configure() {
-			bind(ExampleSteps.class).in(Scopes.SINGLETON);
-		}
-
 	}
 
 }

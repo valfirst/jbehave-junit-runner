@@ -4,9 +4,14 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.GivenStories;
+import org.jbehave.core.model.GivenStory;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.steps.CandidateSteps;
@@ -32,6 +37,10 @@ public class JUnitDescriptionGenerator {
 
 	public Description createDescriptionFrom(Scenario scenario) {
         Description scenarioDescription = Description.createSuiteDescription("Scenario: " + scenario.getTitle());
+        if (hasGivenStories(scenario)) {
+        	insertGivenStories(scenario, scenarioDescription);
+        }
+        
         if (hasExamples(scenario)) {
             insertDescriptionForExamples(scenario, scenarioDescription);
         } else {
@@ -39,6 +48,21 @@ public class JUnitDescriptionGenerator {
         }
         return scenarioDescription;
     }
+
+	private void insertGivenStories(Scenario scenario,
+			Description scenarioDescription) {
+		for (String path: scenario.getGivenStories().getPaths()) {
+			String name = path.substring(path.lastIndexOf("/")+1, path.length());
+			scenarioDescription.addChild(
+					Description.createSuiteDescription(getJunitSafeString(name))
+			);
+			testCases++;
+		}
+	}
+
+	private boolean hasGivenStories(Scenario scenario) {
+		return !scenario.getGivenStories().getPaths().isEmpty();
+	}
 
 	private boolean hasExamples(Scenario scenario) {
 		ExamplesTable examplesTable = scenario.getExamplesTable();
@@ -50,8 +74,7 @@ public class JUnitDescriptionGenerator {
 		ExamplesTable examplesTable = scenario.getExamplesTable();
 		int rowCount = examplesTable.getRowCount();
 		for (int i = 1; i <= rowCount; i++) {
-		    Collection<String> rowValues = examplesTable.getRow(i-1).values();
-		    Description exampleRowDescription = Description.createSuiteDescription("Example: " + rowValues, (Annotation[]) null);
+		    Description exampleRowDescription = Description.createSuiteDescription("Example: " + examplesTable.getRow(i-1), (Annotation[]) null);
 		    scenarioDescription.addChild(exampleRowDescription);
 		    addScenarioSteps(scenario, exampleRowDescription);
 		}

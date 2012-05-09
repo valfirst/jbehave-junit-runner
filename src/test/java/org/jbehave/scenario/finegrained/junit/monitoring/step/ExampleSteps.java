@@ -1,5 +1,6 @@
 package org.jbehave.scenario.finegrained.junit.monitoring.step;
 
+import org.jbehave.core.annotations.Alias;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.Then;
@@ -23,4 +24,15 @@ public class ExampleSteps {
     public void thenXshouldBe(@Named("value") int value) {
         Assert.assertEquals(value, x);
     }
+
+    @Given("some initialization")
+    public void givenSomeInitialization() {
+    	System.out.println("Init");
+    }
+    
+    @Given("a Greeting to $somebody")
+    public void givenAGreetingToSomebody(@Named("somebody") String somebody) {
+    	System.out.println("Hello "+somebody);
+    }
 }
+

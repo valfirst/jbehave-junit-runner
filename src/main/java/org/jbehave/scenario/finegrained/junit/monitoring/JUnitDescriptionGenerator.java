@@ -26,7 +26,7 @@ public class JUnitDescriptionGenerator {
 	}
 
 	public Description createDescriptionFrom(Scenario scenario) {
-        Description scenarioDescription = Description.createSuiteDescription("Scenario: " + scenario.getTitle());
+        Description scenarioDescription = Description.createSuiteDescription("Scenario: " + getJunitSafeString(scenario.getTitle()));
         if (hasGivenStories(scenario)) {
         	insertGivenStories(scenario, scenarioDescription);
         }
@@ -98,7 +98,7 @@ public class JUnitDescriptionGenerator {
     }
 
     public String getJunitSafeString(String string) {
-        return uniq.getUniqueDescription(string.replaceAll("\n", ", ").replaceAll("[\\(\\)]", "|"));
+        return uniq.getUniqueDescription(string.replaceAll("\r", "\n").replaceAll("\n{2,}", "\n").replaceAll("\n", ", ").replaceAll("[\\(\\)]", "|"));
     }
 
 	public int getTestCases() {

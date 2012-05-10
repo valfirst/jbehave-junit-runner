@@ -1,5 +1,6 @@
 package org.jbehave.scenario.finegrained.junit.monitoring;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasProperty;
@@ -116,6 +117,30 @@ public class JUnitDescriptionGeneratorTest {
 		Description description = generator.createDescriptionFrom(story);
 		assertThat(description.getChildren(), hasItem(Description.createSuiteDescription("Scenario: " + DEFAULT_SCENARIO_TITLE)));
 	}
+	
+	@Test
+	public void shouldStripLinebreaksFromScenarioDescriptions() {
+		Scenario scenario = mock(Scenario.class);
+		when(story.getScenarios()).thenReturn(Arrays.asList(new Scenario[] {scenario}));
+		when(scenario.getGivenStories()).thenReturn(givenStories);
+
+		when(scenario.getTitle()).thenReturn("Scenario with\nNewline");
+		Description description = generator.createDescriptionFrom(story);
+		assertThat(description.getChildren().get(0).getDisplayName(), not(containsString("\n")));
+	}
+	
+	@Test
+	public void shouldStripCarriageReturnsFromScenarioDescriptions() {
+		Scenario scenario = mock(Scenario.class);
+		when(story.getScenarios()).thenReturn(Arrays.asList(new Scenario[] {scenario}));
+		when(scenario.getGivenStories()).thenReturn(givenStories);
+
+		when(scenario.getTitle()).thenReturn("Scenario with\rCarriage Return");
+		Description description = generator.createDescriptionFrom(story);
+		assertThat(description.getChildren().get(0).getDisplayName(), not(containsString("\r")));
+	}
+	
+	
 
 	@Test
 	public void shouldCopeWithSeeminglyDuplicateSteps() throws Exception {

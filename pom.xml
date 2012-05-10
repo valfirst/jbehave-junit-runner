@@ -1,15 +1,20 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>de.codecentric</groupId>
-  <artifactId>jbehave-junit-runner</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
-  <dependencies>
-  	<dependency>
-  		<groupId>org.jbehave</groupId>
-  		<artifactId>jbehave-core</artifactId>
-  		<version>3.6</version>
-  		<type>jar</type>
-  		<scope>compile</scope>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>de.codecentric</groupId>
+	<artifactId>jbehave-junit-runner</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+
+	<properties>
+		<jbehave.version>3.6</jbehave.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.jbehave</groupId>
+			<artifactId>jbehave-core</artifactId>
+			<version>${jbehave.version}</version>
+  		<scope>provided</scope>
   	</dependency>
   	<dependency>
   		<groupId>junit</groupId>
@@ -21,12 +26,6 @@
   		<groupId>org.mockito</groupId>
   		<artifactId>mockito-core</artifactId>
   		<version>1.9.0</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.jbehave</groupId>
-  		<artifactId>jbehave-guice</artifactId>
-  		<version>3.6</version>
-  		<scope>test</scope>
   	</dependency>
   	<dependency>
   		<groupId>org.slf4j</groupId>

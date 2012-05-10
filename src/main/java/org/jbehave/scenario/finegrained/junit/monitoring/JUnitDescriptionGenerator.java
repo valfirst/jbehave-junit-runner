@@ -1,17 +1,10 @@
 package org.jbehave.scenario.finegrained.junit.monitoring;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
-import java.util.Map.Entry;
 
 import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.model.GivenStories;
-import org.jbehave.core.model.GivenStory;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.steps.CandidateSteps;
@@ -24,12 +17,9 @@ public class JUnitDescriptionGenerator {
 
     private int testCases;
 
-	private final List<CandidateSteps> candidateSteps;
-
 	private List<StepCandidate> allCandidates = new ArrayList<StepCandidate>();
     
     public JUnitDescriptionGenerator(List<CandidateSteps> candidateSteps) {
-		this.candidateSteps = candidateSteps;
 		for (CandidateSteps candidateStep : candidateSteps) {
 			allCandidates.addAll(candidateStep.listCandidates());
 		}
@@ -86,8 +76,11 @@ public class JUnitDescriptionGenerator {
 			for (StepCandidate step : allCandidates) {
 				if (step.matches(stringStep)) {
 					// JUnit and the Eclipse JUnit view needs to be touched/fixed in order to make the JUnit view
-					// jump to the corresponding test accordingnly. For now we have to live, that we end up in 
+					// jump to the corresponding test accordingly. For now we have to live, that we end up in 
 					// the correct class.
+					if (stringStep.indexOf('\n') != -1) {
+						stringStep = stringStep.substring(0, stringStep.indexOf('\n'));
+					}
 					Description testDescription = Description.createTestDescription(step.getStepsInstance().getClass(), getJunitSafeString(stringStep));
 					description.addChild(testDescription);
 				}

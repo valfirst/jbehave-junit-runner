@@ -45,6 +45,9 @@ listed here, too:
   * junit (4.10)
   * slf4j-api (1.6.4)
 
+Note that the JBehave library is set to scope `provided`
+in the POM, because any project using this Runner will
+naturally have their own version of JBehave already.
 
 Usage
 ====================================
@@ -54,7 +57,7 @@ of your JBehave acceptance tests.
 
 Enabling
 -------------------------------
-You will probably alread have one or more classes
+You will probably already have one or more classes
 that extend the default JBehave `JUnitStories` class.
 Just add this annotation:
 
@@ -86,10 +89,10 @@ however in case you pulled up the `storyPaths()` method
 into that common base class, you
 
   1. either need to make it public _OR_
-  1. override it in all your base classes 
+  1. override it in all descendants of that base class 
      (just calling the super implementation is fine).
      
-This is due to a reflection issue. This might be fixed in
+This is due to a reflection issue and might be fixed in
 future versions.
 
 

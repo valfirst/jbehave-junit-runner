@@ -1,3 +1,19 @@
+Scenario: Multiplication with tabular parameters
+
+Given the variables:
+| name | value |
+|    x |     1 |
+|    y |     2 |
+|    z |     3 |
+When all variables are multiplied
+Then the result should be 6
+
+Scenario: Something with a composite Step
+
+Given a complex situation
+When I multiply x by 3
+Then x should equal 15
+
 Scenario: Multiplication
 
 Given a variable x with value <number>
@@ -39,3 +55,4 @@ Scenario: 3 x 3 fail
 Given a variable x with value 3
 When I multiply x by 3
 Then x should equal 10
+

@@ -29,10 +29,7 @@ import org.junit.runner.RunWith;
 public class StoriesWithAllSortsOfBeforeAndAfter extends JUnitStories {
 
 	public StoriesWithAllSortsOfBeforeAndAfter() {
-		configuredEmbedder()
-		.embedderControls()
-		.useThreads(1)
-		.doIgnoreFailureInStories(true);
+		configuredEmbedder().embedderControls().useThreads(1);
 	}
 
 	@Override

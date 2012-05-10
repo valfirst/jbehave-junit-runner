@@ -76,8 +76,11 @@ public class JUnitDescriptionGenerator {
 			for (StepCandidate step : allCandidates) {
 				if (step.matches(stringStep)) {
 					// JUnit and the Eclipse JUnit view needs to be touched/fixed in order to make the JUnit view
-					// jump to the corresponding test accordingnly. For now we have to live, that we end up in 
+					// jump to the corresponding test accordingly. For now we have to live, that we end up in 
 					// the correct class.
+					if (stringStep.indexOf('\n') != -1) {
+						stringStep = stringStep.substring(0, stringStep.indexOf('\n'));
+					}
 					Description testDescription = Description.createTestDescription(step.getStepsInstance().getClass(), getJunitSafeString(stringStep));
 					description.addChild(testDescription);
 				}

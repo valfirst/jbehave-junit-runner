@@ -82,6 +82,14 @@ public class JUnitDescriptionGeneratorTest {
 		assertThat(description.getChildren(), hasItem(step1Description()));
 		assertThat(generator.getTestCases(), is(1));
 	}
+	
+	@Test
+	public void shouldGenerateDescriptionForTabularParameterStep() {
+		when(scenario.getSteps()).thenReturn(Arrays.asList("StepWithTableParam:\n|Head|\n|Value|"));
+		Description description = generator.createDescriptionFrom(scenario);
+		assertThat(description.getChildren(), hasItem(stepWithTableDescription()));
+		assertThat(generator.getTestCases(), is(1));
+	}
 
 	private void addStepToScenario() {
 		when(scenario.getSteps()).thenReturn(Arrays.asList("Step1"));
@@ -89,6 +97,10 @@ public class JUnitDescriptionGeneratorTest {
 
 	private Description step1Description() {
 		return Description.createTestDescription(Object.class, "Step1");
+	}
+	
+	private Description stepWithTableDescription() {
+		return Description.createTestDescription(Object.class, "StepWithTableParam:");
 	}
 
 	@Test

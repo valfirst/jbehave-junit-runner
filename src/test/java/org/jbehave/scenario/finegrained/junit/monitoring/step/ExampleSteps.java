@@ -21,6 +21,14 @@ public class ExampleSteps {
         x = x * value;
     }
     
+	@When("I multiply x with all of:$param")
+	public void whenImultiplyXByOneOf(ExamplesTable param) {
+		for (Parameters p : param.getRowsAsParameters()) {
+			Integer value = p.valueAs("Value", Integer.class);
+			x = x * value;
+		}
+	}
+    
     @Then("x should equal $value")
     public void thenXshouldBe(@Named("value") int value) {
         Assert.assertEquals(value, x);

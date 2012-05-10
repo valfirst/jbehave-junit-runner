@@ -10,14 +10,9 @@ import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
-import org.jbehave.core.steps.guice.GuiceStepsFactory;
 import org.jbehave.scenario.finegrained.junit.monitoring.JUnitReportingRunner;
 import org.jbehave.scenario.finegrained.junit.monitoring.step.ExampleSteps;
 import org.junit.runner.RunWith;
-
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Scopes;
 
 /**
  * <p>

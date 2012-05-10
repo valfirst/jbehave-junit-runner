@@ -1,17 +1,10 @@
 package org.jbehave.scenario.finegrained.junit.monitoring;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
-import java.util.Map.Entry;
 
 import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.model.GivenStories;
-import org.jbehave.core.model.GivenStory;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.steps.CandidateSteps;
@@ -24,12 +17,9 @@ public class JUnitDescriptionGenerator {
 
     private int testCases;
 
-	private final List<CandidateSteps> candidateSteps;
-
 	private List<StepCandidate> allCandidates = new ArrayList<StepCandidate>();
     
     public JUnitDescriptionGenerator(List<CandidateSteps> candidateSteps) {
-		this.candidateSteps = candidateSteps;
 		for (CandidateSteps candidateStep : candidateSteps) {
 			allCandidates.addAll(candidateStep.listCandidates());
 		}

@@ -32,8 +32,7 @@ public class StoriesWithAllSortsOfBeforeAndAfter extends JUnitStories {
 	public StoriesWithAllSortsOfBeforeAndAfter() {
 		configuredEmbedder()
 		.embedderControls()
-		.useThreads(1)
-		.doIgnoreFailureInStories(true);
+		.useThreads(1);
 	}
 
 	@Override

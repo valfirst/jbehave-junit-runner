@@ -2,6 +2,7 @@ package de.codecentric.jbehave.junit.monitoring;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.jbehave.core.model.ExamplesTable;
@@ -13,7 +14,11 @@ import org.junit.runner.Description;
 
 public class JUnitDescriptionGenerator {
 
-    DescriptionTextUniquefier uniq = new DescriptionTextUniquefier();
+    public static final String EXAMPLE_DESCRIPTION_PREFIX = "Example: ";
+
+	public static final String SCENARIO_DESCRIPTION_PREFIX = "Scenario: ";
+
+	DescriptionTextUniquefier uniq = new DescriptionTextUniquefier();
 
     private int testCases;
 
@@ -25,8 +30,17 @@ public class JUnitDescriptionGenerator {
 		}
 	}
 
+	public Description createDescriptionFrom(Story story) {
+	    Description storyDescription = Description.createSuiteDescription(getJunitSafeString(story.getName()));
+	    List<Scenario> scenarios = story.getScenarios();
+	    for (Scenario scenario : scenarios) {
+	        storyDescription.addChild(createDescriptionFrom(scenario));
+	    }
+	    return storyDescription;
+	}
+
 	public Description createDescriptionFrom(Scenario scenario) {
-        Description scenarioDescription = Description.createSuiteDescription("Scenario: " + getJunitSafeString(scenario.getTitle()));
+        Description scenarioDescription = Description.createSuiteDescription(SCENARIO_DESCRIPTION_PREFIX + getJunitSafeString(scenario.getTitle()));
         if (hasGivenStories(scenario)) {
         	insertGivenStories(scenario, scenarioDescription);
         }
@@ -39,6 +53,10 @@ public class JUnitDescriptionGenerator {
         return scenarioDescription;
     }
 
+	private boolean hasGivenStories(Scenario scenario) {
+		return !scenario.getGivenStories().getPaths().isEmpty();
+	}
+
 	private void insertGivenStories(Scenario scenario,
 			Description scenarioDescription) {
 		for (String path: scenario.getGivenStories().getPaths()) {
@@ -48,10 +66,6 @@ public class JUnitDescriptionGenerator {
 			);
 			testCases++;
 		}
-	}
-
-	private boolean hasGivenStories(Scenario scenario) {
-		return !scenario.getGivenStories().getPaths().isEmpty();
 	}
 
 	private boolean hasExamples(Scenario scenario) {
@@ -64,14 +78,19 @@ public class JUnitDescriptionGenerator {
 		ExamplesTable examplesTable = scenario.getExamplesTable();
 		int rowCount = examplesTable.getRowCount();
 		for (int i = 1; i <= rowCount; i++) {
-		    Description exampleRowDescription = Description.createSuiteDescription("Example: " + examplesTable.getRow(i-1), (Annotation[]) null);
+		    Description exampleRowDescription = Description.createSuiteDescription(EXAMPLE_DESCRIPTION_PREFIX + examplesTable.getRow(i-1), (Annotation[]) null);
 		    scenarioDescription.addChild(exampleRowDescription);
 		    addScenarioSteps(scenario, exampleRowDescription);
 		}
 	}
 
 	private void addScenarioSteps(Scenario scenario, Description description) {
-		for (String stringStep : scenario.getSteps()) {
+		List<String> steps = scenario.getSteps();
+		addSteps(description, steps);
+	}
+
+	private void addSteps(Description description, List<String> steps) {
+		for (String stringStep : steps) {
 			for (StepCandidate step : allCandidates) {
 				if (step.matches(stringStep)) {
 					testCases++;
@@ -81,21 +100,20 @@ public class JUnitDescriptionGenerator {
 					if (stringStep.indexOf('\n') != -1) {
 						stringStep = stringStep.substring(0, stringStep.indexOf('\n'));
 					}
-					Description testDescription = Description.createTestDescription(step.getStepsInstance().getClass(), getJunitSafeString(stringStep));
+					Description testDescription;
+					String[] composedSteps = step.composedSteps();
+					if (composedSteps!=null && composedSteps.length>0) {
+						testDescription = Description.createSuiteDescription(getJunitSafeString(stringStep));
+						addSteps(testDescription, Arrays.asList(composedSteps));
+					} else {
+						testDescription = Description.createTestDescription(step.getStepsInstance().getClass(), getJunitSafeString(stringStep));
+					}
 					description.addChild(testDescription);
+					continue;
 				}
 			}
 		}
 	}
-
-    public Description createDescriptionFrom(Story story) {
-        Description storyDescription = Description.createSuiteDescription(getJunitSafeString(story.getName()));
-        List<Scenario> scenarios = story.getScenarios();
-        for (Scenario scenario : scenarios) {
-            storyDescription.addChild(createDescriptionFrom(scenario));
-        }
-        return storyDescription;
-    }
 
     public String getJunitSafeString(String string) {
         return uniq.getUniqueDescription(string.replaceAll("\r", "\n").replaceAll("\n{2,}", "\n").replaceAll("\n", ", ").replaceAll("[\\(\\)]", "|"));

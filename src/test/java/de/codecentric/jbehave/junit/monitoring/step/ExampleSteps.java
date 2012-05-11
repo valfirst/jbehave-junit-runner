@@ -1,5 +1,11 @@
 package de.codecentric.jbehave.junit.monitoring.step;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.jbehave.core.annotations.Composite;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.Then;
@@ -10,6 +16,8 @@ import org.junit.Assert;
 
 public class ExampleSteps {
     int x;
+	private Map<String, Integer> variables;
+	private int result;
     
     @Given("a variable x with value $value")
     public void givenXValue(@Named("value") int value) {
@@ -43,5 +51,34 @@ public class ExampleSteps {
     public void givenAGreetingToSomebody(@Named("somebody") String somebody) {
     	System.out.println("Hello "+somebody);
     }
+    
+    @Given("the variables: $variables")
+    public void givenTheVariables(ExamplesTable table) {
+    	variables = new HashMap<String, Integer>();
+    	for (Map<String, String> row : table.getRows()) {
+    		variables.put(row.get("name"), Integer.valueOf(row.get("value")));
+    	}
+    }
+    
+    @When("all variables are multiplied") 
+    public void allVariablesAreMultipled() {
+    	result = 1;
+    	for (Integer variable : variables.values()) {
+			result *= variable;
+		}
+    }
+    
+    @Then("the result should be $result")
+    public void theResultShouldBe(@Named("result") String result) {
+    	assertEquals(result, "" + this.result);
+    }
+    
+    @Given("a complex situation")
+    @Composite(steps = { "Given a variable x with value 1", 
+            "When I multiply x by 5" })  
+    public void aComplexSituation() {
+    	
+    }
 }
+
 

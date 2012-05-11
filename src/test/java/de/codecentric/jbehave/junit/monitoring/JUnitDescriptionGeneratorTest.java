@@ -69,6 +69,15 @@ public class JUnitDescriptionGeneratorTest {
 		when(scenario.getGivenStories()).thenReturn(givenStories);
 		generator = new JUnitDescriptionGenerator(Arrays.asList(new CandidateSteps[] {steps}));
 	}
+
+	@Test
+	public void shouldNotCountIgnorables() {
+		when(scenario.getSteps()).thenReturn(Arrays.asList("Step1", "!-- ignore me"));
+		when(stepCandidate.matches(anyString())).thenReturn(false);
+		when(stepCandidate.matches("Step1")).thenReturn(true);
+		generator.createDescriptionFrom(scenario);
+		assertThat(generator.getTestCases(), is(1));
+	}
 	
 	@Test
 	public void shouldGenerateDescriptionForTopLevelScenario() {

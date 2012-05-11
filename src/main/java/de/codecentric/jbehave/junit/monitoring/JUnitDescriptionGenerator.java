@@ -72,9 +72,9 @@ public class JUnitDescriptionGenerator {
 
 	private void addScenarioSteps(Scenario scenario, Description description) {
 		for (String stringStep : scenario.getSteps()) {
-			testCases++;
 			for (StepCandidate step : allCandidates) {
 				if (step.matches(stringStep)) {
+					testCases++;
 					// JUnit and the Eclipse JUnit view needs to be touched/fixed in order to make the JUnit view
 					// jump to the corresponding test accordingly. For now we have to live, that we end up in 
 					// the correct class.

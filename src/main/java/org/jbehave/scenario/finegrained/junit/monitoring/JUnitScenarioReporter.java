@@ -1,6 +1,7 @@
 package org.jbehave.scenario.finegrained.junit.monitoring;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -99,13 +100,29 @@ public class JUnitScenarioReporter implements StoryReporter {
 	    if (!givenStoryContext) {
 		    notifier.fireTestStarted(currentScenario);
 		
-		    stepDescriptions = currentScenario.getChildren().iterator();
-		    exampleDescriptions = stepDescriptions;
-		    if (stepDescriptions.hasNext()) {
-		        currentStep = stepDescriptions.next();
-		        nextExample = currentStep;
+		    ArrayList<Description> children = currentScenario.getChildren();
+		    if (!children.isEmpty() && children.get(0).getDisplayName().startsWith(JUnitDescriptionGenerator.EXAMPLE_DESCRIPTION_PREFIX)) {
+		    	exampleDescriptions = currentScenario.getChildren().iterator();
+		    	if (exampleDescriptions.hasNext()) {
+		    		nextExample = exampleDescriptions.next();
+		    	}
+		    } else {
+		    	stepDescriptions = getAllDescendants(currentScenario).iterator();
+		    	if (stepDescriptions.hasNext()) {
+		    		currentStep = stepDescriptions.next();
+		    	}
 		    }
 	    }
+	}
+
+	private Collection<Description> getAllDescendants(Description description) {
+		List<Description> descendants = new ArrayList<Description>();
+		ArrayList<Description> children = description.getChildren();
+		for (Description child : children) {
+			descendants.add(child);
+			descendants.addAll(getAllDescendants(child));
+		}
+		return descendants;
 	}
 
 	public void afterScenario() {

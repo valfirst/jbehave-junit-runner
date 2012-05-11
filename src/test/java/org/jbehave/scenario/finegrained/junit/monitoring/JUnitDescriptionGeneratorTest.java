@@ -14,7 +14,6 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -137,10 +136,14 @@ public class JUnitDescriptionGeneratorTest {
 	public void shouldCopeWithSeeminglyDuplicateSteps() throws Exception {
 		when(scenario.getSteps()).thenReturn(Arrays.asList(new String[] {"Step1", "Step1"}));
 		Description description = generator.createDescriptionFrom(scenario);
-		assertThat(description.getChildren(), everyItem(Matchers.<Description>hasProperty("displayName", startsWith("Step1"))));
+		assertThat(description.getChildren(), everyItem(whoseDisplayName(startsWith("Step1"))));
 		assertThat(description.getChildren().size(), is(2));
 		assertThat(description.getChildren(), allChildrenHaveUniqueDisplayNames());
 		assertThat(generator.getTestCases(), is(2));
+	}
+
+	private Matcher<Description> whoseDisplayName(Matcher<String> startsWith) {
+		return Matchers.<Description>hasProperty("displayName", startsWith);
 	}
 
 	@Test

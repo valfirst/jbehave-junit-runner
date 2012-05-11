@@ -14,7 +14,11 @@ import org.junit.runner.Description;
 
 public class JUnitDescriptionGenerator {
 
-    DescriptionTextUniquefier uniq = new DescriptionTextUniquefier();
+    public static final String EXAMPLE_DESCRIPTION_PREFIX = "Example: ";
+
+	public static final String SCENARIO_DESCRIPTION_PREFIX = "Scenario: ";
+
+	DescriptionTextUniquefier uniq = new DescriptionTextUniquefier();
 
     private int testCases;
 
@@ -36,7 +40,7 @@ public class JUnitDescriptionGenerator {
 	}
 
 	public Description createDescriptionFrom(Scenario scenario) {
-        Description scenarioDescription = Description.createSuiteDescription("Scenario: " + getJunitSafeString(scenario.getTitle()));
+        Description scenarioDescription = Description.createSuiteDescription(SCENARIO_DESCRIPTION_PREFIX + getJunitSafeString(scenario.getTitle()));
         if (hasGivenStories(scenario)) {
         	insertGivenStories(scenario, scenarioDescription);
         }
@@ -74,7 +78,7 @@ public class JUnitDescriptionGenerator {
 		ExamplesTable examplesTable = scenario.getExamplesTable();
 		int rowCount = examplesTable.getRowCount();
 		for (int i = 1; i <= rowCount; i++) {
-		    Description exampleRowDescription = Description.createSuiteDescription("Example: " + examplesTable.getRow(i-1), (Annotation[]) null);
+		    Description exampleRowDescription = Description.createSuiteDescription(EXAMPLE_DESCRIPTION_PREFIX + examplesTable.getRow(i-1), (Annotation[]) null);
 		    scenarioDescription.addChild(exampleRowDescription);
 		    addScenarioSteps(scenario, exampleRowDescription);
 		}

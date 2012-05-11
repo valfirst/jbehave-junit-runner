@@ -30,6 +30,10 @@ and run `mvn install` on it. This will install
 the compiled library into your local repository
 and make it available to other projects you build.
 
+Note that the JBehave library is set to scope `provided`
+in the POM, because any project using this Runner will
+naturally have their own version of JBehave already.
+
 Without Maven
 ---------------------
 If you cannot or do not want to use Maven, just
@@ -41,13 +45,13 @@ library to the classpath as well. They can be
 seen in the `pom.xml`. For convenience, they are
 listed here, too:
 
-  * jbehave-core (3.6)
+  * jbehave-core (3.6+)
   * junit (4.10)
   * slf4j-api (1.6.4)
 
-Note that the JBehave library is set to scope `provided`
-in the POM, because any project using this Runner will
-naturally have their own version of JBehave already.
+Your project will of course have JBehave already,
+just make sure it is version 3.6 or above.
+
 
 Usage
 ====================================

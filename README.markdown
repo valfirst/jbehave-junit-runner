@@ -105,9 +105,6 @@ like this:
 ![Screenshot](/dschneller/jbehave-junit-monitor/raw/master/doc/img/JBehaveJUnitScreenshot.png)
 
 
-Open Issues
+Credits
 =================================
-`GivenStories` is not yet supported. If you use them in your
-Stories, the output will not work correctly. The tests themselved
-will not be affected, though.
-
+This project is based on the original implementation by Mark Burnett, located at [http://code.google.com/p/jbehave-junit-monitor/] which worked with earlier versions of JBehave.

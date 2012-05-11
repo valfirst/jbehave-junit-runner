@@ -210,6 +210,7 @@ public class JUnitDescriptionGeneratorTest {
 		assertThat(composedStep.getChildren().size(), is(2));
 		assertThat(composedStep.isSuite(), is(true));
 		assertThat(composedStep.getDisplayName(), startsWith("Step1"));
+		assertThat(generator.getTestCases(), is(2));
 	}
 
 	private StepCandidate stepCandidateMock(String name) {

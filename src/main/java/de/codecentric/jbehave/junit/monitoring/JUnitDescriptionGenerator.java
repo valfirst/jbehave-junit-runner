@@ -93,7 +93,6 @@ public class JUnitDescriptionGenerator {
 		for (String stringStep : steps) {
 			for (StepCandidate step : allCandidates) {
 				if (step.matches(stringStep)) {
-					testCases++;
 					// JUnit and the Eclipse JUnit view needs to be touched/fixed in order to make the JUnit view
 					// jump to the corresponding test accordingly. For now we have to live, that we end up in 
 					// the correct class.
@@ -106,6 +105,7 @@ public class JUnitDescriptionGenerator {
 						testDescription = Description.createSuiteDescription(getJunitSafeString(stringStep));
 						addSteps(testDescription, Arrays.asList(composedSteps));
 					} else {
+						testCases++;
 						testDescription = Description.createTestDescription(step.getStepsInstance().getClass(), getJunitSafeString(stringStep));
 					}
 					description.addChild(testDescription);

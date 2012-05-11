@@ -2,16 +2,41 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<name>JBehave JUnit Runner</name>
-	<url>https://github.com/codecentric/jbehave-junit-runner</url>
-	<organization>
-		<name>Codecentric AG</name>
-		<url>http://www.codecentric.de</url>
-	</organization>
-
 	<groupId>de.codecentric</groupId>
 	<artifactId>jbehave-junit-runner</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>JBehave JUnit Runner</name>
+	<description></description>
+	<url>https://github.com/codecentric/jbehave-junit-runner</url>
+	<organization>
+		<name>codecentric AG</name>
+		<url>http://www.codecentric.de</url>
+	</organization>
+	<licenses>
+	    <license>
+	        <name>MIT License</name>
+	        <url>http://www.opensource.org/licenses/MIT</url>
+	        <distribution>repo</distribution>
+	    </license>
+	</licenses>
+	<developers>
+	    <developer>
+	        <name>Andreas Ebbert-Karroum</name>
+	        <email>andreas.ebbert-karroum@codecentric.de</email>
+	        <organization>codecentric AG</organization>
+	    </developer>
+	    <developer>
+	        <name>Daniel Schneller</name>
+	        <organization>codecentric AG</organization>
+	    </developer>
+	</developers>
+	
+	<scm>
+	    <connection>git://github.com/codecentric/jbehave-junit-runner.git</connection>
+	    <url>https://github.com/codecentric/jbehave-junit-runner</url>
+	</scm>
 
 	<properties>
 		<jbehave.version>3.6</jbehave.version>
@@ -19,7 +44,35 @@
 		<mockito.version>1.9.0</mockito.version>
 		<slf4j.version>1.6.4</slf4j.version>
 	</properties>
-
+
+	<build>
+	    <plugins>
+	        <plugin>
+			  <groupId>org.apache.maven.plugins</groupId>
+			  <artifactId>maven-source-plugin</artifactId>
+			  <executions>
+			    <execution>
+			      <id>attach-sources</id>
+			      <goals>
+			        <goal>jar</goal>
+			      </goals>
+			    </execution>
+			  </executions>
+			</plugin>
+			<plugin>
+			  <groupId>org.apache.maven.plugins</groupId>
+			  <artifactId>maven-javadoc-plugin</artifactId>
+			  <executions>
+			    <execution>
+			      <id>attach-javadocs</id>
+			      <goals>
+			        <goal>jar</goal>
+			      </goals>
+			    </execution>
+			  </executions>
+			</plugin>
+	    </plugins>
+	</build>
 	<dependencies>
 		<dependency>
 			<groupId>org.jbehave</groupId>

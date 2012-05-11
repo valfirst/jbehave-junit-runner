@@ -10,6 +10,7 @@ import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.StepCandidate;
+import org.jbehave.core.steps.StepType;
 import org.junit.runner.Description;
 
 public class JUnitDescriptionGenerator {
@@ -90,12 +91,13 @@ public class JUnitDescriptionGenerator {
 	}
 
 	private void addSteps(Description description, List<String> steps) {
+		String previousNonAndStep = null;
 		for (String stringStep : steps) {
 			for (StepCandidate step : allCandidates) {
-				if (step.matches(stringStep)) {
-					// JUnit and the Eclipse JUnit view needs to be touched/fixed in order to make the JUnit view
-					// jump to the corresponding test accordingly. For now we have to live, that we end up in 
-					// the correct class.
+				if (step.matches(stringStep, previousNonAndStep)) {
+					if (step.getStepType() != StepType.AND) {
+						previousNonAndStep = step.getStartingWord() + " ";
+					}
 					if (stringStep.indexOf('\n') != -1) {
 						stringStep = stringStep.substring(0, stringStep.indexOf('\n'));
 					}
@@ -106,6 +108,9 @@ public class JUnitDescriptionGenerator {
 						addSteps(testDescription, Arrays.asList(composedSteps));
 					} else {
 						testCases++;
+						// JUnit and the Eclipse JUnit view needs to be touched/fixed in order to make the JUnit view
+						// jump to the corresponding test method accordingly. For now we have to live, that we end up in 
+						// the correct class.
 						testDescription = Description.createTestDescription(step.getStepsInstance().getClass(), getJunitSafeString(stringStep));
 					}
 					description.addChild(testDescription);

@@ -11,6 +11,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.everyItem;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -33,6 +34,7 @@ import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.StepCandidate;
+import org.jbehave.core.steps.StepType;
 import org.jbehave.core.steps.Steps;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,6 +66,7 @@ public class JUnitDescriptionGeneratorTest {
 		MockitoAnnotations.initMocks(this);
 		when(steps.listCandidates()).thenReturn(Arrays.asList(new StepCandidate[] {stepCandidate}));
 		when(stepCandidate.matches(anyString())).thenReturn(true);
+		when(stepCandidate.matches(anyString(), anyString())).thenReturn(true);
 		when(stepCandidate.getStepsInstance()).thenReturn(new Object());
 		when(story.getName()).thenReturn(DEFAULT_STORY_NAME);
 		when(scenario.getTitle()).thenReturn(DEFAULT_SCENARIO_TITLE);
@@ -75,8 +78,8 @@ public class JUnitDescriptionGeneratorTest {
 	@Test
 	public void shouldNotCountIgnorables() {
 		when(scenario.getSteps()).thenReturn(Arrays.asList("Step1", "!-- ignore me"));
-		when(stepCandidate.matches(anyString())).thenReturn(false);
-		when(stepCandidate.matches("Step1")).thenReturn(true);
+		when(stepCandidate.matches(anyString(), anyString())).thenReturn(false);
+		when(stepCandidate.matches(eq("Step1"), anyString())).thenReturn(true);
 		generator.createDescriptionFrom(scenario);
 		assertThat(generator.getTestCases(), is(1));
 	}
@@ -153,10 +156,6 @@ public class JUnitDescriptionGeneratorTest {
 		assertThat(generator.getTestCases(), is(2));
 	}
 
-	private Matcher<Description> whoseDisplayName(Matcher<String> startsWith) {
-		return Matchers.<Description>hasProperty("displayName", startsWith);
-	}
-
 	@Test
 	public void shouldCopeWithDuplicateGivenStories() throws Exception {
 		when(story.getScenarios()).thenReturn(Arrays.asList(new Scenario[] {scenario, scenario}));
@@ -197,8 +196,8 @@ public class JUnitDescriptionGeneratorTest {
 		when(stepCandidate.composedSteps()).thenReturn(new String[] {"compositeStep1", "compositeStep2"});
 		StepCandidate composedStep1 = stepCandidateMock("compositeStep1");
 		StepCandidate composedStep2 = stepCandidateMock("compositeStep2");
-		when(stepCandidate.matches(anyString())).thenReturn(false);
-		when(stepCandidate.matches("Step1")).thenReturn(true);
+		when(stepCandidate.matches(anyString(), anyString())).thenReturn(false);
+		when(stepCandidate.matches(eq("Step1"), anyString())).thenReturn(true);
 		when(steps.listCandidates()).thenReturn(Arrays.asList(new StepCandidate[] {stepCandidate, composedStep1, composedStep2}));
 		generator = new JUnitDescriptionGenerator(Arrays.asList(new CandidateSteps[] {steps}));
 		
@@ -212,11 +211,28 @@ public class JUnitDescriptionGeneratorTest {
 		assertThat(composedStep.getDisplayName(), startsWith("Step1"));
 		assertThat(generator.getTestCases(), is(2));
 	}
+	
+	@Test
+	public void shouldCreateDescriptionForAndStep() {
+		when(scenario.getSteps()).thenReturn(Arrays.asList("Given Step1", "And Step2"));
+		when(stepCandidate.matches(anyString(), anyString())).thenReturn(false);
+		when(stepCandidate.matches(eq("Given Step1"), anyString())).thenReturn(true);
+		when(stepCandidate.matches(eq("And Step2"), eq(StepType.GIVEN.toString() + " "))).thenReturn(true);
+		when(stepCandidate.getStepType()).thenReturn(StepType.GIVEN);
+		when(stepCandidate.getStartingWord()).thenReturn("GIVEN");
+		Description description = generator.createDescriptionFrom(scenario);
+		assertThat(description.getChildren().size(), is(2));
+		
+	}
+
+	private Matcher<Description> whoseDisplayName(Matcher<String> startsWith) {
+		return Matchers.<Description>hasProperty("displayName", startsWith);
+	}
 
 	private StepCandidate stepCandidateMock(String name) {
 		StepCandidate step = mock(StepCandidate.class);
 		when(step.getStepsInstance()).thenReturn(new Object());
-		when(step.matches(name)).thenReturn(true);
+		when(step.matches(eq(name), anyString())).thenReturn(true);
 		return step;
 	}
 

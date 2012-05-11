@@ -55,3 +55,22 @@ Scenario: 3 x 3 fail
 Given a variable x with value 3
 When I multiply x by 3
 Then x should equal 10
+
+Scenario: 10 x 100 with comments
+
+!-- a comment
+Given a variable x with value 10
+!-- and another comment
+When I multiply x by 100
+!-- wow, that's a large number!
+Then x should equal 1000
+!-- got to do the calculations in jbehave...
+
+Scenario: Some calculations with And steps -- which are finally failing.
+
+Given a variable x with value 10
+And a variable x with value -5
+When I multiply x by 6
+And I multiply x by 7
+Then x should equal -210
+And x should equal 210

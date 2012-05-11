@@ -1,4 +1,4 @@
-package org.jbehave.scenario.finegrained.junit.monitoring;
+package de.codecentric.jbehave.junit.monitoring;
 
 import java.util.ArrayList;
 import java.util.Iterator;

@@ -1,4 +1,4 @@
-package org.jbehave.scenario.finegrained.junit.monitoring;
+package de.codecentric.jbehave.junit.monitoring;
 
 import static org.mockito.Mockito.verify;
 
@@ -13,6 +13,8 @@ import org.junit.runner.notification.RunNotifier;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import de.codecentric.jbehave.junit.monitoring.JUnitScenarioReporter;
 
 
 public class JUnitScenarioReporterTest {

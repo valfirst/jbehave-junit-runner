@@ -1,4 +1,4 @@
-package org.jbehave.scenario.finegrained.junit.monitoring.step;
+package de.codecentric.jbehave.junit.monitoring.step;
 
 import org.jbehave.core.annotations.AfterScenario;
 import org.jbehave.core.annotations.AfterScenario.Outcome;

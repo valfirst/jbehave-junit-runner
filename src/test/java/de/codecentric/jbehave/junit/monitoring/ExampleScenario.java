@@ -1,4 +1,4 @@
-package org.jbehave.scenario.finegrained.junit.monitoring;
+package de.codecentric.jbehave.junit.monitoring;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -16,7 +16,8 @@ import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
 import org.jbehave.core.steps.ParameterConverters.ExamplesTableConverter;
-import org.jbehave.scenario.finegrained.junit.monitoring.step.ExampleSteps;
+
+import de.codecentric.jbehave.junit.monitoring.step.ExampleSteps;
 
 //@RunWith(JUnitReportingRunner.class)
 
@@ -49,7 +50,7 @@ public class ExampleScenario extends JUnitStories {
 	@Override
 	protected List<String> storyPaths() {
 		List<String> stories = new ArrayList<String>();
-		stories.add("org/jbehave/scenario/finegrained/junit/monitoring/Multiplication.story");
+		stories.add("de/codecentric/jbehave/junit/monitoring/Multiplication.story");
 		return stories;
 	}
 	

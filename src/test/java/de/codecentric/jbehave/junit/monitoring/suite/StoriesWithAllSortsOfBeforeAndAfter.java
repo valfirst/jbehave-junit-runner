@@ -1,4 +1,4 @@
-package org.jbehave.scenario.finegrained.junit.monitoring.suite;
+package de.codecentric.jbehave.junit.monitoring.suite;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,10 +11,11 @@ import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.ParameterControls;
-import org.jbehave.scenario.finegrained.junit.monitoring.JUnitReportingRunner;
-import org.jbehave.scenario.finegrained.junit.monitoring.step.ExampleSteps;
-import org.jbehave.scenario.finegrained.junit.monitoring.step.InitSteps;
 import org.junit.runner.RunWith;
+
+import de.codecentric.jbehave.junit.monitoring.JUnitReportingRunner;
+import de.codecentric.jbehave.junit.monitoring.step.ExampleSteps;
+import de.codecentric.jbehave.junit.monitoring.step.InitSteps;
 
 /**
  * <p>
@@ -49,7 +50,7 @@ public class StoriesWithAllSortsOfBeforeAndAfter extends JUnitStories {
 	@Override
 	protected List<String> storyPaths() {
 		return Arrays.asList(
-				"org/jbehave/scenario/finegrained/junit/monitoring/MultiplicationWithExamplesAndGiven.story"
+				"de/codecentric/jbehave/junit/monitoring/MultiplicationWithExamplesAndGiven.story"
 				);
 	}
 

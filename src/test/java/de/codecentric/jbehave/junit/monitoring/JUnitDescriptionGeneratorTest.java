@@ -1,4 +1,4 @@
-package org.jbehave.scenario.finegrained.junit.monitoring;
+package de.codecentric.jbehave.junit.monitoring;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
@@ -38,6 +38,8 @@ import org.junit.runner.Description;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import de.codecentric.jbehave.junit.monitoring.JUnitDescriptionGenerator;
+
 public class JUnitDescriptionGeneratorTest {
 
 	private static final String DEFAULT_STORY_NAME = "Default Story Name";
@@ -67,7 +69,7 @@ public class JUnitDescriptionGeneratorTest {
 		when(scenario.getGivenStories()).thenReturn(givenStories);
 		generator = new JUnitDescriptionGenerator(Arrays.asList(new CandidateSteps[] {steps}));
 	}
-
+	
 	@Test
 	public void shouldGenerateDescriptionForTopLevelScenario() {
 		when(scenario.getTitle()).thenReturn("MyTitle");

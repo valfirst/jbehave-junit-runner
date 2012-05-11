@@ -12,17 +12,19 @@ Examples:
 
 Scenario: 2 x 3 success with given stories
 
-GivenStories: 	org/jbehave/scenario/finegrained/junit/monitoring/Init.story,
-				org/jbehave/scenario/finegrained/junit/monitoring/Greetings.story
+GivenStories: 	de/codecentric/jbehave/junit/monitoring/Init.story,
+				de/codecentric/jbehave/junit/monitoring/Greetings.story
 
 Given a variable x with value 3
 When I multiply x by 2
 Then x should equal 6
 
+
+
 Scenario: 2 x 3 fail with given stories
 
-GivenStories: 	org/jbehave/scenario/finegrained/junit/monitoring/Init.story,
-				org/jbehave/scenario/finegrained/junit/monitoring/Greetings.story
+GivenStories: 	de/codecentric/jbehave/junit/monitoring/Init.story,
+				de/codecentric/jbehave/junit/monitoring/Greetings.story
 
 Given a variable x with value 3
 When I multiply x by 2

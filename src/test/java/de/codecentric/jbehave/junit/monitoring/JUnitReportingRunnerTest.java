@@ -1,4 +1,4 @@
-package org.jbehave.scenario.finegrained.junit.monitoring;
+package de.codecentric.jbehave.junit.monitoring;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -11,6 +11,8 @@ import org.junit.runner.Description;
 import org.junit.runner.notification.RunNotifier;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import de.codecentric.jbehave.junit.monitoring.JUnitReportingRunner;
 
 
 public class JUnitReportingRunnerTest {
@@ -50,7 +52,7 @@ public class JUnitReportingRunnerTest {
 	
 	@Test
 	public void topLevelDescriptionForExample() {
-		assertThat(description.getDisplayName(), equalTo("org.jbehave.scenario.finegrained.junit.monitoring.ExampleScenario"));
+		assertThat(description.getDisplayName(), equalTo("de.codecentric.jbehave.junit.monitoring.ExampleScenario"));
 	}
 	
 	@Test

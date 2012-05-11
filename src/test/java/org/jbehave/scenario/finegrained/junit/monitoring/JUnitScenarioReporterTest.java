@@ -56,8 +56,8 @@ public class JUnitScenarioReporterTest {
 		reportStepSuccess(reporter);
 		reportStepSuccess(reporter);
 		reportStepSuccess(reporter);
-		verify(notifier).fireTestStarted(storyDescription);
-		verify(notifier).fireTestStarted(scenarioDescription);
+		verifyStoryStarted();
+		verifyScenarioStarted();
 		verify(notifier).fireTestStarted(child1);
 		verify(notifier).fireTestFinished(child1);
 		verify(notifier).fireTestStarted(child2);
@@ -78,8 +78,8 @@ public class JUnitScenarioReporterTest {
 		reporter.beforeStory(story, false);
 		reporter.beforeScenario("scenario");
 		reportStepFailure(reporter);
-		verify(notifier).fireTestStarted(storyDescription);
-		verify(notifier).fireTestStarted(scenarioDescription);
+		verifyStoryStarted();
+		verifyScenarioStarted();
 		verify(notifier).fireTestStarted(child1);
 		verify(notifier).fireTestFailure(Matchers.<Failure>anyObject());
 	}
@@ -152,19 +152,84 @@ public class JUnitScenarioReporterTest {
 		reporter.afterScenario();
 		reporter.afterStory(false);
 		
-		verify(notifier).fireTestRunStarted(Matchers.<Description>anyObject());
-		verify(notifier).fireTestStarted(storyDescription);
-		verify(notifier).fireTestStarted(scenarioDescription);
+		verifyStandardStart();
 		verify(notifier).fireTestStarted(givenStoryDescription);
 		verify(notifier).fireTestFinished(givenStoryDescription);
 		verify(notifier).fireTestStarted(child);
 		verify(notifier).fireTestFinished(child);
-		verify(notifier).fireTestFinished(scenarioDescription);
-		verify(notifier).fireTestFinished(storyDescription);
-		verify(notifier).fireTestRunFinished(Matchers.<Result>anyObject());
+		verifyStandardFinish();
 		
 		
 	}
+
+	private void verifyStandardFinish() {
+		verifyScenarioFinished();
+		verifyStoryFinished();
+		verifyTestRunFinished();
+	}
+
+	private void verifyStandardStart() {
+		verifyTestRunStarted();
+		verifyStoryStarted();
+		verifyScenarioStarted();
+	}
+
+	private void verifyStoryFinished() {
+		verify(notifier).fireTestFinished(storyDescription);
+	}
+
+	private void verifyScenarioFinished() {
+		verify(notifier).fireTestFinished(scenarioDescription);
+	}
+
+	private void verifyScenarioStarted() {
+		verify(notifier).fireTestStarted(scenarioDescription);
+	}
+
+	private void verifyStoryStarted() {
+		verify(notifier).fireTestStarted(storyDescription);
+	}
+
+	private void verifyTestRunFinished() {
+		verify(notifier).fireTestRunFinished(Matchers.<Result>anyObject());
+	}
+
+	private void verifyTestRunStarted() {
+		verify(notifier).fireTestRunStarted(Matchers.<Description>anyObject());
+	}
+	
+	@Test
+	public void shouldNoticyCompositeSteps() {
+		// one story, one scenario, one step, two composite steps
+		Description child = addChildToScenario("child");
+		Description comp1 = Description.createTestDescription(this.getClass(), "comp1");
+		child.addChild(comp1);
+		Description comp2 = Description.createTestDescription(this.getClass(), "comp2");
+		child.addChild(comp2);
+
+		JUnitScenarioReporter reporter = new JUnitScenarioReporter(notifier,
+				3, rootDescription);
+		
+		reporter.beforeStory(story, false);
+		reporter.beforeScenario("scenario");
+		reportStepSuccess(reporter);
+		reporter.beforeStep("comp1");
+		reporter.successful("comp1");
+		reporter.beforeStep("comp2");
+		reporter.successful("comp2");
+		reporter.afterScenario();
+		reporter.afterStory(false);
+		
+		verifyStandardStart();
+		verify(notifier).fireTestStarted(child);
+		verify(notifier).fireTestStarted(comp1);
+		verify(notifier).fireTestFinished(comp1);
+		verify(notifier).fireTestStarted(comp2);
+		verify(notifier).fireTestFinished(comp2);
+		verify(notifier).fireTestFinished(child);
+		verifyStandardFinish();
+	}
+	
 	private Description addChildToScenario(String childName) {
 		
 		Description child1 = Description.createTestDescription(this.getClass(),

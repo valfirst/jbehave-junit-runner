@@ -12,6 +12,9 @@ import static org.junit.matchers.JUnitMatchers.everyItem;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -92,18 +95,6 @@ public class JUnitDescriptionGeneratorTest {
 		assertThat(generator.getTestCases(), is(1));
 	}
 
-	private void addStepToScenario() {
-		when(scenario.getSteps()).thenReturn(Arrays.asList("Step1"));
-	}
-
-	private Description step1Description() {
-		return Description.createTestDescription(Object.class, "Step1");
-	}
-	
-	private Description stepWithTableDescription() {
-		return Description.createTestDescription(Object.class, "StepWithTableParam:");
-	}
-
 	@Test
 	public void shouldGenerateDescriptionForStory() {
 		Description description = generator.createDescriptionFrom(story);
@@ -126,9 +117,9 @@ public class JUnitDescriptionGeneratorTest {
 
 		when(scenario.getTitle()).thenReturn("Scenario with\nNewline");
 		Description description = generator.createDescriptionFrom(story);
-		assertThat(description.getChildren().get(0).getDisplayName(), not(containsString("\n")));
+		assertThat(firstChild(description).getDisplayName(), not(containsString("\n")));
 	}
-	
+
 	@Test
 	public void shouldStripCarriageReturnsFromScenarioDescriptions() {
 		Scenario scenario = mock(Scenario.class);
@@ -137,7 +128,7 @@ public class JUnitDescriptionGeneratorTest {
 
 		when(scenario.getTitle()).thenReturn("Scenario with\rCarriage Return");
 		Description description = generator.createDescriptionFrom(story);
-		assertThat(description.getChildren().get(0).getDisplayName(), not(containsString("\r")));
+		assertThat(firstChild(description).getDisplayName(), not(containsString("\r")));
 	}
 	
 	
@@ -157,16 +148,16 @@ public class JUnitDescriptionGeneratorTest {
 		when(story.getScenarios()).thenReturn(Arrays.asList(new Scenario[] {scenario, scenario}));
 		when(givenStories.getPaths()).thenReturn(Arrays.asList("/some/path/to/GivenStory.story"));
 		Description description = generator.createDescriptionFrom(story);
-		Description firstScenario = description.getChildren().get(0);
+		Description firstScenario = firstChild(description);
 		Description secondScenario = description.getChildren().get(1);
-		assertThat(firstScenario.getChildren().get(0).getDisplayName(), is(not(secondScenario.getChildren().get(0).getDisplayName())));
+		assertThat(firstChild(firstScenario).getDisplayName(), is(not(firstChild(secondScenario).getDisplayName())));
 	}
 	
 	@Test
 	public void shouldGenerateDescriptionForGivenStories() {
 		when(givenStories.getPaths()).thenReturn(Arrays.asList("/some/path/to/GivenStory.story"));
 		Description description = generator.createDescriptionFrom(scenario);
-		assertThat(description.getChildren().get(0), hasProperty("displayName", is("GivenStory.story")));
+		assertThat(firstChild(description), hasProperty("displayName", is("GivenStory.story")));
 		assertThat(generator.getTestCases(), is(1));
 	}
 	
@@ -185,6 +176,46 @@ public class JUnitDescriptionGeneratorTest {
 		}
 		
 	}
+	
+	@Test
+	public void shouldGenerateChildrenForComposedSteps() {
+		addStepToScenario();
+		when(stepCandidate.composedSteps()).thenReturn(new String[] {"compositeStep1", "compositeStep2"});
+		StepCandidate composedStep1 = stepCandidateMock("compositeStep1");
+		StepCandidate composedStep2 = stepCandidateMock("compositeStep2");
+		when(stepCandidate.matches(anyString())).thenReturn(false);
+		when(stepCandidate.matches("Step1")).thenReturn(true);
+		when(steps.listCandidates()).thenReturn(Arrays.asList(new StepCandidate[] {stepCandidate, composedStep1, composedStep2}));
+		generator = new JUnitDescriptionGenerator(Arrays.asList(new CandidateSteps[] {steps}));
+		
+		Description description = generator.createDescriptionFrom(scenario);
+		
+		Description composedStep = firstChild(description);
+		verify(stepCandidate, times(0)).getStepsInstance();
+		assertThat(composedStep.getChildren(), everyItem(Matchers.<Description>hasProperty("displayName", startsWith("compositeStep"))));
+		assertThat(composedStep.getChildren().size(), is(2));
+		assertThat(composedStep.isSuite(), is(true));
+		assertThat(composedStep.getDisplayName(), startsWith("Step1"));
+	}
+
+	private StepCandidate stepCandidateMock(String name) {
+		StepCandidate step = mock(StepCandidate.class);
+		when(step.getStepsInstance()).thenReturn(new Object());
+		when(step.matches(name)).thenReturn(true);
+		return step;
+	}
+
+	private void addStepToScenario() {
+		when(scenario.getSteps()).thenReturn(Arrays.asList("Step1"));
+	}
+
+	private Description step1Description() {
+		return Description.createTestDescription(Object.class, "Step1");
+	}
+
+	private Description stepWithTableDescription() {
+		return Description.createTestDescription(Object.class, "StepWithTableParam:");
+	}
 
 	private Map<String, String> addExamplesTableToScenario(int NUM_ROWS) {
 		ExamplesTable examplesTable = mock(ExamplesTable.class);
@@ -197,6 +228,11 @@ public class JUnitDescriptionGeneratorTest {
 		when(scenario.getExamplesTable()).thenReturn(examplesTable);
 		return row;
 	}
+
+	private Description firstChild(Description description) {
+		return description.getChildren().get(0);
+	}
+	
 	
 	private Matcher<List<Description>> allChildrenHaveUniqueDisplayNames() {
 		return new BaseMatcher<List<Description>>() {

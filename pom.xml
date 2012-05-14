@@ -109,9 +109,9 @@
 					<description>${project.version} release of ${project.name}</description>
 					<override>true</override>
 					<includeAttached>true</includeAttached>
-					<excludes>
-						<exclude>*.asc</exclude>
-					</excludes>
+					<includes>
+						<include>${project.artifactId}-${project.version}*.jar</include>
+					</includes>
 				</configuration>
 				<executions>
 					<execution>

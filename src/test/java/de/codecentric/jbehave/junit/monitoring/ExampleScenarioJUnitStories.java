@@ -13,9 +13,9 @@ import org.junit.runner.RunWith;
 import de.codecentric.jbehave.junit.monitoring.step.ExampleSteps;
 
 @RunWith(JUnitReportingRunner.class)
-public class ExampleScenario extends JUnitStories {
+public class ExampleScenarioJUnitStories extends JUnitStories {
 
-	public ExampleScenario() {
+	public ExampleScenarioJUnitStories() {
 		configuredEmbedder().embedderControls().useThreads(1);
 
 	}

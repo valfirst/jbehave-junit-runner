@@ -2,14 +2,19 @@ package de.codecentric.jbehave.junit.monitoring;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.jbehave.core.ConfigurableEmbedder;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.StoryRunner;
+import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.junit.JUnitStories;
+import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.StoryReporterBuilder;
+import org.jbehave.core.steps.CandidateSteps;
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.RunNotifier;
@@ -18,33 +23,44 @@ public class JUnitReportingRunner extends Runner {
     private List<Description> storyDescriptions;
     private Embedder configuredEmbedder;
     private List<String> storyPaths;
-    private JUnitStories junitStories;
     private Configuration configuration;
 	private int numberOfTestCases;
 	private Description rootDescription;
+	List<CandidateSteps> candidateSteps;
+	private ConfigurableEmbedder embedder;
 
     @SuppressWarnings("unchecked")
-    public JUnitReportingRunner(Class<? extends JUnitStories> testClass) throws Throwable {
+    public JUnitReportingRunner(Class<? extends ConfigurableEmbedder> testClass) throws Throwable {
+    	embedder = testClass.newInstance();
+    	if (embedder instanceof JUnitStories) {
+    		JUnitStories junitStories = (JUnitStories) embedder;	
+    		configuredEmbedder = junitStories.configuredEmbedder();
+    		Method method;
+    		try {
+    			method = testClass.getDeclaredMethod("storyPaths", (Class[]) null);
+    		} catch (NoSuchMethodException e) {
+    			method = testClass.getMethod("storyPaths", (Class[]) null);
+    		}
+    		method.setAccessible(true);
+    		storyPaths = ((List<String>) method.invoke(junitStories, (Object[]) null));
 
-        junitStories = testClass.newInstance();
-        configuredEmbedder = junitStories.configuredEmbedder();
-        configuration = configuredEmbedder.configuration();
-        Method method;
-        try {
-            method = testClass.getDeclaredMethod("storyPaths", (Class[]) null);
-        } catch (NoSuchMethodException e) {
-            method = testClass.getMethod("storyPaths", (Class[]) null);
-        }
-        
-        method.setAccessible(true);
-        storyPaths = ((List<String>) method.invoke(junitStories, (Object[]) null));
+    	} else if (embedder instanceof JUnitStory) {
+    		JUnitStory junitStory = (JUnitStory) embedder;
+    		configuredEmbedder = junitStory.configuredEmbedder();
+    		StoryPathResolver resolver = configuredEmbedder.configuration().storyPathResolver();
+    		storyPaths = Arrays.asList(resolver.resolve(junitStory.getClass()));
+    	}
+    	
+		configuration = configuredEmbedder.configuration();
+		candidateSteps = embedder.stepsFactory().createCandidateSteps();
 
         storyDescriptions = buildDescriptionFromStories();
     }
+    
 
 	@Override
     public Description getDescription() {
-        rootDescription = Description.createSuiteDescription(junitStories.getClass());
+        rootDescription = Description.createSuiteDescription(embedder.getClass());
         rootDescription.getChildren().addAll(storyDescriptions);
         return rootDescription;
     }
@@ -60,7 +76,7 @@ public class JUnitReportingRunner extends Runner {
         JUnitScenarioReporter reporter = new JUnitScenarioReporter(notifier, numberOfTestCases, rootDescription);
 
         StoryReporterBuilder reporterBuilder = new StoryReporterBuilder().withReporters(reporter);
-        Configuration junitReportingConfiguration = junitStories.configuration().useStoryReporterBuilder(reporterBuilder);
+        Configuration junitReportingConfiguration = configuration.useStoryReporterBuilder(reporterBuilder);
         configuredEmbedder.useConfiguration(junitReportingConfiguration);
 
         try {
@@ -73,8 +89,7 @@ public class JUnitReportingRunner extends Runner {
     }
 
     private List<Description> buildDescriptionFromStories() {
-    	
-        JUnitDescriptionGenerator gen = new JUnitDescriptionGenerator(junitStories.stepsFactory().createCandidateSteps());
+		JUnitDescriptionGenerator gen = new JUnitDescriptionGenerator(candidateSteps);
         StoryRunner storyRunner = new StoryRunner();
         List<Description> storyDescriptions = new ArrayList<Description>();
 

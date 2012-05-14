@@ -43,12 +43,9 @@
 		<junit.version>4.10</junit.version>
 		<mockito.version>1.9.0</mockito.version>
 		<slf4j.version>1.6.4</slf4j.version>
-		<keystore.path>cert/dev.keystore</keystore.path>
-		<keystore.type>JKS</keystore.type>
-		<keystore.alias>dev</keystore.alias>
 		<keystore.password>dev_password</keystore.password>
-		<keystore.store.password>${keystore.password}</keystore.store.password>
-		<keystore.key.password>${keystore.password}</keystore.key.password>
+		<gpg.passphrase>dev</gpg.passphrase>
+		<passphrase>${gpg.passphrase}</passphrase>
   	</properties>
 
 	<build>
@@ -78,14 +75,20 @@
 			  </executions>
 			</plugin>
 			<plugin>
-			  <artifactId>maven-jarsigner-plugin</artifactId>
+			  <groupId>org.apache.maven.plugins</groupId>
+			  <artifactId>maven-gpg-plugin</artifactId>
 			  <configuration>
-			    <storetype>${keystore.type}</storetype>
-			    <keystore>${keystore.path}</keystore>
-			    <alias>${keystore.alias}</alias>
-			    <storepass>${keystore.store.password}</storepass>
-			    <keypass>${keystore.key.password}</keypass>
+			  	<passphrase>${passphrase}</passphrase>
 			  </configuration>
+			  <executions>
+			    <execution>
+			      <id>sign-artifacts</id>
+			      <phase>verify</phase>
+			      <goals>
+			        <goal>sign</goal>
+			      </goals>
+			    </execution>
+			  </executions>
 			</plugin>
   	    </plugins>
 	</build>

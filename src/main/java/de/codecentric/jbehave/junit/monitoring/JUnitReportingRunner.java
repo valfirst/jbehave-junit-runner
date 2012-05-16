@@ -89,7 +89,7 @@ public class JUnitReportingRunner extends Runner {
     }
 
     private List<Description> buildDescriptionFromStories() {
-		JUnitDescriptionGenerator gen = new JUnitDescriptionGenerator(candidateSteps);
+		JUnitDescriptionGenerator gen = new JUnitDescriptionGenerator(candidateSteps, configuration);
         StoryRunner storyRunner = new StoryRunner();
         List<Description> storyDescriptions = new ArrayList<Description>();
 

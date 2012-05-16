@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.jbehave.core.configuration.Configuration;
+import org.jbehave.core.configuration.Keywords.StartingWordNotFound;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
@@ -24,8 +26,13 @@ public class JUnitDescriptionGenerator {
     private int testCases;
 
 	private List<StepCandidate> allCandidates = new ArrayList<StepCandidate>();
+
+	private final Configuration configuration;
+
+	private String previousNonAndStep;
     
-    public JUnitDescriptionGenerator(List<CandidateSteps> candidateSteps) {
+	public JUnitDescriptionGenerator(List<CandidateSteps> candidateSteps, Configuration configuration) {
+		this.configuration = configuration;
 		for (CandidateSteps candidateStep : candidateSteps) {
 			allCandidates.addAll(candidateStep.listCandidates());
 		}
@@ -91,33 +98,72 @@ public class JUnitDescriptionGenerator {
 	}
 
 	private void addSteps(Description description, List<String> steps) {
-		String previousNonAndStep = null;
+		previousNonAndStep = null;
 		for (String stringStep : steps) {
-			for (StepCandidate step : allCandidates) {
-				if (step.matches(stringStep, previousNonAndStep)) {
-					if (step.getStepType() != StepType.AND) {
-						previousNonAndStep = step.getStartingWord() + " ";
-					}
-					if (stringStep.indexOf('\n') != -1) {
-						stringStep = stringStep.substring(0, stringStep.indexOf('\n'));
-					}
-					Description testDescription;
-					String[] composedSteps = step.composedSteps();
-					if (composedSteps!=null && composedSteps.length>0) {
-						testDescription = Description.createSuiteDescription(getJunitSafeString(stringStep));
-						addSteps(testDescription, Arrays.asList(composedSteps));
+			String stringStepOneLine = stripLinebreaks(stringStep);
+			StepCandidate matchingStep = findMatchingStep(stringStep);
+			if (matchingStep==null) {
+				try {
+					StepType stepType = configuration.keywords().stepTypeFor(stringStep);
+					if (stepType == StepType.IGNORABLE) {
+						// ignore comments
 					} else {
-						testCases++;
-						// JUnit and the Eclipse JUnit view needs to be touched/fixed in order to make the JUnit view
-						// jump to the corresponding test method accordingly. For now we have to live, that we end up in 
-						// the correct class.
-						testDescription = Description.createTestDescription(step.getStepsInstance().getClass(), getJunitSafeString(stringStep));
+						addPendingStep(description, stringStepOneLine);
 					}
-					description.addChild(testDescription);
-					continue;
+				} catch (StartingWordNotFound e) {
+					// WHAT NOW?
+				}
+			} else {
+				if (matchingStep.isComposite()) {
+					addCompositeSteps(description, stringStepOneLine, matchingStep);
+				} else {
+					addRegularStep(description, stringStepOneLine, matchingStep);
 				}
 			}
 		}
+	}
+
+	private StepCandidate findMatchingStep(String stringStep) {
+		for (StepCandidate step : allCandidates) {
+			if (step.matches(stringStep, previousNonAndStep)) {
+				if (step.getStepType() != StepType.AND) {
+					previousNonAndStep = step.getStartingWord() + " ";
+				}
+				return step;
+			}
+		}
+		return null;
+	}
+
+	private void addPendingStep(Description description,
+			String stringStep) {
+		Description testDescription = Description.createSuiteDescription(getJunitSafeString(stringStep));
+		description.addChild(testDescription);
+	}
+
+	private void addRegularStep(Description description, String stringStep,
+			StepCandidate step) {
+		testCases++;
+		// JUnit and the Eclipse JUnit view needs to be touched/fixed in order to make the JUnit view
+		// jump to the corresponding test method accordingly. For now we have to live, that we end up in 
+		// the correct class.
+		Description testDescription = Description.createTestDescription(step.getStepsInstance().getClass(), getJunitSafeString(stringStep));
+		description.addChild(testDescription);
+	}
+
+	private void addCompositeSteps(Description description, String stringStep,
+			StepCandidate step) {
+		Description testDescription;
+		testDescription = Description.createSuiteDescription(getJunitSafeString(stringStep));
+		addSteps(testDescription, Arrays.asList(step.composedSteps()));
+		description.addChild(testDescription);
+	}
+
+	private String stripLinebreaks(String stringStep) {
+		if (stringStep.indexOf('\n') != -1) {
+			stringStep = stringStep.substring(0, stringStep.indexOf('\n'));
+		}
+		return stringStep;
 	}
 
     public String getJunitSafeString(String string) {

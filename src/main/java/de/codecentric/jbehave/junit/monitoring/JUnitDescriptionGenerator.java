@@ -113,7 +113,8 @@ public class JUnitDescriptionGenerator {
 					StepType stepType = configuration.keywords().stepTypeFor(
 							stringStep);
 					if (stepType == StepType.IGNORABLE) {
-						stringStep = addIgnorableStep(description, stringStepOneLine);
+						stringStep = addIgnorableStep(description,
+								stringStepOneLine);
 					} else {
 						addPendingStep(description, stringStepOneLine);
 					}

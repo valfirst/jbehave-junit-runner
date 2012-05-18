@@ -19,7 +19,7 @@ public class ExampleScenarioJUnitStories extends JUnitStories {
 		configuredEmbedder().embedderControls().useThreads(1);
 
 	}
-	
+
 	@Override
 	public InjectableStepsFactory stepsFactory() {
 		return new InstanceStepsFactory(configuration(), new ExampleSteps());

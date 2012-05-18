@@ -24,49 +24,49 @@ public class InitSteps {
 	public void doSomethingBeforeRegularStories() {
 		System.out.println("InitSteps.doSomethingBeforeRegularStories()");
 	}
-	
-	@BeforeScenario(uponType=ScenarioType.NORMAL)
+
+	@BeforeScenario(uponType = ScenarioType.NORMAL)
 	public void doSomethingBeforeNormalScenario() {
 		System.out.println("InitSteps.doSomethingBeforeNormalScenario()");
 	}
 
-	@BeforeScenario(uponType=ScenarioType.EXAMPLE)
+	@BeforeScenario(uponType = ScenarioType.EXAMPLE)
 	public void doSomethingBeforeExample() {
 		System.out.println("InitSteps.doSomethingAfterAnyNormalScenario()");
 	}
-	
-	@AfterScenario(uponType=ScenarioType.EXAMPLE, uponOutcome=Outcome.ANY)
+
+	@AfterScenario(uponType = ScenarioType.EXAMPLE, uponOutcome = Outcome.ANY)
 	public void doSomethingAfterAnyExampleScenario() {
 		System.out.println("InitSteps.doSomethingAfterAnyExampleScenario()");
 	}
-	
-	@AfterScenario(uponType=ScenarioType.EXAMPLE, uponOutcome=Outcome.FAILURE)
+
+	@AfterScenario(uponType = ScenarioType.EXAMPLE, uponOutcome = Outcome.FAILURE)
 	public void doSomethingAfterFailedExampleScenario() {
 		System.out.println("InitSteps.doSomethingAfterFailedExampleScenario()");
 	}
-	
-	@AfterScenario(uponType=ScenarioType.EXAMPLE, uponOutcome=Outcome.SUCCESS)
+
+	@AfterScenario(uponType = ScenarioType.EXAMPLE, uponOutcome = Outcome.SUCCESS)
 	public void doSomethingAfterSuccessfulExampleScenario() {
 		System.out
 				.println("InitSteps.doSomethingAfterSuccessfulExampleScenario()");
 	}
-	
-	@AfterScenario(uponType=ScenarioType.NORMAL, uponOutcome=Outcome.ANY)
+
+	@AfterScenario(uponType = ScenarioType.NORMAL, uponOutcome = Outcome.ANY)
 	public void doSomethingAfterAnyNormalScenario() {
 		System.out.println("InitSteps.doSomethingAfterAnyNormalScenario()");
 	}
-	
-	@AfterScenario(uponType=ScenarioType.NORMAL, uponOutcome=Outcome.FAILURE)
+
+	@AfterScenario(uponType = ScenarioType.NORMAL, uponOutcome = Outcome.FAILURE)
 	public void doSomethingAfterFailedNormalScenario() {
 		System.out.println("InitSteps.doSomethingAfterFailedNormalScenario()");
 	}
-	
-	@AfterScenario(uponType=ScenarioType.NORMAL, uponOutcome=Outcome.SUCCESS)
+
+	@AfterScenario(uponType = ScenarioType.NORMAL, uponOutcome = Outcome.SUCCESS)
 	public void doSomethingAfterSuccessfulNormalScenario() {
 		System.out
 				.println("InitSteps.doSomethingAfterSuccessfulNormalScenario()");
 	}
-	
+
 	@AfterStory(uponGivenStory = false)
 	public void doSomethingAfterRegularStories() {
 		System.out.println("InitSteps.doSomethingAfterRegularStories()");

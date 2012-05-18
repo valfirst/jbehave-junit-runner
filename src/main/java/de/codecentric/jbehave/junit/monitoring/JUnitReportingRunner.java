@@ -79,7 +79,7 @@ public class JUnitReportingRunner extends Runner {
 
 		JUnitScenarioReporter reporter = new JUnitScenarioReporter(notifier,
 				numberOfTestCases, rootDescription);
-		reporter.usePendingStepStrateg(configuration.pendingStepStrategy());
+		reporter.usePendingStepStrategy(configuration.pendingStepStrategy());
 
 		configuration.storyReporterBuilder().withFormats(
 				new StoryReporterBuilder.ProvidedFormat(reporter));

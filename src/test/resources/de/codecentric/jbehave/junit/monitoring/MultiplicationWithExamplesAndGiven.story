@@ -75,7 +75,7 @@ And I multiply x by 7
 Then x should equal -210
 And x should equal 210
 
-Scenario: All Steps are pending
+Scenario: All but the first Steps are pending
 
 Given a variable x with value 10
 Given a pending step

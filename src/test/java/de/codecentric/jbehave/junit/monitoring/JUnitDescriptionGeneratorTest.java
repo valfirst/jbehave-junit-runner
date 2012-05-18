@@ -39,7 +39,6 @@ import org.jbehave.core.steps.StepCandidate;
 import org.jbehave.core.steps.StepType;
 import org.jbehave.core.steps.Steps;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.Description;
 import org.mockito.Mock;
@@ -81,12 +80,12 @@ public class JUnitDescriptionGeneratorTest {
 	}
 
 	@Test
-	public void shouldNotCountIgnorables() {
+	public void shouldCountIgnorables() {
 		when(scenario.getSteps()).thenReturn(Arrays.asList("Given Step1", "!-- ignore me"));
 		when(stepCandidate.matches(anyString(), anyString())).thenReturn(false);
 		when(stepCandidate.matches(eq("Given Step1"), anyString())).thenReturn(true);
 		generator.createDescriptionFrom(scenario);
-		assertThat(generator.getTestCases(), is(1));
+		assertThat(generator.getTestCases(), is(2));
 	}
 	
 	@Test
@@ -238,6 +237,19 @@ public class JUnitDescriptionGeneratorTest {
 		assertThat(description.getChildren().size(), is(1));
 		assertThat(description.getChildren(), everyItem(Matchers.<Description>hasProperty("displayName", containsString("PENDING"))));
 		assertThat(generator.getTestCases(), is(1));
+	}
+	
+	@Test
+	public void shouldGenerateDescriptionForIgnorableSteps() {
+		when(scenario.getSteps()).thenReturn(Arrays.asList("!-- Comment"));
+		
+		when(stepCandidate.matches(anyString(), anyString())).thenReturn(false);
+		when(stepCandidate.matches(eq("!-- Comment"), eq(StepType.IGNORABLE.toString() + " "))).thenReturn(true);
+		when(stepCandidate.getStepType()).thenReturn(StepType.IGNORABLE);
+		when(stepCandidate.getStartingWord()).thenReturn("!--");
+		generateScenarioDescription();
+		assertThat(description.getChildren().size(), is(1));
+		
 	}
 
 	private void generateScenarioDescription() {

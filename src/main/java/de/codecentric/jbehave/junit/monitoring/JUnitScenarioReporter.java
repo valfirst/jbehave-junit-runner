@@ -173,7 +173,7 @@ public class JUnitScenarioReporter implements StoryReporter {
         logger.info("Step Failed: {} (cause: {})", step, e.getMessage());
 	    if (!givenStoryContext) {
 	    	notifier.fireTestFailure(new Failure(currentStep, e));
-	    	testCounter++;
+	    	prepareNextStep();
 	    }
     }
 
@@ -193,7 +193,36 @@ public class JUnitScenarioReporter implements StoryReporter {
 	    testCounter++;
 	}
 
+    public void pending(String arg0) {
+        logger.info("Pending: {}", arg0);
+        if (!givenStoryContext) {
+        	notifier.fireTestIgnored(currentStep);
+
+        	prepareNextStep();
+        }
+    }
     
+    public void ignorable(String arg0) {
+        logger.info("Ignorable: {}", arg0);
+        if (!givenStoryContext) {
+        	notifier.fireTestIgnored(currentStep);
+	    	testCounter++;
+
+        	prepareNextStep();
+        }
+    }
+    
+    public void notPerformed(String arg0) {
+        logger.info("Not performed: {}", arg0);
+        if (!givenStoryContext) {
+        	notifier.fireTestIgnored(currentStep);
+//	    	testCounter++;
+
+        	prepareNextStep();
+        }
+    }
+
+
     // BASICALLY UN-IMPLEMENTED METHODS
     
 	public void dryRun() {
@@ -212,20 +241,8 @@ public class JUnitScenarioReporter implements StoryReporter {
         logger.info("Given Stories (List): {}", arg0);
     }
 
-    public void ignorable(String arg0) {
-        logger.info("Ignorable: {}", arg0);
-    }
-
     public void narrative(Narrative arg0) {
         logger.info("Narrative: {}", arg0);
-    }
-
-    public void notPerformed(String arg0) {
-        logger.info("Not performed: {}", arg0);
-    }
-
-    public void pending(String arg0) {
-        logger.info("Pending: {}", arg0);
     }
 
     public void pendingMethods(List<String> arg0) {

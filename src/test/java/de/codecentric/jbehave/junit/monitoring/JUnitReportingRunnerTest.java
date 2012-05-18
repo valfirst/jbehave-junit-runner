@@ -56,17 +56,23 @@ public class JUnitReportingRunnerTest {
 	}
 
 	private void verifyAllChildDescriptionsFired(Description description, boolean onlyChildren) {
-		if (!onlyChildren) {
+		String displayName = description.getDisplayName();
+		if (!onlyChildren && considerStepForVerification(description)) {
 			verify(notifier).fireTestStarted(description);
-			System.out.println("verified start " + description.getDisplayName());
+			System.out.println("verified start " + displayName);
 		}
 		for (Description child : description.getChildren()) {
 			verifyAllChildDescriptionsFired(child, false);
 		}
-		if (!onlyChildren) {
+		if (!onlyChildren && considerStepForVerification(description)) {
 			verify(notifier).fireTestFinished(description);
-			System.out.println("verified finish " + description.getDisplayName());
+			System.out.println("verified finish " + displayName);
 		}
+	}
+
+	private boolean considerStepForVerification(Description d) {
+		String displayName = d.getDisplayName();
+		return Character.isDigit(displayName.charAt(displayName.length()-1));
 	}
 
 	@Test

@@ -110,28 +110,10 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
 				<version>2.3</version>
-				<executions>
-					<execution>
-						<id>prepare release</id>
-						<goals>
-							<goal>prepare</goal>
-						</goals>
-						<configuration>
-							<localCheckout>true</localCheckout>
-							<pushChanges>false</pushChanges>
-						</configuration>
-					</execution>
-					<execution>
-						<id>perform release</id>
-						<goals>
-							<goal>perform</goal>
-						</goals>
-						<configuration>
-							<localCheckout>true</localCheckout>
-							<pushChanges>true</pushChanges>
-						</configuration>
-					</execution>
-				</executions>
+				<configuration>
+					<localCheckout>true</localCheckout>
+					<pushChanges>false</pushChanges>
+				</configuration>
 			</plugin>
 
 		</plugins>

@@ -91,7 +91,6 @@ public class JUnitScenarioReporterTest {
 		verifyStoryStarted();
 		verifyScenarioStarted();
 		reportIgnorable(reporter);
-		verify(notifier).fireTestStarted(comment);
 		verify(notifier).fireTestIgnored(comment);
 		
 	}
@@ -284,7 +283,6 @@ public class JUnitScenarioReporterTest {
 	}
 	
 	private void reportIgnorable(JUnitScenarioReporter reporter) {
-		reporter.beforeStep("!-- Comment");
 		reporter.ignorable("!-- Comment");
 	}
 	

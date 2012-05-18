@@ -137,7 +137,8 @@ public class JUnitDescriptionGenerator {
 
 	private void addPendingStep(Description description,
 			String stringStep) {
-		Description testDescription = Description.createSuiteDescription(getJunitSafeString(stringStep));
+		testCases++;
+		Description testDescription = Description.createSuiteDescription(getJunitSafeString(stringStep) + "(PENDING)");
 		description.addChild(testDescription);
 	}
 

@@ -43,7 +43,7 @@ public class StoriesWithAllSortsOfBeforeAndAfter extends JUnitStories {
 	@Override
 	public Configuration configuration() {
 		return new MostUsefulConfiguration()
-//		.usePendingStepStrategy( new FailingUponPendingStep())
+		.usePendingStepStrategy( new FailingUponPendingStep())
 //		.useStepMonitor(new PrintStreamStepMonitor())
 //		.useStepCollector(new MarkUnmatchedStepsAsPending())
 		.useParameterControls(new ParameterControls("<", ">", true));

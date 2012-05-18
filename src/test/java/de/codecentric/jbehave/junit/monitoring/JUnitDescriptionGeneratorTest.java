@@ -236,6 +236,8 @@ public class JUnitDescriptionGeneratorTest {
 		when(stepCandidate.matches(anyString(), anyString())).thenReturn(false);
 		generateScenarioDescription();
 		assertThat(description.getChildren().size(), is(1));
+		assertThat(description.getChildren(), everyItem(Matchers.<Description>hasProperty("displayName", containsString("PENDING"))));
+		assertThat(generator.getTestCases(), is(1));
 	}
 
 	private void generateScenarioDescription() {

@@ -25,9 +25,20 @@ Then x should equal 12
 Scenario: 2 multiplied with multiple values
 
 Given a variable x with value 2
+
+!-- This step demonstrates the use of tabular parameters
 When I multiply x with all of:
 | Value  |
 | 3      |
 | 4      |
 | 5      |
 Then x should equal 120
+
+Scenario: Something with a pending step
+
+Given a variable x with value 6
+!-- The next step is pending and should prevent the rest from being
+!-- executed at all
+Given a pending step
+When I multiply x by 2
+Then x should equal 12

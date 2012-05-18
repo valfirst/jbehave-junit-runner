@@ -1,6 +1,5 @@
 package de.codecentric.jbehave.junit.monitoring;
 
-import static org.mockito.AdditionalMatchers.not;
 import static org.mockito.Mockito.verify;
 
 import org.jbehave.core.failures.UUIDExceptionWrapper;
@@ -81,6 +80,20 @@ public class JUnitScenarioReporterTest {
 		verifyScenarioStarted();
 		verify(notifier).fireTestStarted(child1);
 		verify(notifier).fireTestFailure(Matchers.<Failure>anyObject());
+	}
+	
+	@Test 
+	public void shouldHandleIgnorableSteps() throws Exception {
+		Description comment = addChildToScenario("!-- Comment");
+		JUnitScenarioReporter reporter = new JUnitScenarioReporter(notifier, 1, rootDescription);
+		
+		reportDefaultScenarioStart(reporter);
+		verifyStoryStarted();
+		verifyScenarioStarted();
+		reportIgnorable(reporter);
+		verify(notifier).fireTestStarted(comment);
+		verify(notifier).fireTestIgnored(comment);
+		
 	}
 
 	@Test
@@ -268,6 +281,11 @@ public class JUnitScenarioReporterTest {
 	private void reportStepFailure(JUnitScenarioReporter reporter) {
 		reporter.beforeStep("child");
 		reporter.failed("child", new UUIDExceptionWrapper(new Exception("FAIL")));
+	}
+	
+	private void reportIgnorable(JUnitScenarioReporter reporter) {
+		reporter.beforeStep("!-- Comment");
+		reporter.ignorable("!-- Comment");
 	}
 	
 }

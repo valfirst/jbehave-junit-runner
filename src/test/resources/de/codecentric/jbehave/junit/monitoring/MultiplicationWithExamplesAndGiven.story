@@ -74,3 +74,13 @@ When I multiply x by 6
 And I multiply x by 7
 Then x should equal -210
 And x should equal 210
+
+Scenario: All but the first Steps are pending
+
+Given a variable x with value 10
+Given a pending step
+And a pending step
+When there is another pending step
+And another pending step
+Then this results in two pending steps
+And two additional pending steps

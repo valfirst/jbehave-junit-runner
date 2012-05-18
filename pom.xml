@@ -112,6 +112,7 @@
 				<version>2.3</version>
 				<executions>
 					<execution>
+						<id>prepare release</id>
 						<goals>
 							<goal>prepare</goal>
 						</goals>
@@ -121,6 +122,7 @@
 						</configuration>
 					</execution>
 					<execution>
+						<id>perform release</id>
 						<goals>
 							<goal>perform</goal>
 						</goals>

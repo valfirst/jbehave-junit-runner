@@ -41,6 +41,7 @@
 
 	<scm>
 		<connection>scm:git:git://github.com/codecentric/jbehave-junit-runner.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/codecentric/jbehave-junit-runner.git</developerConnection>
 		<url>https://github.com/codecentric/jbehave-junit-runner</url>
 	</scm>
 

@@ -10,6 +10,8 @@ import org.jbehave.core.failures.FailingUponPendingStep;
 import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.junit.JUnitStories;
+import org.jbehave.core.reporters.Format;
+import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.MarkUnmatchedStepsAsPending;
@@ -36,7 +38,7 @@ public class StoriesWithAllSortsOfBeforeAndAfter extends JUnitStories {
 	public StoriesWithAllSortsOfBeforeAndAfter() {
 		configuredEmbedder()
 		.embedderControls()
-		.doVerboseFailures(true)
+//		.doVerboseFailures(true)
 		.useThreads(1);
 	}
 
@@ -44,8 +46,6 @@ public class StoriesWithAllSortsOfBeforeAndAfter extends JUnitStories {
 	public Configuration configuration() {
 		return new MostUsefulConfiguration()
 		.usePendingStepStrategy( new FailingUponPendingStep())
-//		.useStepMonitor(new PrintStreamStepMonitor())
-//		.useStepCollector(new MarkUnmatchedStepsAsPending())
 		.useParameterControls(new ParameterControls("<", ">", true));
 	}
 

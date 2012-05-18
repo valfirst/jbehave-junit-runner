@@ -74,6 +74,7 @@ public class JUnitReportingRunner extends Runner {
     public void run(RunNotifier notifier) {
 
         JUnitScenarioReporter reporter = new JUnitScenarioReporter(notifier, numberOfTestCases, rootDescription);
+        reporter.usePendingStepStrateg(configuration.pendingStepStrategy());
 
         StoryReporterBuilder reporterBuilder = new StoryReporterBuilder().withReporters(reporter);
         Configuration junitReportingConfiguration = configuration.useStoryReporterBuilder(reporterBuilder);

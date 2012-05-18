@@ -2,6 +2,8 @@ package de.codecentric.jbehave.junit.monitoring;
 
 import static org.mockito.Mockito.verify;
 
+import org.jbehave.core.failures.FailingUponPendingStep;
+import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.Story;
 import org.junit.Before;
@@ -12,6 +14,7 @@ import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 
@@ -200,16 +203,6 @@ public class JUnitScenarioReporterTest {
 		verifyStandardFinish();
 	}
 
-	private void reportDefaultScenarioFinish(JUnitScenarioReporter reporter) {
-		reporter.afterScenario();
-		reporter.afterStory(false);
-	}
-
-	private void reportDefaultScenarioStart(JUnitScenarioReporter reporter) {
-		reporter.beforeStory(story, false);
-		reporter.beforeScenario("scenario");
-	}
-	
 	@Test
 	public void shouldPrepareExampleStepsBeforeScenario() {
 		// one story, one scenario, one example, one step, 
@@ -228,6 +221,35 @@ public class JUnitScenarioReporterTest {
 		verifyStandardFinish();
 	}
 
+	@Test
+	public void shouldFailForPendingStepsIfConfigurationSaysSo() {
+		Description child = addChildToScenario("child");
+
+		JUnitScenarioReporter reporter = new JUnitScenarioReporter(notifier,
+				3, rootDescription);
+		
+		PendingStepStrategy strategy = new FailingUponPendingStep();
+		reporter.usePendingStepStrateg(strategy);
+		
+		reportDefaultScenarioStart(reporter);
+		reporter.beforeStep("child");
+		reporter.pending("child");
+		verifyStoryStarted();
+		verifyScenarioStarted();
+		verify(notifier).fireTestStarted(child);
+		verify(notifier).fireTestFailure(Mockito.<Failure>anyObject());
+	}
+
+	private void reportDefaultScenarioFinish(JUnitScenarioReporter reporter) {
+		reporter.afterScenario();
+		reporter.afterStory(false);
+	}
+
+	private void reportDefaultScenarioStart(JUnitScenarioReporter reporter) {
+		reporter.beforeStory(story, false);
+		reporter.beforeScenario("scenario");
+	}
+	
 	private void verifyStandardFinish() {
 		verifyScenarioFinished();
 		verifyStoryFinished();

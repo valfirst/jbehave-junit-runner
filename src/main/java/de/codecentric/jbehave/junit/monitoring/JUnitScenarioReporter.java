@@ -6,6 +6,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.jbehave.core.failures.FailingUponPendingStep;
+import org.jbehave.core.failures.PassingUponPendingStep;
+import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
@@ -41,6 +44,8 @@ public class JUnitScenarioReporter implements StoryReporter {
     private final int totalTests;
 
 	private boolean givenStoryContext;
+
+	private PendingStepStrategy pendingStepStrategy = new PassingUponPendingStep();
 
     public JUnitScenarioReporter(RunNotifier notifier, int totalTests, Description rootDescription) {
         this.totalTests = totalTests;
@@ -196,7 +201,11 @@ public class JUnitScenarioReporter implements StoryReporter {
     public void pending(String arg0) {
         logger.info("Pending: {}", arg0);
         if (!givenStoryContext) {
-        	notifier.fireTestIgnored(currentStep);
+        	if (pendingStepStrategy instanceof FailingUponPendingStep) {
+        		notifier.fireTestFailure(new Failure(currentStep, new RuntimeException("Step is pending!")));
+        	} else {
+        		notifier.fireTestIgnored(currentStep);
+        	}
 
         	prepareNextStep();
         }
@@ -269,6 +278,10 @@ public class JUnitScenarioReporter implements StoryReporter {
     public void storyNotAllowed(Story arg0, String arg1) {
         logger.info("Story not allowed: {}, {}", arg0, arg1);
     }
+
+	public void usePendingStepStrateg(PendingStepStrategy strategy) {
+		this.pendingStepStrategy = strategy;
+	}
 
 
 }

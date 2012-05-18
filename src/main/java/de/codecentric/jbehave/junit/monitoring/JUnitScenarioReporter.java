@@ -27,97 +27,111 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class JUnitScenarioReporter implements StoryReporter {
-    Logger logger = LoggerFactory.getLogger(JUnitScenarioReporter.class);
+	Logger logger = LoggerFactory.getLogger(JUnitScenarioReporter.class);
 
-    private RunNotifier notifier;
-    private Description currentScenario;
-    private Description currentStep;
-    private Iterator<Description> scenarioDescriptions;
-    private final Description rootDescription;
-    private final ArrayList<Description> storyDescriptions;
+	private RunNotifier notifier;
+	private Description currentScenario;
+	private Description currentStep;
+	private Iterator<Description> scenarioDescriptions;
+	private final Description rootDescription;
+	private final ArrayList<Description> storyDescriptions;
 
-    private Description currentStoryDescription;
-    private Iterator<Description> stepDescriptions;
-    private Iterator<Description> exampleDescriptions;
-    private Description nextExample;
-    int testCounter = 0;
-    private final int totalTests;
+	private Description currentStoryDescription;
+	private Iterator<Description> stepDescriptions;
+	private Iterator<Description> exampleDescriptions;
+	private Description nextExample;
+	int testCounter = 0;
+	private final int totalTests;
 
 	private boolean givenStoryContext;
 
 	private PendingStepStrategy pendingStepStrategy = new PassingUponPendingStep();
 
-    public JUnitScenarioReporter(RunNotifier notifier, int totalTests, Description rootDescription) {
-        this.totalTests = totalTests;
-        this.rootDescription = rootDescription;
-        this.notifier = notifier;
-        this.storyDescriptions = rootDescription.getChildren();
-    }
+	public JUnitScenarioReporter(RunNotifier notifier, int totalTests,
+			Description rootDescription) {
+		this.totalTests = totalTests;
+		this.rootDescription = rootDescription;
+		this.notifier = notifier;
+		this.storyDescriptions = rootDescription.getChildren();
+	}
 
-    public void beforeStory(Story story, boolean isGivenStory) {
-        logger.info("Before Story: {} {}", story.getName(), isGivenStory ? "(given story)" : "");
-        if (isGivenStory) {
-            notifier.fireTestStarted(currentStep);
-            givenStoryContext = true;
-        	
-        } else {
-        	if (testCounter == 0) {
-        		notifier.fireTestRunStarted(rootDescription);
-        	}
-	        for (Description storyDescription : storyDescriptions) {
-	        	if (storyDescription.isSuite() && storyDescription.getDisplayName().equals(story.getName())) {
-	                currentStoryDescription = storyDescription;
-	                notifier.fireTestStarted(storyDescription);
-	
-	                scenarioDescriptions = storyDescription.getChildren().iterator();
-	                if (scenarioDescriptions.hasNext()) {
-	                    currentScenario = scenarioDescriptions.next();
-	                }
-	            } else if (storyDescription.isTest() && storyDescription.getMethodName().equals(story.getName())) {
-	                // Story BeforeStories or After Stories
-	                currentStoryDescription = storyDescription;
-	                notifier.fireTestStarted(currentStoryDescription);
-	            }
-	        }
-        }
+	public void beforeStory(Story story, boolean isGivenStory) {
+		logger.info("Before Story: {} {}", story.getName(),
+				isGivenStory ? "(given story)" : "");
+		if (isGivenStory) {
+			notifier.fireTestStarted(currentStep);
+			givenStoryContext = true;
 
-    }
+		} else {
+			if (testCounter == 0) {
+				notifier.fireTestRunStarted(rootDescription);
+			}
+			for (Description storyDescription : storyDescriptions) {
+				if (storyDescription.isSuite()
+						&& storyDescription.getDisplayName().equals(
+								story.getName())) {
+					currentStoryDescription = storyDescription;
+					notifier.fireTestStarted(storyDescription);
 
-    public void afterStory(boolean isGivenStory) {
-	    logger.info("After Story: {} {}", currentStoryDescription.getDisplayName(), isGivenStory ? "(given story)" : "");
-	    if (isGivenStory) {
-	    	givenStoryContext = false;
-	    	notifier.fireTestFinished(currentStep);
-	    	prepareNextStep();
-	    } else {
-		    notifier.fireTestFinished(currentStoryDescription);
-		    testCounter++;
-		
-		    if (testCounter == totalTests) {
-		        Result result = new Result();
-		        notifier.fireTestRunFinished(result);
-		    }
-	    }
+					scenarioDescriptions = storyDescription.getChildren()
+							.iterator();
+					if (scenarioDescriptions.hasNext()) {
+						currentScenario = scenarioDescriptions.next();
+					}
+				} else if (storyDescription.isTest()
+						&& storyDescription.getMethodName().equals(
+								story.getName())) {
+					// Story BeforeStories or After Stories
+					currentStoryDescription = storyDescription;
+					notifier.fireTestStarted(currentStoryDescription);
+				}
+			}
+		}
+
+	}
+
+	public void afterStory(boolean isGivenStory) {
+		logger.info("After Story: {} {}", currentStoryDescription
+				.getDisplayName(), isGivenStory ? "(given story)" : "");
+		if (isGivenStory) {
+			givenStoryContext = false;
+			notifier.fireTestFinished(currentStep);
+			prepareNextStep();
+		} else {
+			notifier.fireTestFinished(currentStoryDescription);
+			testCounter++;
+
+			if (testCounter == totalTests) {
+				Result result = new Result();
+				notifier.fireTestRunFinished(result);
+			}
+		}
 	}
 
 	public void beforeScenario(String title) {
-	    logger.info("Before Scenario: {}", title);
-	    if (!givenStoryContext) {
-		    notifier.fireTestStarted(currentScenario);
-		
-		    ArrayList<Description> children = currentScenario.getChildren();
-		    if (!children.isEmpty() && children.get(0).getDisplayName().startsWith(JUnitDescriptionGenerator.EXAMPLE_DESCRIPTION_PREFIX)) {
-		    	exampleDescriptions = currentScenario.getChildren().iterator();
-		    	if (exampleDescriptions.hasNext()) {
-		    		nextExample = exampleDescriptions.next();
-		    	}
-		    } else {
-		    	stepDescriptions = getAllDescendants(currentScenario).iterator();
-		    	if (stepDescriptions.hasNext()) {
-		    		currentStep = stepDescriptions.next();
-		    	}
-		    }
-	    }
+		logger.info("Before Scenario: {}", title);
+		if (!givenStoryContext) {
+			notifier.fireTestStarted(currentScenario);
+
+			ArrayList<Description> children = currentScenario.getChildren();
+			if (!children.isEmpty()
+					&& children
+							.get(0)
+							.getDisplayName()
+							.startsWith(
+									JUnitDescriptionGenerator.EXAMPLE_DESCRIPTION_PREFIX)) {
+				exampleDescriptions = currentScenario.getChildren().iterator();
+				if (exampleDescriptions.hasNext()) {
+					nextExample = exampleDescriptions.next();
+				}
+			} else {
+				stepDescriptions = getAllDescendants(currentScenario)
+						.iterator();
+				if (stepDescriptions.hasNext()) {
+					currentStep = stepDescriptions.next();
+				}
+			}
+		}
 	}
 
 	private Collection<Description> getAllDescendants(Description description) {
@@ -131,157 +145,157 @@ public class JUnitScenarioReporter implements StoryReporter {
 	}
 
 	public void afterScenario() {
-        logger.info("After Scenario: {}", currentScenario.getDisplayName());
-	    if (!givenStoryContext) {
-	        notifier.fireTestFinished(currentScenario);
-	        if (scenarioDescriptions.hasNext()) {
-	            currentScenario = scenarioDescriptions.next();
-	            logger.debug("--> updating current scenario to {}", currentScenario.getDisplayName());
-	        }
-	    }
-    }
+		logger.info("After Scenario: {}", currentScenario.getDisplayName());
+		if (!givenStoryContext) {
+			notifier.fireTestFinished(currentScenario);
+			if (scenarioDescriptions.hasNext()) {
+				currentScenario = scenarioDescriptions.next();
+				logger.debug("--> updating current scenario to {}",
+						currentScenario.getDisplayName());
+			}
+		}
+	}
 
-    public void beforeExamples(List<String> arg0, ExamplesTable arg1) {
-	    logger.info("Before Examples: {}", arg0 != null ? arg0 : "n/a");
+	public void beforeExamples(List<String> arg0, ExamplesTable arg1) {
+		logger.info("Before Examples: {}", arg0 != null ? arg0 : "n/a");
 	}
 
 	public void example(Map<String, String> arg0) {
-	    logger.info("Example: {}", arg0);
-	
-	    stepDescriptions = nextExample.getChildren().iterator();
-	    if (stepDescriptions.hasNext()) {
-	        currentStep = stepDescriptions.next();
-	    }
-	
-	    if (exampleDescriptions.hasNext()) {
-	        nextExample = exampleDescriptions.next();
-	    }
-	
+		logger.info("Example: {}", arg0);
+
+		stepDescriptions = nextExample.getChildren().iterator();
+		if (stepDescriptions.hasNext()) {
+			currentStep = stepDescriptions.next();
+		}
+
+		if (exampleDescriptions.hasNext()) {
+			nextExample = exampleDescriptions.next();
+		}
+
 	}
 
 	public void afterExamples() {
-	    logger.info("{}", "afterExamples");
-	
+		logger.info("{}", "afterExamples");
+
 	}
 
 	public void beforeStep(String title) {
-        logger.info("Before Step: {}", title);
-	    if (!givenStoryContext) {
-	    	notifier.fireTestStarted(currentStep);
-	    }
-    }
-
-    public void failed(String step, Throwable e) {
-        if (e instanceof UUIDExceptionWrapper) {
-            e = ((UUIDExceptionWrapper) e).getCause();
-        }
-        logger.info("Step Failed: {} (cause: {})", step, e.getMessage());
-	    if (!givenStoryContext) {
-	    	notifier.fireTestFailure(new Failure(currentStep, e));
-	    	prepareNextStep();
-	    }
-    }
-
-    public void successful(String step) {
-        logger.info("Step Succesful: {}", step);
-	    if (!givenStoryContext) {
-	        notifier.fireTestFinished(currentStep);
-	
-	        prepareNextStep();
-	    }
-    }
-
-    private void prepareNextStep() {
-		if (stepDescriptions.hasNext()) {
-	        currentStep = stepDescriptions.next();
-	    } 
-	    testCounter++;
+		logger.info("Before Step: {}", title);
+		if (!givenStoryContext) {
+			notifier.fireTestStarted(currentStep);
+		}
 	}
 
-    public void pending(String arg0) {
-        logger.info("Pending: {}", arg0);
-        if (!givenStoryContext) {
-        	if (pendingStepStrategy instanceof FailingUponPendingStep) {
-        		notifier.fireTestFailure(new Failure(currentStep, new RuntimeException("Step is pending!")));
-        	} else {
-        		notifier.fireTestIgnored(currentStep);
-        	}
+	public void failed(String step, Throwable e) {
+		if (e instanceof UUIDExceptionWrapper) {
+			e = ((UUIDExceptionWrapper) e).getCause();
+		}
+		logger.info("Step Failed: {} (cause: {})", step, e.getMessage());
+		if (!givenStoryContext) {
+			notifier.fireTestFailure(new Failure(currentStep, e));
+			prepareNextStep();
+		}
+	}
 
-        	prepareNextStep();
-        }
-    }
-    
-    public void ignorable(String arg0) {
-        logger.info("Ignorable: {}", arg0);
-        if (!givenStoryContext) {
-        	notifier.fireTestIgnored(currentStep);
-	    	testCounter++;
+	public void successful(String step) {
+		logger.info("Step Succesful: {}", step);
+		if (!givenStoryContext) {
+			notifier.fireTestFinished(currentStep);
 
-        	prepareNextStep();
-        }
-    }
-    
-    public void notPerformed(String arg0) {
-        logger.info("Not performed: {}", arg0);
-        if (!givenStoryContext) {
-        	notifier.fireTestIgnored(currentStep);
-//	    	testCounter++;
+			prepareNextStep();
+		}
+	}
 
-        	prepareNextStep();
-        }
-    }
+	private void prepareNextStep() {
+		if (stepDescriptions.hasNext()) {
+			currentStep = stepDescriptions.next();
+		}
+		testCounter++;
+	}
 
+	public void pending(String arg0) {
+		logger.info("Pending: {}", arg0);
+		if (!givenStoryContext) {
+			if (pendingStepStrategy instanceof FailingUponPendingStep) {
+				notifier.fireTestFailure(new Failure(currentStep,
+						new RuntimeException("Step is pending!")));
+			} else {
+				notifier.fireTestIgnored(currentStep);
+			}
 
-    // BASICALLY UN-IMPLEMENTED METHODS
-    
+			prepareNextStep();
+		}
+	}
+
+	public void ignorable(String arg0) {
+		logger.info("Ignorable: {}", arg0);
+		if (!givenStoryContext) {
+			notifier.fireTestIgnored(currentStep);
+			testCounter++;
+
+			prepareNextStep();
+		}
+	}
+
+	public void notPerformed(String arg0) {
+		logger.info("Not performed: {}", arg0);
+		if (!givenStoryContext) {
+			notifier.fireTestIgnored(currentStep);
+			// testCounter++;
+
+			prepareNextStep();
+		}
+	}
+
+	// BASICALLY UN-IMPLEMENTED METHODS
+
 	public void dryRun() {
-        logger.info("{}", "dryRun");
-    }
+		logger.info("{}", "dryRun");
+	}
 
-    public void failedOutcomes(String arg0, OutcomesTable arg1) {
-        logger.info("Failed outcomes: {}", arg0);
-    }
+	public void failedOutcomes(String arg0, OutcomesTable arg1) {
+		logger.info("Failed outcomes: {}", arg0);
+	}
 
-    public void givenStories(GivenStories arg0) {
-        logger.info("Given Stories: {}", arg0);
-    }
+	public void givenStories(GivenStories arg0) {
+		logger.info("Given Stories: {}", arg0);
+	}
 
-    public void givenStories(List<String> arg0) {
-        logger.info("Given Stories (List): {}", arg0);
-    }
+	public void givenStories(List<String> arg0) {
+		logger.info("Given Stories (List): {}", arg0);
+	}
 
-    public void narrative(Narrative arg0) {
-        logger.info("Narrative: {}", arg0);
-    }
+	public void narrative(Narrative arg0) {
+		logger.info("Narrative: {}", arg0);
+	}
 
-    public void pendingMethods(List<String> arg0) {
-        logger.info("Pending methods: {}", arg0);
-    }
+	public void pendingMethods(List<String> arg0) {
+		logger.info("Pending methods: {}", arg0);
+	}
 
-    public void restarted(String arg0, Throwable arg1) {
-        logger.info("Restarted: {} ({})", arg0, arg1);
-    }
+	public void restarted(String arg0, Throwable arg1) {
+		logger.info("Restarted: {} ({})", arg0, arg1);
+	}
 
-    public void scenarioMeta(Meta arg0) {
-        logger.info("Meta: {}", arg0);
-    }
+	public void scenarioMeta(Meta arg0) {
+		logger.info("Meta: {}", arg0);
+	}
 
-    public void scenarioNotAllowed(Scenario arg0, String arg1) {
-        logger.info("Scenario not allowed: {} {}", arg0, arg1);
-    }
+	public void scenarioNotAllowed(Scenario arg0, String arg1) {
+		logger.info("Scenario not allowed: {} {}", arg0, arg1);
+	}
 
-    public void storyCancelled(Story arg0, StoryDuration arg1) {
-        logger.info("Story cancelled: {} after {}", arg0, arg1);
-        System.out.println("JBehave2JunitReporter.storyCancelled()");
-    }
+	public void storyCancelled(Story arg0, StoryDuration arg1) {
+		logger.info("Story cancelled: {} after {}", arg0, arg1);
+		System.out.println("JBehave2JunitReporter.storyCancelled()");
+	}
 
-    public void storyNotAllowed(Story arg0, String arg1) {
-        logger.info("Story not allowed: {}, {}", arg0, arg1);
-    }
+	public void storyNotAllowed(Story arg0, String arg1) {
+		logger.info("Story not allowed: {}, {}", arg0, arg1);
+	}
 
-	public void usePendingStepStrateg(PendingStepStrategy strategy) {
+	public void usePendingStepStrategy(PendingStepStrategy strategy) {
 		this.pendingStepStrategy = strategy;
 	}
-
 
 }

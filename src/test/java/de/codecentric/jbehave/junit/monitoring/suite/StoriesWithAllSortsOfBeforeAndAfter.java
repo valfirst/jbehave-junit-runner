@@ -36,29 +36,28 @@ import de.codecentric.jbehave.junit.monitoring.step.InitSteps;
 public class StoriesWithAllSortsOfBeforeAndAfter extends JUnitStories {
 
 	public StoriesWithAllSortsOfBeforeAndAfter() {
-		configuredEmbedder()
-		.embedderControls()
-//		.doVerboseFailures(true)
-		.useThreads(1);
+		configuredEmbedder().embedderControls()
+		// .doVerboseFailures(true)
+				.useThreads(1);
 	}
 
 	@Override
 	public Configuration configuration() {
-		return new MostUsefulConfiguration()
-		.usePendingStepStrategy( new FailingUponPendingStep())
-		.useParameterControls(new ParameterControls("<", ">", true));
+		return new MostUsefulConfiguration().usePendingStepStrategy(
+				new FailingUponPendingStep()).useParameterControls(
+				new ParameterControls("<", ">", true));
 	}
 
 	@Override
 	public InjectableStepsFactory stepsFactory() {
-		return new InstanceStepsFactory(configuration(), new ExampleSteps(), new InitSteps());
+		return new InstanceStepsFactory(configuration(), new ExampleSteps(),
+				new InitSteps());
 	}
 
 	@Override
 	protected List<String> storyPaths() {
-		return Arrays.asList(
-				"de/codecentric/jbehave/junit/monitoring/MultiplicationWithExamplesAndGiven.story"
-				);
+		return Arrays
+				.asList("de/codecentric/jbehave/junit/monitoring/MultiplicationWithExamplesAndGiven.story");
 	}
 
 }

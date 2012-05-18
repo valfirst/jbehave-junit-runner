@@ -43,7 +43,8 @@ public class MathStories extends JUnitStories {
 
 	@Override
 	protected List<String> storyPaths() {
-		return Arrays.asList("de/codecentric/jbehave/junit/monitoring/Multiplication.story");
+		return Arrays
+				.asList("de/codecentric/jbehave/junit/monitoring/Multiplication.story");
 	}
 
 }

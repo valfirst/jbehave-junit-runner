@@ -28,7 +28,6 @@ public class JUnitReportingRunnerTest {
 	private String expectedDisplayName;
 	private String expectedFirstStoryName;
 	private Description description;
-	
 
 	@Before
 	public void setUp() throws Throwable {
@@ -38,12 +37,19 @@ public class JUnitReportingRunnerTest {
 
 	@Parameters
 	public static Collection<Object[]> data() {
-		Object[][] params = { { ExampleScenarioJUnitStories.class, ExampleScenarioJUnitStories.class.getName(), "Multiplication.story" },
-				{ ExampleScenarioJUnitStory.class, ExampleScenarioJUnitStory.class.getName(), "example_scenario_j_unit_story.story" } };
+		Object[][] params = {
+				{ ExampleScenarioJUnitStories.class,
+						ExampleScenarioJUnitStories.class.getName(),
+						"Multiplication.story" },
+				{ ExampleScenarioJUnitStory.class,
+						ExampleScenarioJUnitStory.class.getName(),
+						"example_scenario_j_unit_story.story" } };
 		return Arrays.asList(params);
 	}
-	
-	public JUnitReportingRunnerTest(Class<? extends ConfigurableEmbedder> cls, String expectedDisplayName, String expectedFirstStoryName) throws Throwable {
+
+	public JUnitReportingRunnerTest(Class<? extends ConfigurableEmbedder> cls,
+			String expectedDisplayName, String expectedFirstStoryName)
+			throws Throwable {
 		runner = new JUnitReportingRunner(cls);
 		this.expectedDisplayName = expectedDisplayName;
 		this.expectedFirstStoryName = expectedFirstStoryName;
@@ -55,7 +61,8 @@ public class JUnitReportingRunnerTest {
 		verifyAllChildDescriptionsFired(description, true);
 	}
 
-	private void verifyAllChildDescriptionsFired(Description description, boolean onlyChildren) {
+	private void verifyAllChildDescriptionsFired(Description description,
+			boolean onlyChildren) {
 		String displayName = description.getDisplayName();
 		if (!onlyChildren && considerStepForVerification(description)) {
 			verify(notifier).fireTestStarted(description);
@@ -72,7 +79,7 @@ public class JUnitReportingRunnerTest {
 
 	private boolean considerStepForVerification(Description d) {
 		String displayName = d.getDisplayName();
-		return Character.isDigit(displayName.charAt(displayName.length()-1));
+		return Character.isDigit(displayName.charAt(displayName.length() - 1));
 	}
 
 	@Test
@@ -82,17 +89,20 @@ public class JUnitReportingRunnerTest {
 
 	@Test
 	public void storyDescriptionsForExample() {
-		assertThat(getFirstStory().getDisplayName(), equalTo(expectedFirstStoryName));
+		assertThat(getFirstStory().getDisplayName(),
+				equalTo(expectedFirstStoryName));
 	}
 
 	@Test
 	public void scenarioDescriptionsForExample() {
-		assertThat(getFirstScenario().getDisplayName(), equalTo("Scenario: 2 squared"));
+		assertThat(getFirstScenario().getDisplayName(),
+				equalTo("Scenario: 2 squared"));
 	}
 
 	@Test
 	public void stepDescriptionsForExample() {
-		assertThat(getFirstScenario().getChildren().get(0).getDisplayName(), Matchers.startsWith("Given a variable x with value 2"));
+		assertThat(getFirstScenario().getChildren().get(0).getDisplayName(),
+				Matchers.startsWith("Given a variable x with value 2"));
 	}
 
 	private Description getFirstStory() {

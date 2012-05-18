@@ -7,16 +7,13 @@ import org.jbehave.core.Embeddable;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.failures.FailingUponPendingStep;
-import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.reporters.Format;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
-import org.jbehave.core.steps.MarkUnmatchedStepsAsPending;
 import org.jbehave.core.steps.ParameterControls;
-import org.jbehave.core.steps.PrintStreamStepMonitor;
 import org.junit.runner.RunWith;
 
 import de.codecentric.jbehave.junit.monitoring.JUnitReportingRunner;
@@ -43,9 +40,13 @@ public class StoriesWithAllSortsOfBeforeAndAfter extends JUnitStories {
 
 	@Override
 	public Configuration configuration() {
-		return new MostUsefulConfiguration().usePendingStepStrategy(
-				new FailingUponPendingStep()).useParameterControls(
-				new ParameterControls("<", ">", true));
+		return new MostUsefulConfiguration()
+				.usePendingStepStrategy(new FailingUponPendingStep())
+				.useStoryReporterBuilder(
+						new StoryReporterBuilder().withDefaultFormats()
+								.withFailureTrace(true)
+								.withFormats(Format.XML, Format.HTML))
+				.useParameterControls(new ParameterControls("<", ">", true));
 	}
 
 	@Override

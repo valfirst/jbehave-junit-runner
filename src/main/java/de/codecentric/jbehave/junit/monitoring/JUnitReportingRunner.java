@@ -79,13 +79,10 @@ public class JUnitReportingRunner extends Runner {
 
 		JUnitScenarioReporter reporter = new JUnitScenarioReporter(notifier,
 				numberOfTestCases, rootDescription);
-		reporter.usePendingStepStrategy(configuration.pendingStepStrategy());
+		reporter.usePendingStepStrateg(configuration.pendingStepStrategy());
 
-		StoryReporterBuilder reporterBuilder = new StoryReporterBuilder()
-				.withReporters(reporter);
-		Configuration junitReportingConfiguration = configuration
-				.useStoryReporterBuilder(reporterBuilder);
-		configuredEmbedder.useConfiguration(junitReportingConfiguration);
+		configuration.storyReporterBuilder().withFormats(
+				new StoryReporterBuilder.ProvidedFormat(reporter));
 
 		try {
 			configuredEmbedder.runStoriesAsPaths(storyPaths);

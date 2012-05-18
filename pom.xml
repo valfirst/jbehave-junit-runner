@@ -9,7 +9,7 @@
 
 	<groupId>de.codecentric</groupId>
 	<artifactId>jbehave-junit-runner</artifactId>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>JBehave JUnit Runner</name>

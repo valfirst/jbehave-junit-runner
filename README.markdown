@@ -29,6 +29,9 @@ Note that the JBehave library is set to scope `provided`
 in the POM, because any project using this Runner will
 naturally have their own version of JBehave already.
 
+Current development SNAPSHOT versions are available from 
+[Sonatype's Nexus for Open Source projects](https://oss.sonatype.org/content/repositories/snapshots/de/codecentric/jbehave-junit-runner/).
+
 Without Maven
 ---------------------
 If you cannot or do not want to use Maven, just

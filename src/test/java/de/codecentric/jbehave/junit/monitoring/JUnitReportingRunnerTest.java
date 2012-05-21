@@ -32,7 +32,6 @@ public class JUnitReportingRunnerTest {
 	@Before
 	public void setUp() throws Throwable {
 		MockitoAnnotations.initMocks(this);
-		description = runner.getDescription();
 	}
 
 	@Parameters
@@ -58,7 +57,7 @@ public class JUnitReportingRunnerTest {
 	@Test
 	public void runUpExampleScenarioAndCheckNotifications() {
 		runner.run(notifier);
-		verifyAllChildDescriptionsFired(description, true);
+		verifyAllChildDescriptionsFired(runner.getDescription(), true);
 	}
 
 	private void verifyAllChildDescriptionsFired(Description description,
@@ -84,7 +83,8 @@ public class JUnitReportingRunnerTest {
 
 	@Test
 	public void topLevelDescriptionForExample() {
-		assertThat(description.getDisplayName(), equalTo(expectedDisplayName));
+		assertThat(runner.getDescription().getDisplayName(),
+				equalTo(expectedDisplayName));
 	}
 
 	@Test
@@ -106,7 +106,7 @@ public class JUnitReportingRunnerTest {
 	}
 
 	private Description getFirstStory() {
-		return description.getChildren().get(1);
+		return runner.getDescription().getChildren().get(1);
 	}
 
 	private Description getFirstScenario() {

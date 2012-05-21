@@ -59,13 +59,17 @@ public class JUnitReportingRunner extends Runner {
 		candidateSteps = embedder.stepsFactory().createCandidateSteps();
 
 		storyDescriptions = buildDescriptionFromStories();
+		initRootDescription();
+	}
+
+	private void initRootDescription() {
+		rootDescription = Description.createSuiteDescription(embedder
+				.getClass());
+		rootDescription.getChildren().addAll(storyDescriptions);
 	}
 
 	@Override
 	public Description getDescription() {
-		rootDescription = Description.createSuiteDescription(embedder
-				.getClass());
-		rootDescription.getChildren().addAll(storyDescriptions);
 		return rootDescription;
 	}
 

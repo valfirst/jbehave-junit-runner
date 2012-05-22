@@ -1,27 +1,17 @@
 package de.codecentric.jbehave.junit.monitoring;
 
-import junit.framework.TestCase;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertThat;
 
-import org.jbehave.core.ConfigurableEmbedder;
-import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
-public class JUnitReportingRunnerTest extends TestCase {
-
-	@Mock
-	private Class<? extends ConfigurableEmbedder> testClass;
-
-	@Before
-	public void setup() {
-		MockitoAnnotations.initMocks(this);
-	}
+public class JUnitReportingRunnerTest {
 
 	@Test
 	public void shouldGenerateDescriptionWithoutCrossReference()
 			throws Throwable {
-
+		assertThat(true, is(not(false)));
 		// TODO ... no idea how this should be tested!
 		// new JUnitReportingRunner(testClass);
 		// verify

@@ -15,7 +15,7 @@ public class InitSteps {
 	@BeforeStories
 	public void doSomethingBeforeStories() throws SQLException {
 		System.out.println("InitSteps.doSomethingBeforeStories()");
-		// throw new SQLException("DU doof!");
+		throw new SQLException("DU doof!");
 	}
 
 	@BeforeStory(uponGivenStory = true)

@@ -15,6 +15,8 @@ import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.NullStepMonitor;
+import org.jbehave.core.steps.StepMonitor;
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.RunNotifier;
@@ -56,9 +58,25 @@ public class JUnitReportingRunner extends Runner {
 		}
 
 		configuration = configuredEmbedder.configuration();
+
+		// create candidate steps with null step monitor
+		StepMonitor usedStepMonitor = configuration.stepMonitor();
+		NullStepMonitor nullStepMonitor = new NullStepMonitor();
+		configuration.useStepMonitor(nullStepMonitor);
 		candidateSteps = embedder.stepsFactory().createCandidateSteps();
+		for (CandidateSteps step : candidateSteps) {
+			step.configuration().useStepMonitor(nullStepMonitor);
+		}
 
 		storyDescriptions = buildDescriptionFromStories();
+
+		// reset step monitor and recreate candidate steps
+		configuration.useStepMonitor(usedStepMonitor);
+		for (CandidateSteps step : candidateSteps) {
+			step.configuration().useStepMonitor(usedStepMonitor);
+		}
+		candidateSteps = embedder.stepsFactory().createCandidateSteps();
+
 		initRootDescription();
 	}
 
@@ -81,12 +99,16 @@ public class JUnitReportingRunner extends Runner {
 	@Override
 	public void run(RunNotifier notifier) {
 
-		JUnitScenarioReporter reporter = new JUnitScenarioReporter(notifier,
-				numberOfTestCases, rootDescription);
-		reporter.usePendingStepStrategy(configuration.pendingStepStrategy());
+		JUnitScenarioReporter junitReporter = new JUnitScenarioReporter(
+				notifier, numberOfTestCases, rootDescription);
+		junitReporter.usePendingStepStrategy(configuration
+				.pendingStepStrategy());
 
-		configuration.storyReporterBuilder().withFormats(
-				new StoryReporterBuilder.ProvidedFormat(reporter));
+		StoryReporterBuilder storyReporterBuilder = configuration
+				.storyReporterBuilder();
+		StoryReporterBuilder.ProvidedFormat junitReportFormat = new StoryReporterBuilder.ProvidedFormat(
+				junitReporter);
+		storyReporterBuilder.withFormats(junitReportFormat);
 
 		try {
 			configuredEmbedder.runStoriesAsPaths(storyPaths);

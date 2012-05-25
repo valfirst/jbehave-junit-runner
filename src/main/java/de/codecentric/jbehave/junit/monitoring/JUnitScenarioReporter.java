@@ -23,11 +23,9 @@ import org.junit.runner.Description;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class JUnitScenarioReporter implements StoryReporter {
-	Logger logger = LoggerFactory.getLogger(JUnitScenarioReporter.class);
+	Logger logger = new Logger();
 
 	private RunNotifier notifier;
 	private Description currentScenario;

@@ -106,6 +106,30 @@ like this:
 ![Screenshot](/dschneller/jbehave-junit-monitor/raw/master/doc/img/JBehaveJUnitScreenshot.png)
 
 
+Reporting Issues
+=================================
+In case you run into problems or have ideas on how to improve this
+piece of software, please do not hesitate to open an issue in the
+issue tracker, here on GitHub.
+
+To make things easier (and quicker) for yourself (and us), please 
+provide the following pieces of information in your ticket:
+
+  * The version you are using (e. g. 1.0.0 or 1.0.1-SNAPSHOT as of 2012-05-25)
+  * If possible, a stack trace of the error.
+  * Ideally, a limited test case that allows us to reproduce the 
+    problem locally. This is indeed the best way to get a bug fixed
+    quickly, because we'll have something specific to work on.
+  * Any information about your environment that might be helpful, e. g.
+    your JBehave version, which operating system, etc.
+
+It might also be a good idea to try, if your particular problem might have
+been fixed already in the latest snapshot release.
+
+And, *of course*, we'd also very much appreciate it pull requests for fixes
+that you have already made yourself. After all, this is where open source
+shines most :)
+
 Credits
 =================================
 This project is based on the original implementation by Mark Burnett, located at [http://code.google.com/p/jbehave-junit-monitor/] which worked with earlier versions of JBehave.

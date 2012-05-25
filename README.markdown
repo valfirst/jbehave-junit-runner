@@ -16,29 +16,26 @@ Using Maven
 -------------------
 The easiest way is to include
 it in your acceptance test project(s) by ways of
-a Maven dependency:
+a Maven dependency. Binary, Sources and Javadocs are
+all available from Maven Central.
 
     <dependency>
         <groupId>de.codecentric</groupId>
         <artifactId>jbehave-junit-runner</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.0</version>
     </dependency>
-
-As this is still work in progress, there is no
-pre-built version yet. Please download the source
-and run `mvn install` on it. This will install
-the compiled library into your local repository
-and make it available to other projects you build.
 
 Note that the JBehave library is set to scope `provided`
 in the POM, because any project using this Runner will
 naturally have their own version of JBehave already.
 
+Current development SNAPSHOT versions are available from 
+[Sonatype's Nexus for Open Source projects](https://oss.sonatype.org/content/repositories/snapshots/de/codecentric/jbehave-junit-runner/).
+
 Without Maven
 ---------------------
 If you cannot or do not want to use Maven, just
-compile the classes and package them into a JAR
-file. Add that to your classpath.
+add the library to your classpath.
 
 Also make sure you add the dependencies of this
 library to the classpath as well. They can be

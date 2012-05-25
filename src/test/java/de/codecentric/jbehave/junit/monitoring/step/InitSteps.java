@@ -1,5 +1,7 @@
 package de.codecentric.jbehave.junit.monitoring.step;
 
+import java.sql.SQLException;
+
 import org.jbehave.core.annotations.AfterScenario;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.annotations.AfterStories;
@@ -11,8 +13,9 @@ import org.jbehave.core.annotations.ScenarioType;
 
 public class InitSteps {
 	@BeforeStories
-	public void doSomethingBeforeStories() {
+	public void doSomethingBeforeStories() throws SQLException {
 		System.out.println("InitSteps.doSomethingBeforeStories()");
+		throw new SQLException("DU doof!");
 	}
 
 	@BeforeStory(uponGivenStory = true)

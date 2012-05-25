@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -10,11 +9,11 @@
 
 	<groupId>de.codecentric</groupId>
 	<artifactId>jbehave-junit-runner</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>JBehave JUnit Runner</name>
-	<description></description>
+	<description />
 	<url>https://github.com/codecentric/jbehave-junit-runner</url>
 	<organization>
 		<name>codecentric AG</name>
@@ -42,7 +41,9 @@
 
 	<scm>
 		<connection>scm:git:git://github.com/codecentric/jbehave-junit-runner.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/codecentric/jbehave-junit-runner.git</developerConnection>
 		<url>https://github.com/codecentric/jbehave-junit-runner</url>
+		<tag>jbehave-junit-runner-1.0.0</tag>
 	</scm>
 
 	<properties>
@@ -104,6 +105,15 @@
 						<phase>deploy</phase>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.3</version>
+				<configuration>
+					<localCheckout>true</localCheckout>
+					<pushChanges>false</pushChanges>
+				</configuration>
 			</plugin>
 
 		</plugins>

@@ -78,12 +78,14 @@ public class JUnitScenarioReporter implements StoryReporter {
 					if (scenarioDescriptions.hasNext()) {
 						currentScenario = scenarioDescriptions.next();
 					}
+					currentStep = currentStoryDescription;
 				} else if (storyDescription.isTest()
 						&& storyDescription.getMethodName().equals(
 								story.getName())) {
 					// Story BeforeStories or After Stories
 					currentStoryDescription = storyDescription;
 					notifier.fireTestStarted(currentStoryDescription);
+					currentStep = currentStoryDescription;
 				}
 			}
 		}
@@ -207,7 +209,7 @@ public class JUnitScenarioReporter implements StoryReporter {
 	}
 
 	private void prepareNextStep() {
-		if (stepDescriptions.hasNext()) {
+		if (stepDescriptions != null && stepDescriptions.hasNext()) {
 			currentStep = stepDescriptions.next();
 		}
 		testCounter++;

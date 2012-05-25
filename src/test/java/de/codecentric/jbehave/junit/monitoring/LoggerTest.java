@@ -21,6 +21,7 @@ public class LoggerTest {
 
 	@Before
 	public void setup() {
+		System.clearProperty(Logger.PROP_JJM_LOGLEVEL);
 		logger = new Logger();
 		MockitoAnnotations.initMocks(this);
 		logger.logStream = stream;

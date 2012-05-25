@@ -20,6 +20,7 @@ import org.jbehave.core.steps.StepMonitor;
 import org.junit.runner.RunWith;
 
 import de.codecentric.jbehave.junit.monitoring.JUnitReportingRunner;
+import de.codecentric.jbehave.junit.monitoring.Logger;
 import de.codecentric.jbehave.junit.monitoring.step.ExampleSteps;
 import de.codecentric.jbehave.junit.monitoring.step.InitSteps;
 
@@ -38,6 +39,7 @@ public class StoriesWithAllSortsOfBeforeAndAfter extends JUnitStories {
 	private Configuration configuration;
 
 	public StoriesWithAllSortsOfBeforeAndAfter() {
+		System.setProperty(Logger.PROP_JJM_LOGLEVEL, "debug");
 		configuredEmbedder().embedderControls()
 		// .doVerboseFailures(true)
 				.useThreads(1);

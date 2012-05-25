@@ -44,6 +44,20 @@ Given a variable x with value 3
 When I multiply x by 2
 Then x should equal 7
 
+Scenario: 2 x 3 success with parameterized given stories
+
+GivenStories: 	de/codecentric/jbehave/junit/monitoring/ParameterizedGreetings.story#{1}
+
+Given a variable x with value 3
+When I multiply x by 2
+Then x should equal 7
+
+Examples:
+
+| name    |
+| Daniel  |
+| Andreas |
+
 Scenario: 3 x 3 success 
 
 Given a variable x with value 3

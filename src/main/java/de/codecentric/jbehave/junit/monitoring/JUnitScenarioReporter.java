@@ -2,6 +2,7 @@ package de.codecentric.jbehave.junit.monitoring;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -114,19 +115,21 @@ public class JUnitScenarioReporter implements StoryReporter {
 			notifier.fireTestStarted(currentScenario);
 
 			ArrayList<Description> children = currentScenario.getChildren();
-			if (!children.isEmpty()
-					&& children
-							.get(0)
-							.getDisplayName()
-							.startsWith(
-									JUnitDescriptionGenerator.EXAMPLE_DESCRIPTION_PREFIX)) {
-				exampleDescriptions = currentScenario.getChildren().iterator();
+			List<Description> examples = filterExamples(children);
+			if (!examples.isEmpty()) {
+				exampleDescriptions = examples.iterator();
 				if (exampleDescriptions.hasNext()) {
 					nextExample = exampleDescriptions.next();
 				}
-			} else {
-				stepDescriptions = getAllDescendants(currentScenario)
-						.iterator();
+			}
+			if (children.size() > examples.size()) {
+				// in case of given stories, these steps are actually stories,
+				// for which events
+				// will be fired in beforeStory(..., true)
+				ArrayList<Description> steps = new ArrayList<Description>(
+						currentScenario.getChildren());
+				steps.removeAll(examples);
+				stepDescriptions = getAllDescendants(steps).iterator();
 				if (stepDescriptions.hasNext()) {
 					currentStep = stepDescriptions.next();
 				}
@@ -134,12 +137,24 @@ public class JUnitScenarioReporter implements StoryReporter {
 		}
 	}
 
-	private Collection<Description> getAllDescendants(Description description) {
+	private List<Description> filterExamples(ArrayList<Description> children) {
+		for (int i = 0; i < children.size(); i++) {
+			Description child = (Description) children.get(i);
+			boolean isExample = child.getDisplayName().startsWith(
+					JUnitDescriptionGenerator.EXAMPLE_DESCRIPTION_PREFIX);
+			if (isExample) {
+				return children.subList(i, children.size());
+			}
+		}
+		return Collections.emptyList();
+	}
+
+	private Collection<Description> getAllDescendants(
+			ArrayList<Description> steps) {
 		List<Description> descendants = new ArrayList<Description>();
-		ArrayList<Description> children = description.getChildren();
-		for (Description child : children) {
+		for (Description child : steps) {
 			descendants.add(child);
-			descendants.addAll(getAllDescendants(child));
+			descendants.addAll(getAllDescendants(child.getChildren()));
 		}
 		return descendants;
 	}

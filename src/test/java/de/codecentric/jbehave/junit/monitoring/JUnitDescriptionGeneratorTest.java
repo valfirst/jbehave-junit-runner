@@ -297,6 +297,29 @@ public class JUnitDescriptionGeneratorTest {
 
 	}
 
+	@Test
+	public void shouldSkipExampleTablesForParameterizedGivenStories() {
+		// jbehave ignores example tables, when given stories are parameterized
+		addStepToScenario();
+		int NUM_ROWS = 3;
+		Map<String, String> row = addExamplesTableToScenario(NUM_ROWS);
+		when(givenStories.getPaths()).thenReturn(
+				Arrays.asList("/some/path/to/GivenStory.story#{0}"));
+		when(givenStories.requireParameters()).thenReturn(true);
+
+		generateScenarioDescription();
+
+		assertThat(firstChild(description),
+				hasProperty("displayName", is("GivenStory.story")));
+		assertThat(generator.getTestCases(), is(2));
+
+		assertThat(description.getChildren().size(), is(2));
+		for (Description exampleDescription : description.getChildren()) {
+			assertThat(exampleDescription.getChildren().size(), is(0));
+		}
+
+	}
+
 	private void generateScenarioDescription() {
 		description = generator.createDescriptionFrom(scenario);
 	}

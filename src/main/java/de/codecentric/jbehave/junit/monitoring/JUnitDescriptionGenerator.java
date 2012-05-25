@@ -74,15 +74,21 @@ public class JUnitDescriptionGenerator {
 		for (String path : scenario.getGivenStories().getPaths()) {
 			String name = path.substring(path.lastIndexOf("/") + 1,
 					path.length());
-			scenarioDescription.addChild(Description
-					.createSuiteDescription(getJunitSafeString(name)));
+			scenarioDescription
+					.addChild(Description
+							.createSuiteDescription(getJunitSafeString(name
+									.split("#")[0])));
 			testCases++;
 		}
 	}
 
 	private boolean hasExamples(Scenario scenario) {
 		ExamplesTable examplesTable = scenario.getExamplesTable();
-		return examplesTable != null && examplesTable.getRowCount() > 0;
+		boolean isParameterized = examplesTable != null
+				&& examplesTable.getRowCount() > 0;
+		boolean parametersNeededForGivenStories = scenario.getGivenStories()
+				.requireParameters();
+		return isParameterized && !parametersNeededForGivenStories;
 	}
 
 	private void insertDescriptionForExamples(Scenario scenario,

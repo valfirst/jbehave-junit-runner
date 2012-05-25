@@ -156,14 +156,7 @@ public class JUnitScenarioReporterTest {
 
 		reporter.beforeStory(story, false);
 		reporter.beforeScenario(scenarioDescription.getDisplayName());
-		// Begin Given Story
-		reporter.beforeStory(givenStory, true);
-		reporter.beforeScenario("givenScenario");
-		reporter.beforeStep("givenStep");
-		reporter.successful("givenStep");
-		reporter.afterScenario();
-		reporter.afterStory(true);
-		// End Given Story
+		sendGivenStoryEvents();
 		reportStepSuccess(reporter);
 		reportDefaultScenarioFinish(reporter);
 
@@ -224,6 +217,52 @@ public class JUnitScenarioReporterTest {
 		verify(notifier).fireTestStarted(step);
 		verify(notifier).fireTestFinished(step);
 		verifyStandardFinish();
+	}
+
+	@Test
+	public void shouldHandleExampleStepsInCombinationWithGivenStories() {
+
+		Description givenStoryDescription = Description
+				.createSuiteDescription("aGivenStory");
+		scenarioDescription.addChild(givenStoryDescription);
+		// one story, one scenario, one example, one step,
+		Description example = addChildToScenario(JUnitDescriptionGenerator.EXAMPLE_DESCRIPTION_PREFIX
+				+ "row");
+		Description step = Description.createTestDescription(this.getClass(),
+				"Step");
+		example.addChild(step);
+
+		reporter = new JUnitScenarioReporter(notifier, 3, rootDescription);
+
+		reporter.beforeStory(story, false);
+		reporter.beforeScenario(NAME_SCENARIO);
+		sendGivenStoryEvents();
+		reporter.example(null);
+		reportStepSuccess(reporter);
+		reportDefaultScenarioFinish(reporter);
+
+		verifyTestRunStarted();
+		verifyStoryStarted();
+		verifyScenarioStarted();
+		verify(notifier).fireTestStarted(givenStoryDescription);
+		verify(notifier).fireTestFinished(givenStoryDescription);
+		verify(notifier).fireTestStarted(step);
+		verify(notifier).fireTestFinished(step);
+		verifyStandardFinish();
+	}
+
+	private void sendGivenStoryEvents() {
+		Story givenStory = new Story();
+		givenStory.namedAs("aGivenStory");
+
+		// Begin Given Story
+		reporter.beforeStory(givenStory, true);
+		reporter.beforeScenario("givenScenario");
+		reporter.beforeStep("givenStep");
+		reporter.successful("givenStep");
+		reporter.afterScenario();
+		reporter.afterStory(true);
+		// End Given Story
 	}
 
 	@Test

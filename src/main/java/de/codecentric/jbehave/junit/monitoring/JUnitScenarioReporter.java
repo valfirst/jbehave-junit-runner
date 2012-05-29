@@ -239,6 +239,7 @@ public class JUnitScenarioReporter implements StoryReporter {
 	public void pending(String arg0) {
 		logger.info("Pending: {}", arg0);
 		if (!givenStoryContext) {
+			notifier.fireTestStarted(currentStep);
 			if (pendingStepStrategy instanceof FailingUponPendingStep) {
 				notifier.fireTestFailure(new Failure(currentStep,
 						new RuntimeException("Step is pending!")));

@@ -315,7 +315,7 @@ public class JUnitScenarioReporterTest {
 		reporter.usePendingStepStrategy(strategy);
 
 		reportStoryAndScenarioStart(reporter);
-		reporter.beforeStep("child");
+		// reporter.beforeStep("child");
 		reporter.pending("child");
 		verifyStoryStarted();
 		verifyScenarioStarted();

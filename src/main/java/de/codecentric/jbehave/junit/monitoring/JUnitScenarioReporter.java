@@ -3,9 +3,11 @@ package de.codecentric.jbehave.junit.monitoring;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.jbehave.core.failures.FailingUponPendingStep;
 import org.jbehave.core.failures.PassingUponPendingStep;
@@ -43,6 +45,7 @@ public class JUnitScenarioReporter implements StoryReporter {
 	private final int totalTests;
 
 	private boolean givenStoryContext;
+	public Set<Description> failedSteps = new HashSet<Description>();
 
 	private PendingStepStrategy pendingStepStrategy = new PassingUponPendingStep();
 
@@ -99,9 +102,11 @@ public class JUnitScenarioReporter implements StoryReporter {
 			notifier.fireTestFinished(currentStep);
 			prepareNextStep();
 		} else {
-			notifier.fireTestFinished(currentStoryDescription);
-			if (currentStoryDescription.isTest())
-				testCounter++;
+			if (!failedSteps.contains(currentStoryDescription)) {
+				notifier.fireTestFinished(currentStoryDescription);
+				if (currentStoryDescription.isTest())
+					testCounter++;
+			}
 
 			if (testCounter == totalTests) {
 				Result result = new Result();
@@ -209,6 +214,7 @@ public class JUnitScenarioReporter implements StoryReporter {
 		logger.info("Step Failed: {} (cause: {})", step, e.getMessage());
 		if (!givenStoryContext) {
 			notifier.fireTestFailure(new Failure(currentStep, e));
+			failedSteps.add(currentStep);
 			prepareNextStep();
 		}
 	}

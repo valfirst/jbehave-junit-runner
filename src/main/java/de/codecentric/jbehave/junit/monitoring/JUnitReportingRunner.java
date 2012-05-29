@@ -30,14 +30,14 @@ public class JUnitReportingRunner extends Runner {
 	private int numberOfTestCases;
 	private Description rootDescription;
 	List<CandidateSteps> candidateSteps;
-	private ConfigurableEmbedder embedder;
+	private ConfigurableEmbedder configurableEmbedder;
 
 	@SuppressWarnings("unchecked")
 	public JUnitReportingRunner(Class<? extends ConfigurableEmbedder> testClass)
 			throws Throwable {
-		embedder = testClass.newInstance();
-		if (embedder instanceof JUnitStories) {
-			JUnitStories junitStories = (JUnitStories) embedder;
+		configurableEmbedder = testClass.newInstance();
+		if (configurableEmbedder instanceof JUnitStories) {
+			JUnitStories junitStories = (JUnitStories) configurableEmbedder;
 			configuredEmbedder = junitStories.configuredEmbedder();
 			Method method;
 			try {
@@ -50,8 +50,8 @@ public class JUnitReportingRunner extends Runner {
 			storyPaths = ((List<String>) method.invoke(junitStories,
 					(Object[]) null));
 
-		} else if (embedder instanceof JUnitStory) {
-			JUnitStory junitStory = (JUnitStory) embedder;
+		} else if (configurableEmbedder instanceof JUnitStory) {
+			JUnitStory junitStory = (JUnitStory) configurableEmbedder;
 			configuredEmbedder = junitStory.configuredEmbedder();
 			StoryPathResolver resolver = configuredEmbedder.configuration()
 					.storyPathResolver();
@@ -64,7 +64,8 @@ public class JUnitReportingRunner extends Runner {
 		StepMonitor usedStepMonitor = configuration.stepMonitor();
 		NullStepMonitor nullStepMonitor = new NullStepMonitor();
 		configuration.useStepMonitor(nullStepMonitor);
-		candidateSteps = embedder.stepsFactory().createCandidateSteps();
+		candidateSteps = configurableEmbedder.configuredEmbedder().stepsFactory()
+				.createCandidateSteps();
 		for (CandidateSteps step : candidateSteps) {
 			step.configuration().useStepMonitor(nullStepMonitor);
 		}
@@ -76,13 +77,13 @@ public class JUnitReportingRunner extends Runner {
 		for (CandidateSteps step : candidateSteps) {
 			step.configuration().useStepMonitor(usedStepMonitor);
 		}
-		candidateSteps = embedder.stepsFactory().createCandidateSteps();
+		candidateSteps = configurableEmbedder.stepsFactory().createCandidateSteps();
 
 		initRootDescription();
 	}
 
 	private void initRootDescription() {
-		rootDescription = Description.createSuiteDescription(embedder
+		rootDescription = Description.createSuiteDescription(configurableEmbedder
 				.getClass());
 		rootDescription.getChildren().addAll(storyDescriptions);
 	}

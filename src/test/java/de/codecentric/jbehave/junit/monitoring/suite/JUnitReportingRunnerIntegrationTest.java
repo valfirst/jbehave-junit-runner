@@ -31,7 +31,6 @@ public class JUnitReportingRunnerIntegrationTest {
 	private JUnitReportingRunner runner;
 	private String expectedDisplayName;
 	private String expectedFirstStoryName;
-	private Description description;
 
 	@Before
 	public void setUp() throws Throwable {
@@ -50,7 +49,8 @@ public class JUnitReportingRunnerIntegrationTest {
 		return Arrays.asList(params);
 	}
 
-	public JUnitReportingRunnerIntegrationTest(Class<? extends ConfigurableEmbedder> cls,
+	public JUnitReportingRunnerIntegrationTest(
+			Class<? extends ConfigurableEmbedder> cls,
 			String expectedDisplayName, String expectedFirstStoryName)
 			throws Throwable {
 		runner = new JUnitReportingRunner(cls);

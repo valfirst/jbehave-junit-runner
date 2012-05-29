@@ -64,7 +64,9 @@ public class JUnitReportingRunner extends Runner {
 		StepMonitor usedStepMonitor = configuration.stepMonitor();
 		NullStepMonitor nullStepMonitor = new NullStepMonitor();
 		configuration.useStepMonitor(nullStepMonitor);
-		candidateSteps = configurableEmbedder.configuredEmbedder().stepsFactory()
+		// candidateSteps = configurableEmbedder.configuredEmbedder()
+		// .stepsFactory().createCandidateSteps();
+		candidateSteps = configurableEmbedder.stepsFactory()
 				.createCandidateSteps();
 		for (CandidateSteps step : candidateSteps) {
 			step.configuration().useStepMonitor(nullStepMonitor);
@@ -77,14 +79,17 @@ public class JUnitReportingRunner extends Runner {
 		for (CandidateSteps step : candidateSteps) {
 			step.configuration().useStepMonitor(usedStepMonitor);
 		}
-		candidateSteps = configurableEmbedder.stepsFactory().createCandidateSteps();
+		// candidateSteps = configurableEmbedder.configuredEmbedder()
+		// .stepsFactory().createCandidateSteps();
+		candidateSteps = configurableEmbedder.stepsFactory()
+				.createCandidateSteps();
 
 		initRootDescription();
 	}
 
 	private void initRootDescription() {
-		rootDescription = Description.createSuiteDescription(configurableEmbedder
-				.getClass());
+		rootDescription = Description
+				.createSuiteDescription(configurableEmbedder.getClass());
 		rootDescription.getChildren().addAll(storyDescriptions);
 	}
 

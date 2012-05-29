@@ -8,6 +8,7 @@ import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.junit.JUnitStories;
+import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.junit.runner.RunWith;
@@ -28,12 +29,14 @@ import de.codecentric.jbehave.junit.monitoring.step.ExampleSteps;
 public class MathStories extends JUnitStories {
 
 	public MathStories() {
-		configuredEmbedder().embedderControls().useThreads(1);
+		JUnitReportingRunner.recommandedControls(configuredEmbedder());
 	}
 
 	@Override
 	public Configuration configuration() {
-		return new MostUsefulConfiguration();
+		return new MostUsefulConfiguration()
+				.useStoryReporterBuilder(new StoryReporterBuilder()
+						.withDefaultFormats());
 	}
 
 	@Override

@@ -8,6 +8,7 @@ import java.util.List;
 import org.jbehave.core.ConfigurableEmbedder;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.embedder.Embedder;
+import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.StoryRunner;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.junit.JUnitStories;
@@ -139,5 +140,15 @@ public class JUnitReportingRunner extends Runner {
 		numberOfTestCases++;
 		numberOfTestCases += gen.getTestCases();
 		return storyDescriptions;
+	}
+
+	public static EmbedderControls recommandedControls(Embedder embedder) {
+		return embedder.embedderControls()
+		// don't throw an exception on generating reports for failing stories
+				.doIgnoreFailureInView(true)
+				// don't throw an exception when a story failed
+				.doIgnoreFailureInStories(true)
+				// .doVerboseFailures(true)
+				.useThreads(1);
 	}
 }

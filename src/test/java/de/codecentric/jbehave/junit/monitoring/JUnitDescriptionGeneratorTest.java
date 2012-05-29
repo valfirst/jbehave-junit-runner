@@ -83,6 +83,14 @@ public class JUnitDescriptionGeneratorTest {
 	}
 
 	@Test
+	public void shouldCountSteps() {
+		addScenarioToStory(scenario);
+		addStepToScenario();
+		generateStoryDescription();
+		assertThat(generator.getTestCases(), is(1));
+	}
+
+	@Test
 	public void shouldCountIgnorables() {
 		when(scenario.getSteps()).thenReturn(
 				Arrays.asList("Given Step1", "!-- ignore me"));
@@ -130,8 +138,7 @@ public class JUnitDescriptionGeneratorTest {
 
 	@Test
 	public void shouldGenerateDescriptionForScenarioChildOfStory() {
-		when(story.getScenarios()).thenReturn(
-				Arrays.asList(new Scenario[] { scenario }));
+		addScenarioToStory(scenario);
 		generateStoryDescription();
 		assertThat(
 				description.getChildren(),
@@ -142,8 +149,7 @@ public class JUnitDescriptionGeneratorTest {
 	@Test
 	public void shouldStripLinebreaksFromScenarioDescriptions() {
 		Scenario scenario = mock(Scenario.class);
-		when(story.getScenarios()).thenReturn(
-				Arrays.asList(new Scenario[] { scenario }));
+		addScenarioToStory(scenario);
 		when(scenario.getGivenStories()).thenReturn(givenStories);
 
 		when(scenario.getTitle()).thenReturn("Scenario with\nNewline");
@@ -152,11 +158,14 @@ public class JUnitDescriptionGeneratorTest {
 				not(containsString("\n")));
 	}
 
+	private void addScenarioToStory(Scenario... scenario) {
+		when(story.getScenarios()).thenReturn(Arrays.asList(scenario));
+	}
+
 	@Test
 	public void shouldStripCarriageReturnsFromScenarioDescriptions() {
 		Scenario scenario = mock(Scenario.class);
-		when(story.getScenarios()).thenReturn(
-				Arrays.asList(new Scenario[] { scenario }));
+		addScenarioToStory(scenario);
 		when(scenario.getGivenStories()).thenReturn(givenStories);
 
 		when(scenario.getTitle()).thenReturn("Scenario with\rCarriage Return");
@@ -180,8 +189,7 @@ public class JUnitDescriptionGeneratorTest {
 
 	@Test
 	public void shouldCopeWithDuplicateGivenStories() throws Exception {
-		when(story.getScenarios()).thenReturn(
-				Arrays.asList(new Scenario[] { scenario, scenario }));
+		addScenarioToStory(scenario, scenario);
 		when(givenStories.getPaths()).thenReturn(
 				Arrays.asList("/some/path/to/GivenStory.story"));
 		generateStoryDescription();

@@ -100,7 +100,8 @@ public class JUnitScenarioReporter implements StoryReporter {
 			prepareNextStep();
 		} else {
 			notifier.fireTestFinished(currentStoryDescription);
-			testCounter++;
+			if (currentStoryDescription.isTest())
+				testCounter++;
 
 			if (testCounter == totalTests) {
 				Result result = new Result();
@@ -222,10 +223,11 @@ public class JUnitScenarioReporter implements StoryReporter {
 	}
 
 	private void prepareNextStep() {
+		if (currentStep.isTest())
+			testCounter++;
 		if (stepDescriptions != null && stepDescriptions.hasNext()) {
 			currentStep = stepDescriptions.next();
 		}
-		testCounter++;
 	}
 
 	public void pending(String arg0) {
@@ -246,7 +248,6 @@ public class JUnitScenarioReporter implements StoryReporter {
 		logger.info("Ignorable: {}", arg0);
 		if (!givenStoryContext) {
 			notifier.fireTestIgnored(currentStep);
-			testCounter++;
 
 			prepareNextStep();
 		}
@@ -256,7 +257,6 @@ public class JUnitScenarioReporter implements StoryReporter {
 		logger.info("Not performed: {}", arg0);
 		if (!givenStoryContext) {
 			notifier.fireTestIgnored(currentStep);
-			// testCounter++;
 
 			prepareNextStep();
 		}

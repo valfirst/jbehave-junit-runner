@@ -25,6 +25,10 @@ public class JUnitScenarioReporterTest {
 	private static final String NAME_SCENARIO = "scenario";
 	private static final String NAME_STORY = "story";
 	private static final String NAME_ROOT = "root";
+	private static final int ONE_GIVEN = 1;
+	private static final int ONE_STEP = 1;
+	private static final int THREE_STEPS = 3;
+	private static final int TWO_COMPOSITE_STEPS = 2;
 	@Mock
 	RunNotifier notifier;
 	private Description rootDescription;
@@ -57,7 +61,8 @@ public class JUnitScenarioReporterTest {
 		Description child2 = addChildToScenario("child.");
 		Description child3 = addChildToScenario("child..");
 
-		reporter = new JUnitScenarioReporter(notifier, 3, rootDescription);
+		reporter = new JUnitScenarioReporter(notifier, THREE_STEPS,
+				rootDescription);
 
 		reportDefaultScenarioStart(reporter);
 		reportStepSuccess(reporter);
@@ -78,7 +83,8 @@ public class JUnitScenarioReporterTest {
 
 		Description child1 = addChildToScenario("child");
 
-		reporter = new JUnitScenarioReporter(notifier, 1, rootDescription);
+		reporter = new JUnitScenarioReporter(notifier, ONE_STEP,
+				rootDescription);
 
 		reportDefaultScenarioStart(reporter);
 		reportStepFailure(reporter);
@@ -91,13 +97,16 @@ public class JUnitScenarioReporterTest {
 	@Test
 	public void shouldHandleIgnorableSteps() throws Exception {
 		Description comment = addChildToScenario("!-- Comment");
-		reporter = new JUnitScenarioReporter(notifier, 1, rootDescription);
+		reporter = new JUnitScenarioReporter(notifier, ONE_STEP,
+				rootDescription);
 
 		reportDefaultScenarioStart(reporter);
 		verifyStoryStarted();
 		verifyScenarioStarted();
 		reportIgnorable(reporter);
 		verify(notifier).fireTestIgnored(comment);
+		reportDefaultScenarioFinish(reporter);
+		verifyStandardFinish();
 
 	}
 
@@ -149,7 +158,8 @@ public class JUnitScenarioReporterTest {
 		scenarioDescription.addChild(givenStoryDescription);
 		Description child = addChildToScenario("child");
 
-		reporter = new JUnitScenarioReporter(notifier, 3, rootDescription);
+		reporter = new JUnitScenarioReporter(notifier, ONE_GIVEN + ONE_STEP,
+				rootDescription);
 
 		Story givenStory = new Story();
 		givenStory.namedAs("aGivenStory");
@@ -179,10 +189,12 @@ public class JUnitScenarioReporterTest {
 				"comp2");
 		child.addChild(comp2);
 
-		reporter = new JUnitScenarioReporter(notifier, 4, rootDescription);
+		reporter = new JUnitScenarioReporter(notifier, TWO_COMPOSITE_STEPS,
+				rootDescription);
 
 		reportDefaultScenarioStart(reporter);
-		reportStepSuccess(reporter);
+		reporter.beforeStep("child");
+		reporter.successful("child");
 		reporter.beforeStep("comp1");
 		reporter.successful("comp1");
 		reporter.beforeStep("comp2");
@@ -207,7 +219,8 @@ public class JUnitScenarioReporterTest {
 		Description step = Description.createTestDescription(this.getClass(),
 				"Step");
 		example.addChild(step);
-		reporter = new JUnitScenarioReporter(notifier, 2, rootDescription);
+		reporter = new JUnitScenarioReporter(notifier, ONE_STEP,
+				rootDescription);
 		reportDefaultScenarioStart(reporter);
 		reporter.example(null);
 		reportStepSuccess(reporter);
@@ -221,7 +234,7 @@ public class JUnitScenarioReporterTest {
 
 	@Test
 	public void shouldHandleExampleStepsInCombinationWithGivenStories() {
-
+		// one story, one scenario, one given story, one example, one step
 		Description givenStoryDescription = Description
 				.createSuiteDescription("aGivenStory");
 		scenarioDescription.addChild(givenStoryDescription);
@@ -232,7 +245,8 @@ public class JUnitScenarioReporterTest {
 				"Step");
 		example.addChild(step);
 
-		reporter = new JUnitScenarioReporter(notifier, 3, rootDescription);
+		reporter = new JUnitScenarioReporter(notifier, ONE_GIVEN + ONE_STEP,
+				rootDescription);
 
 		reporter.beforeStory(story, false);
 		reporter.beforeScenario(NAME_SCENARIO);

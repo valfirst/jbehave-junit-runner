@@ -17,6 +17,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -364,10 +365,15 @@ public class JUnitDescriptionGeneratorTest {
 		ExamplesTable examplesTable = mock(ExamplesTable.class);
 		when(examplesTable.getRowCount()).thenReturn(NUM_ROWS);
 		Map<String, String> row = new TreeMap<String, String>();
-		for (int i = 1; i <= NUM_ROWS; i++) {
+		List<Map<String, String>> rows = new ArrayList<Map<String, String>>();
+		for (int i = 1; i <= 10; i++) {
 			row.put("key" + i, "value" + i);
 		}
+		for (int i = 1; i <= NUM_ROWS; i++) {
+			rows.add(row);
+		}
 		when(examplesTable.getRow(anyInt())).thenReturn(row);
+		when(examplesTable.getRows()).thenReturn(rows);
 		when(scenario.getExamplesTable()).thenReturn(examplesTable);
 		return row;
 	}

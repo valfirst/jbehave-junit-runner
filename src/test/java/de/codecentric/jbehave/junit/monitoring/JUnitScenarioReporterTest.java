@@ -324,6 +324,21 @@ public class JUnitScenarioReporterTest {
 	}
 
 	@Test
+	public void shouldIgnorePendingStepsIfConfigurationSaysSo() {
+		Description child = addChildToScenario("child");
+
+		reporter = new JUnitScenarioReporter(notifier, 3, rootDescription);
+
+		reportStoryAndScenarioStart(reporter);
+		reporter.pending("child");
+		verifyStoryStarted();
+		verifyScenarioStarted();
+		verify(notifier, VerificationModeFactory.times(0)).fireTestStarted(
+				child);
+		verify(notifier).fireTestIgnored(child);
+	}
+
+	@Test
 	public void shouldHandleFailuresInBeforeStories() {
 		reporter = new JUnitScenarioReporter(notifier, 1, rootDescription);
 

@@ -16,6 +16,7 @@ import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.NullStepMonitor;
 import org.jbehave.core.steps.StepMonitor;
 import org.junit.runner.Description;
@@ -64,10 +65,7 @@ public class JUnitReportingRunner extends Runner {
 		StepMonitor usedStepMonitor = configuration.stepMonitor();
 		NullStepMonitor nullStepMonitor = new NullStepMonitor();
 		configuration.useStepMonitor(nullStepMonitor);
-		// candidateSteps = configurableEmbedder.configuredEmbedder()
-		// .stepsFactory().createCandidateSteps();
-		candidateSteps = configurableEmbedder.stepsFactory()
-				.createCandidateSteps();
+		getCandidateSteps();
 		for (CandidateSteps step : candidateSteps) {
 			step.configuration().useStepMonitor(nullStepMonitor);
 		}
@@ -79,12 +77,25 @@ public class JUnitReportingRunner extends Runner {
 		for (CandidateSteps step : candidateSteps) {
 			step.configuration().useStepMonitor(usedStepMonitor);
 		}
-		// candidateSteps = configurableEmbedder.configuredEmbedder()
-		// .stepsFactory().createCandidateSteps();
-		candidateSteps = configurableEmbedder.stepsFactory()
-				.createCandidateSteps();
+		getCandidateSteps();
 
 		initRootDescription();
+	}
+
+	private void getCandidateSteps() {
+		// candidateSteps = configurableEmbedder.configuredEmbedder()
+		// .stepsFactory().createCandidateSteps();
+		InjectableStepsFactory stepsFactory = configurableEmbedder
+				.stepsFactory();
+		if (stepsFactory != null) {
+			candidateSteps = stepsFactory.createCandidateSteps();
+		} else {
+			Embedder embedder = configurableEmbedder.configuredEmbedder();
+			candidateSteps = embedder.candidateSteps();
+			if (candidateSteps == null || candidateSteps.isEmpty()) {
+				candidateSteps = embedder.stepsFactory().createCandidateSteps();
+			}
+		}
 	}
 
 	private void initRootDescription() {

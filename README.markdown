@@ -77,8 +77,14 @@ This tells JBehave to use only one thread, and don't throw any exceptions
 when generating views or otherwise wrapping the execution up. This would
 confuse JUnit considerably, rendering the AfterStories Suite incomplete.
 
-Caveat
+Caveats
 ----------------------------
+There are a few issues you might encounter upon first installation and
+integration into your project. To alleviate these, the following are a
+few common pitfalls.
+
+### java.lang.NoSuchMethodException: ...storyPaths()
+
 If you run into problems like this
 
     java.lang.NoSuchMethodException: MyAcceptanceTests.storyPaths()
@@ -104,6 +110,22 @@ into that common base class, you
 This is due to a reflection issue and might be fixed in
 future versions.
 
+
+### java.lang.NoSuchMethodError: org.junit.runner.Description.createSuiteDescription
+
+If you see JUnit throw an error soon after a test starts, that looks like this
+
+    java.lang.NoSuchMethodError: org.junit.runner.Description.createSuiteDescription(Ljava/lang/String;[Ljava/lang/annotation/Annotation;)Lorg/junit/runner/Description;
+    	at de.codecentric.jbehave.junit.monitoring.JUnitDescriptionGenerator.createDescriptionFrom(JUnitDescriptionGenerator.java:43)
+    	at de.codecentric.jbehave.junit.monitoring.JUnitReportingRunner.buildDescriptionFromStories(JUnitReportingRunner.java:152)
+    	at de.codecentric.jbehave.junit.monitoring.JUnitReportingRunner.<init>(JUnitReportingRunner.java:73)
+    	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+    	....
+
+you most probably have an old version of JUnit on your classpath that does not have
+that method signature yet. Verify that you are using a recent version of
+JUnit and that it is not hidden by an older version which might hide it by being
+declared first on the classpath.
 
 Example output
 =================================
@@ -140,4 +162,4 @@ shines most :)
 
 Credits
 =================================
-This project is based on the original implementation by Mark Burnett, located at [http://code.google.com/p/jbehave-junit-monitor/] which worked with earlier versions of JBehave.
+This project is based on the original implementation by Mark Burnett, located at http://code.google.com/p/jbehave-junit-monitor/ which worked with earlier versions of JBehave.

@@ -44,7 +44,6 @@ listed here, too:
 
   * jbehave-core (3.6+)
   * junit (4.10)
-  * slf4j-api (1.6.4)
 
 Your project will of course have JBehave already,
 just make sure it is version 3.6 or above.
@@ -145,7 +144,7 @@ issue tracker, here on GitHub.
 To make things easier (and quicker) for yourself (and us), please 
 provide the following pieces of information in your ticket:
 
-  * The version you are using (e. g. 1.0.0 or 1.0.1-SNAPSHOT as of 2012-05-25)
+  * The version you are using (e. g. "1.0.0" or "1.0.1-SNAPSHOT as of 2012-05-25")
   * If possible, a stack trace of the error.
   * Ideally, a limited test case that allows us to reproduce the 
     problem locally. This is indeed the best way to get a bug fixed
@@ -153,10 +152,10 @@ provide the following pieces of information in your ticket:
   * Any information about your environment that might be helpful, e. g.
     your JBehave version, which operating system, etc.
 
-It might also be a good idea to try, if your particular problem might have
+It might also be a good idea to try, if your particular problem has
 been fixed already in the latest snapshot release.
 
-And, *of course*, we'd also very much appreciate it pull requests for fixes
+And, *of course*, we'd also very much appreciate pull requests for fixes
 that you have already made yourself. After all, this is where open source
 shines most :)
 

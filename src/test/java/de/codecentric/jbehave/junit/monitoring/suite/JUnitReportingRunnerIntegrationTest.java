@@ -20,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import de.codecentric.jbehave.junit.monitoring.ExampleScenarioJUnitStories;
+import de.codecentric.jbehave.junit.monitoring.ExampleScenarioJUnitStoriesLocalized;
 import de.codecentric.jbehave.junit.monitoring.ExampleScenarioJUnitStory;
 import de.codecentric.jbehave.junit.monitoring.JUnitReportingRunner;
 
@@ -31,6 +32,8 @@ public class JUnitReportingRunnerIntegrationTest {
 	private JUnitReportingRunner runner;
 	private String expectedDisplayName;
 	private String expectedFirstStoryName;
+	private String expectedFirstScenario;
+	private String expextedFirstStep;
 
 	@Before
 	public void setUp() throws Throwable {
@@ -41,21 +44,30 @@ public class JUnitReportingRunnerIntegrationTest {
 	public static Collection<Object[]> data() {
 		Object[][] params = {
 				{ ExampleScenarioJUnitStories.class,
-						ExampleScenarioJUnitStories.class.getName(),
-						"Multiplication.story" },
+						"Multiplication.story",
+						"Scenario: 2 squared",
+						"Given a variable x with value 2" },
 				{ ExampleScenarioJUnitStory.class,
-						ExampleScenarioJUnitStory.class.getName(),
-						"example_scenario_j_unit_story.story" } };
+						"example_scenario_j_unit_story.story",
+						"Scenario: 2 squared",
+						"Given a variable x with value 2" },
+				{ ExampleScenarioJUnitStoriesLocalized.class,
+						"Multiplication_de.story",
+						"Szenario: 2 Quadrat",
+						"Gegeben ist die Variable x mit dem Wert 2" } };
 		return Arrays.asList(params);
 	}
 
 	public JUnitReportingRunnerIntegrationTest(
 			Class<? extends ConfigurableEmbedder> cls,
-			String expectedDisplayName, String expectedFirstStoryName)
+			String expectedFirstStoryName, String expectedFirstScenario,
+			String expextedFirstStep)
 			throws Throwable {
 		runner = new JUnitReportingRunner(cls);
-		this.expectedDisplayName = expectedDisplayName;
+		this.expectedDisplayName = cls.getName();
 		this.expectedFirstStoryName = expectedFirstStoryName;
+		this.expectedFirstScenario = expectedFirstScenario;
+		this.expextedFirstStep = expextedFirstStep;
 	}
 
 	@Test
@@ -100,13 +112,13 @@ public class JUnitReportingRunnerIntegrationTest {
 	@Test
 	public void scenarioDescriptionsForExample() {
 		assertThat(getFirstScenario().getDisplayName(),
-				equalTo("Scenario: 2 squared"));
+				equalTo(expectedFirstScenario));
 	}
 
 	@Test
 	public void stepDescriptionsForExample() {
 		assertThat(getFirstScenario().getChildren().get(0).getDisplayName(),
-				Matchers.startsWith("Given a variable x with value 2"));
+				Matchers.startsWith(expextedFirstStep));
 	}
 
 	private Description getFirstStory() {

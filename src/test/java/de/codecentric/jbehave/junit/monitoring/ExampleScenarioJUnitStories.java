@@ -1,6 +1,6 @@
 package de.codecentric.jbehave.junit.monitoring;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.jbehave.core.configuration.Configuration;
@@ -17,7 +17,6 @@ public class ExampleScenarioJUnitStories extends JUnitStories {
 
 	public ExampleScenarioJUnitStories() {
 		configuredEmbedder().embedderControls().useThreads(1);
-
 	}
 
 	@Override
@@ -27,15 +26,12 @@ public class ExampleScenarioJUnitStories extends JUnitStories {
 
 	@Override
 	public Configuration configuration() {
-		// add custom coverters
 		return new MostUsefulConfiguration();
 	}
 
 	@Override
 	protected List<String> storyPaths() {
-		List<String> stories = new ArrayList<String>();
-		stories.add("de/codecentric/jbehave/junit/monitoring/Multiplication.story");
-		return stories;
+		return Arrays.asList("de/codecentric/jbehave/junit/monitoring/Multiplication.story");
 	}
 
 }

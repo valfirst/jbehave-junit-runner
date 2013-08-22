@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.failures.FailingUponPendingStep;
 import org.jbehave.core.failures.PassingUponPendingStep;
 import org.jbehave.core.failures.PendingStepStrategy;
@@ -48,13 +49,15 @@ public class JUnitScenarioReporter implements StoryReporter {
 	public Set<Description> failedSteps = new HashSet<Description>();
 
 	private PendingStepStrategy pendingStepStrategy = new PassingUponPendingStep();
+	private Keywords keywords;
 
 	public JUnitScenarioReporter(RunNotifier notifier, int totalTests,
-			Description rootDescription) {
+			Description rootDescription, Keywords keywords) {
 		this.totalTests = totalTests;
 		this.rootDescription = rootDescription;
 		this.notifier = notifier;
 		this.storyDescriptions = rootDescription.getChildren();
+		this.keywords = keywords;
 	}
 
 	public void beforeStory(Story story, boolean isGivenStory) {
@@ -147,7 +150,7 @@ public class JUnitScenarioReporter implements StoryReporter {
 		for (int i = 0; i < children.size(); i++) {
 			Description child = (Description) children.get(i);
 			boolean isExample = child.getDisplayName().startsWith(
-					JUnitDescriptionGenerator.EXAMPLE_DESCRIPTION_PREFIX);
+					keywords.examplesTableRow() + " ");
 			if (isExample) {
 				return children.subList(i, children.size());
 			}

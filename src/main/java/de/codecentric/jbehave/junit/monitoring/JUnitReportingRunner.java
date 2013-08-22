@@ -34,7 +34,6 @@ public class JUnitReportingRunner extends Runner {
 	List<CandidateSteps> candidateSteps;
 	private ConfigurableEmbedder configurableEmbedder;
 
-	@SuppressWarnings("unchecked")
 	public JUnitReportingRunner(Class<? extends ConfigurableEmbedder> testClass)
 			throws Throwable {
 		configurableEmbedder = testClass.newInstance();
@@ -68,7 +67,7 @@ public class JUnitReportingRunner extends Runner {
 	public void run(RunNotifier notifier) {
 	
 		JUnitScenarioReporter junitReporter = new JUnitScenarioReporter(
-				notifier, numberOfTestCases, rootDescription);
+				notifier, numberOfTestCases, rootDescription, configuration.keywords());
 		// tell the reporter how to handle pending steps
 		junitReporter.usePendingStepStrategy(configuration
 				.pendingStepStrategy());

@@ -13,7 +13,7 @@ import de.codecentric.jbehave.junit.monitoring.step.ExampleSteps;
 public class ExampleScenarioJUnitStory extends JUnitStory {
 
 	public ExampleScenarioJUnitStory() {
-		configuredEmbedder().embedderControls().useThreads(1);
+		JUnitReportingRunner.recommandedControls(configuredEmbedder());
 
 	}
 

@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jbehave.core.annotations.Alias;
 import org.jbehave.core.annotations.Composite;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
@@ -20,16 +21,19 @@ public class ExampleSteps {
 	private int result;
 
 	@Given("a variable x with value $value")
+	@Alias("ist die Variable x mit dem Wert $value")
 	public void givenXValue(@Named("value") int value) {
 		x = value;
 	}
 
 	@When("I multiply x by $value")
+	@Alias("ich x mit $value multipliziere")
 	public void whenImultiplyXBy(@Named("value") int value) {
 		x = x * value;
 	}
 
 	@When("I multiply x with all of:$param")
+	@Alias("ich x mit folgenden Werten multipliziere:$param")
 	public void whenImultiplyXByOneOf(ExamplesTable param) {
 		for (Parameters p : param.getRowsAsParameters()) {
 			Integer value = p.valueAs("Value", Integer.class);
@@ -38,6 +42,7 @@ public class ExampleSteps {
 	}
 
 	@Then("x should equal $value")
+	@Alias("ist x gleich $value")
 	public void thenXshouldBe(@Named("value") int value) {
 		Assert.assertEquals(value, x);
 	}

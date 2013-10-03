@@ -238,7 +238,6 @@ public class JUnitDescriptionGeneratorTest {
 			assertThat(exampleDescription,
 					hasProperty("displayName", startsWith("Example: " + row)));
 		}
-
 	}
 
 	@Test
@@ -322,8 +321,6 @@ public class JUnitDescriptionGeneratorTest {
 	public void shouldSkipExampleTablesForParameterizedGivenStories() {
 		// jbehave ignores example tables, when given stories are parameterized
 		addStepToScenario();
-		int NUM_ROWS = 3;
-		Map<String, String> row = addExamplesTableToScenario(NUM_ROWS);
 		when(givenStories.getPaths()).thenReturn(
 				Arrays.asList("/some/path/to/GivenStory.story#{0}"));
 		when(givenStories.requireParameters()).thenReturn(true);

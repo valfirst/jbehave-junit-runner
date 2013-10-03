@@ -44,6 +44,8 @@ import org.junit.Test;
 import org.junit.runner.Description;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 public class JUnitDescriptionGeneratorTest {
 
@@ -72,7 +74,7 @@ public class JUnitDescriptionGeneratorTest {
 				Arrays.asList(new StepCandidate[] { stepCandidate }));
 		when(stepCandidate.matches(anyString())).thenReturn(true);
 		when(stepCandidate.matches(anyString(), anyString())).thenReturn(true);
-		when(stepCandidate.getStepsInstance()).thenReturn(new Object());
+		when(stepCandidate.getStepsType()).then(returnObjectClass());
 		when(story.getName()).thenReturn(DEFAULT_STORY_NAME);
 		when(scenario.getTitle()).thenReturn(DEFAULT_SCENARIO_TITLE);
 		when(givenStories.getPaths()).thenReturn(
@@ -81,6 +83,16 @@ public class JUnitDescriptionGeneratorTest {
 		when(configuration.keywords()).thenReturn(new Keywords());
 		generator = new JUnitDescriptionGenerator(
 				Arrays.asList(new CandidateSteps[] { steps }), configuration);
+	}
+
+	private Answer<Class<?>> returnObjectClass() {
+		return new Answer<Class<?>>() {
+
+			public Class<?> answer(InvocationOnMock invocation)
+					throws Throwable {
+				return Object.class;
+			}
+		};
 	}
 
 	@Test
@@ -343,7 +355,7 @@ public class JUnitDescriptionGeneratorTest {
 
 	private StepCandidate stepCandidateMock(String name) {
 		StepCandidate step = mock(StepCandidate.class);
-		when(step.getStepsInstance()).thenReturn(new Object());
+		when(step.getStepsType()).then(returnObjectClass());
 		when(step.matches(eq(name), anyString())).thenReturn(true);
 		return step;
 	}

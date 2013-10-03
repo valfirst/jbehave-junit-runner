@@ -84,7 +84,13 @@ public class JUnitScenarioReporter implements StoryReporter {
 						currentScenario = scenarioDescriptions.next();
 					}
 					currentStep = currentStoryDescription;
-				} else if (storyDescription.isTest()
+				} else
+				// Related to issue #28: When a story does not contain any
+				// scenarios, isTest returns true, but getMethodName
+				// still returns null, because it cannot be parsed by JUnit as a
+				// method name.
+				if (storyDescription.isTest()
+						&& storyDescription.getMethodName() != null
 						&& storyDescription.getMethodName().equals(
 								story.getName())) {
 					// Story BeforeStories or After Stories

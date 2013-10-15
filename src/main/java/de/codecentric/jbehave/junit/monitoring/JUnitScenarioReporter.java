@@ -51,6 +51,18 @@ public class JUnitScenarioReporter implements StoryReporter {
 	private PendingStepStrategy pendingStepStrategy = new PassingUponPendingStep();
 	private Keywords keywords;
 
+	private boolean notifyFinished = true;
+
+	public JUnitScenarioReporter(RunNotifier notifier, int totalTests,
+			Description rootDescription, Keywords keywords, boolean notifyFinished) {
+		this.totalTests = totalTests;
+		this.rootDescription = rootDescription;
+		this.notifier = notifier;
+		this.storyDescriptions = rootDescription.getChildren();
+		this.keywords = keywords;
+		this.notifyFinished = notifyFinished;
+	}
+	
 	public JUnitScenarioReporter(RunNotifier notifier, int totalTests,
 			Description rootDescription, Keywords keywords) {
 		this.totalTests = totalTests;
@@ -117,7 +129,7 @@ public class JUnitScenarioReporter implements StoryReporter {
 					testCounter++;
 			}
 
-			if (testCounter == totalTests) {
+			if (testCounter == totalTests && notifyFinished) {
 				Result result = new Result();
 				notifier.fireTestRunFinished(result);
 			}

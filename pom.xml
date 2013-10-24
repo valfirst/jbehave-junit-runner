@@ -9,7 +9,7 @@
 
 	<groupId>de.codecentric</groupId>
 	<artifactId>jbehave-junit-runner</artifactId>
-	<version>1.0.2-SNAPSHOT</version>
+	<version>1.0.3</version>
 	<packaging>jar</packaging>
 
 	<name>JBehave JUnit Runner</name>
@@ -47,7 +47,7 @@
 	</scm>
 
 	<properties>
-		<jbehave.version>3.8</jbehave.version>
+		<jbehave.version>3.8-Arquillian</jbehave.version>
 		<junit.version>4.10</junit.version>
 		<mockito.version>1.9.0</mockito.version>
 		<keystore.password>dev_password</keystore.password>

@@ -16,6 +16,7 @@ import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
+import org.jbehave.core.model.Lifecycle;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.OutcomesTable;
@@ -327,6 +328,10 @@ public class JUnitScenarioReporter implements StoryReporter {
 
 	public void usePendingStepStrategy(PendingStepStrategy strategy) {
 		this.pendingStepStrategy = strategy;
+	}
+
+	public void lifecyle(Lifecycle lifecycle) {
+		logger.info("Story lifecycle: {}", lifecycle);
 	}
 
 }

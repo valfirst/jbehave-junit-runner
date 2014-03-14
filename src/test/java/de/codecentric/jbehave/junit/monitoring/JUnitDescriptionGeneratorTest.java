@@ -1,5 +1,6 @@
 package de.codecentric.jbehave.junit.monitoring;
 
+import static org.hamcrest.CoreMatchers.everyItem;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
@@ -8,7 +9,6 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertThat;
-import static org.junit.matchers.JUnitMatchers.everyItem;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -192,7 +192,7 @@ public class JUnitDescriptionGeneratorTest {
 		when(scenario.getSteps()).thenReturn(
 				Arrays.asList(new String[] { "Given Step1", "Given Step1" }));
 		generateScenarioDescription();
-		assertThat(description.getChildren(),
+		assertThat(description.getChildren(), 
 				everyItem(whoseDisplayName(startsWith("Given Step1"))));
 		assertThat(description.getChildren().size(), is(2));
 		assertThat(description.getChildren(),

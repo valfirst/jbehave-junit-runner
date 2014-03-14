@@ -29,7 +29,7 @@ import de.codecentric.jbehave.junit.monitoring.step.ExampleSteps;
 public class MathStories extends JUnitStories {
 
 	public MathStories() {
-		JUnitReportingRunner.recommandedControls(configuredEmbedder());
+		JUnitReportingRunner.recommendedControls(configuredEmbedder());
 	}
 
 	@Override

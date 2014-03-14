@@ -16,7 +16,7 @@ import de.codecentric.jbehave.junit.monitoring.step.ExampleSteps;
 public class ExampleScenarioJUnitStories extends JUnitStories {
 
 	public ExampleScenarioJUnitStories() {
-		JUnitReportingRunner.recommandedControls(configuredEmbedder());
+		JUnitReportingRunner.recommendedControls(configuredEmbedder());
 	}
 
 	@Override

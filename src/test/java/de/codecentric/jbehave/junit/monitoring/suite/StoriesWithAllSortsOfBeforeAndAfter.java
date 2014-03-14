@@ -40,7 +40,7 @@ public class StoriesWithAllSortsOfBeforeAndAfter extends JUnitStories {
 
 	public StoriesWithAllSortsOfBeforeAndAfter() {
 		System.setProperty(Logger.PROP_JJM_LOGLEVEL, "debug");
-		JUnitReportingRunner.recommandedControls(configuredEmbedder());
+		JUnitReportingRunner.recommendedControls(configuredEmbedder());
 
 		CrossReference crossReference = new CrossReference("dummy")
 				.withJsonOnly().withOutputAfterEachStory(true)

@@ -23,7 +23,7 @@ public class JUnitReportingRunnerTest {
 		Embedder e = mock(Embedder.class);
 		when(e.embedderControls()).thenReturn(ec);
 		EmbedderControls recommandedControls = JUnitReportingRunner
-				.recommandedControls(e);
+				.recommendedControls(e);
 		assertThat(recommandedControls, is(ec));
 		verify(ec).doIgnoreFailureInView(true);
 		verify(ec).doIgnoreFailureInStories(true);

@@ -1,33 +1,18 @@
 package de.codecentric.jbehave.junit.monitoring;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.failures.FailingUponPendingStep;
 import org.jbehave.core.failures.PassingUponPendingStep;
 import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
-import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.model.GivenStories;
-import org.jbehave.core.model.Lifecycle;
-import org.jbehave.core.model.Meta;
-import org.jbehave.core.model.Narrative;
-import org.jbehave.core.model.OutcomesTable;
-import org.jbehave.core.model.Scenario;
-import org.jbehave.core.model.Story;
-import org.jbehave.core.model.StoryDuration;
+import org.jbehave.core.model.*;
 import org.jbehave.core.reporters.StoryReporter;
 import org.junit.runner.Description;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
+
+import java.util.*;
 
 public class JUnitScenarioReporter implements StoryReporter {
 	Logger logger = new Logger();
@@ -52,7 +37,7 @@ public class JUnitScenarioReporter implements StoryReporter {
 	private PendingStepStrategy pendingStepStrategy = new PassingUponPendingStep();
 	private Keywords keywords;
 
-	public JUnitScenarioReporter(RunNotifier notifier, int totalTests,
+    public JUnitScenarioReporter(RunNotifier notifier, int totalTests,
 			Description rootDescription, Keywords keywords) {
 		this.totalTests = totalTests;
 		this.rootDescription = rootDescription;
@@ -113,7 +98,13 @@ public class JUnitScenarioReporter implements StoryReporter {
 			prepareNextStep();
 		} else {
 			if (!failedSteps.contains(currentStoryDescription)) {
-				notifier.fireTestFinished(currentStoryDescription);
+                // IntelliJ 13.1 does not propogate a step failure up to the story level.
+                // When there is a step failure then notify that its story has also failed.
+                if (failedSteps.size() == 0) {
+                    notifier.fireTestFinished(currentStoryDescription);
+                } else {
+                    notifier.fireTestFailure(new Failure(currentStoryDescription, new RuntimeException("story failed!")));
+                }
 				if (currentStoryDescription.isTest())
 					testCounter++;
 			}
@@ -178,7 +169,13 @@ public class JUnitScenarioReporter implements StoryReporter {
 	public void afterScenario() {
 		logger.info("After Scenario: {}", currentScenario.getDisplayName());
 		if (!givenStoryContext) {
-			notifier.fireTestFinished(currentScenario);
+            // IntelliJ 13.1 does not propogate a step failure up to the scenario level.
+            // When there is a step failure then notify that its scenario has also failed.
+            if (failedSteps.size() == 0) {
+                notifier.fireTestFinished(currentScenario);
+            } else {
+                notifier.fireTestFailure(new Failure(currentScenario, new RuntimeException("scenario failed!")));
+            }
 			if (scenarioDescriptions.hasNext()) {
 				currentScenario = scenarioDescriptions.next();
 				logger.debug("--> updating current scenario to {}",
@@ -253,6 +250,8 @@ public class JUnitScenarioReporter implements StoryReporter {
 				notifier.fireTestStarted(currentStep);
 				notifier.fireTestFailure(new Failure(currentStep,
 						new RuntimeException("Step is pending!")));
+                // Pending step strategy says to fail so treat this step as having failed. :)
+                failedSteps.add(currentStep);
 			} else {
 				notifier.fireTestIgnored(currentStep);
 			}

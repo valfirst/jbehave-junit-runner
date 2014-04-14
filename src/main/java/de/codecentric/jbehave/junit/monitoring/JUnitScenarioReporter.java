@@ -37,7 +37,12 @@ public class JUnitScenarioReporter implements StoryReporter {
 	private PendingStepStrategy pendingStepStrategy = new PassingUponPendingStep();
 	private Keywords keywords;
 
-    public JUnitScenarioReporter(RunNotifier notifier, int totalTests,
+    /**
+     * Use to track whether any scenario in the current story has failed. This is useful to indicate a story has failed.
+     */
+    private boolean anyScenarioFailedInCurrentStory = false;
+
+	public JUnitScenarioReporter(RunNotifier notifier, int totalTests,
 			Description rootDescription, Keywords keywords) {
 		this.totalTests = totalTests;
 		this.rootDescription = rootDescription;
@@ -54,6 +59,7 @@ public class JUnitScenarioReporter implements StoryReporter {
 			givenStoryContext = true;
 
 		} else {
+            anyScenarioFailedInCurrentStory = false;
 			if (testCounter == 0) {
 				notifier.fireTestRunStarted(rootDescription);
 			}
@@ -100,7 +106,7 @@ public class JUnitScenarioReporter implements StoryReporter {
 			if (!failedSteps.contains(currentStoryDescription)) {
                 // IntelliJ 13.1 does not propogate a step failure up to the story level.
                 // When there is a step failure then notify that its story has also failed.
-                if (failedSteps.size() == 0) {
+                if (anyScenarioFailedInCurrentStory == false) {
                     notifier.fireTestFinished(currentStoryDescription);
                 } else {
                     notifier.fireTestFailure(new Failure(currentStoryDescription, new RuntimeException("story failed!")));
@@ -175,6 +181,9 @@ public class JUnitScenarioReporter implements StoryReporter {
                 notifier.fireTestFinished(currentScenario);
             } else {
                 notifier.fireTestFailure(new Failure(currentScenario, new RuntimeException("scenario failed!")));
+                anyScenarioFailedInCurrentStory = true;
+                // TODO: Code review this. Do we really need to keep track of failed steps between scenarios?
+                failedSteps.clear();
             }
 			if (scenarioDescriptions.hasNext()) {
 				currentScenario = scenarioDescriptions.next();

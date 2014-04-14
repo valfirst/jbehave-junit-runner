@@ -1,19 +1,14 @@
 package de.codecentric.jbehave.junit.monitoring.step;
 
-import static org.junit.Assert.assertEquals;
+import org.jbehave.core.annotations.*;
+import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.steps.Parameters;
+import org.junit.Assert;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jbehave.core.annotations.Alias;
-import org.jbehave.core.annotations.Composite;
-import org.jbehave.core.annotations.Given;
-import org.jbehave.core.annotations.Named;
-import org.jbehave.core.annotations.Then;
-import org.jbehave.core.annotations.When;
-import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.steps.Parameters;
-import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
 
 public class ExampleSteps {
 	int x;
@@ -84,4 +79,14 @@ public class ExampleSteps {
 	public void aComplexSituation() {
 
 	}
+
+    @When("this step fails")
+    public void thisStepFails() {
+        throw new RuntimeException("this step failed on purpose");
+    }
+
+    @Then("this step is not executed")
+    public void thisStepIsNotExecuted() {
+        // This step is to help document a scenario where a prior step is expected to fail and this step will not execute.
+    }
 }

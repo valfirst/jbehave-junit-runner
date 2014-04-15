@@ -287,6 +287,19 @@ public class JUnitScenarioReporter implements StoryReporter {
 		}
 	}
 
+    /**
+     * Notify the IDE that the current step and scenario is not being executed. Reason is a JBehave meta tag is filtering out this
+     * scenario.
+     *
+     * @param arg0
+     * @param arg1
+     */
+    public void scenarioNotAllowed(Scenario arg0, String arg1) {
+        logger.info("Scenario not allowed: {} {}", arg0, arg1);
+        notifier.fireTestIgnored(currentStep);
+        notifier.fireTestIgnored(currentScenario);
+    }
+
 	// BASICALLY UN-IMPLEMENTED METHODS
 
 	public void dryRun() {
@@ -319,10 +332,6 @@ public class JUnitScenarioReporter implements StoryReporter {
 
 	public void scenarioMeta(Meta arg0) {
 		logger.info("Meta: {}", arg0);
-	}
-
-	public void scenarioNotAllowed(Scenario arg0, String arg1) {
-		logger.info("Scenario not allowed: {} {}", arg0, arg1);
 	}
 
 	public void storyCancelled(Story arg0, StoryDuration arg1) {

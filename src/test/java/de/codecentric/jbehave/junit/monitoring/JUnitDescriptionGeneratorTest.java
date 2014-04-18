@@ -211,23 +211,23 @@ public class JUnitDescriptionGeneratorTest {
      * Commented out test because it does not compile on Mac OSX 10.9.2 with JDK 1.6 and IntelliJ 13.1.
      * IntelliJ complains that a symbol cannot be found for an assertThat method variant.
      */
-//	@Test
-//	public void shouldGenerateDescriptionForExampleTablesOnScenario() {
-//		addStepToScenario();
-//		int NUM_ROWS = 2;
-//		Map<String, String> row = addExamplesTableToScenario(NUM_ROWS);
-//
-//		generateScenarioDescription();
-//
-//		assertThat(description.getChildren().size(), is(NUM_ROWS));
-//		for (Description exampleDescription : description.getChildren()) {
-//			assertThat(exampleDescription.getChildren(),
-//					hasItem(Matchers.<Description> hasProperty("displayName",
-//							startsWith("Given Step1"))));
-//			assertThat(exampleDescription,
-//					hasProperty("displayName", startsWith("Example: " + row)));
-//		}
-//	}
+	@Test
+	public void shouldGenerateDescriptionForExampleTablesOnScenario() {
+		addStepToScenario();
+		int NUM_ROWS = 2;
+		Map<String, String> row = addExamplesTableToScenario(NUM_ROWS);
+
+		generateScenarioDescription();
+
+		assertThat(description.getChildren().size(), is(NUM_ROWS));
+		for (Description exampleDescription : description.getChildren()) {
+			assertThat(exampleDescription.getChildren(),
+					hasItem(Matchers.<Description> hasProperty("displayName",
+							startsWith("Given Step1"))));
+			assertThat(exampleDescription,
+					hasProperty("displayName", startsWith("Example: " + row)));
+		}
+	}
 
 	@Test
 	public void shouldGenerateChildrenForComposedSteps() {

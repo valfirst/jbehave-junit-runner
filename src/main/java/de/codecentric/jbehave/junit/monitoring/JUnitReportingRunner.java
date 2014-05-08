@@ -56,8 +56,12 @@ public class JUnitReportingRunner extends Runner {
 	}
 
 	/**
-	 * This method is meant to be overridden by child classes.
-	 * @param configurableEmbedder
+	 * This method is meant to be overridden by child classes to be used as an entry point for manipulating,
+	 * initializing, and parsing test classes before tests are executed.
+	 *
+	 * @param testClass The test class
+	 * @param configurableEmbedder The test class instance
+	 * @see de.codecentric.jbehave.junit.monitoring.SpringJUnitReportingRunner
 	 */
 	protected void prepareConfigurableEmbedder(Class<? extends ConfigurableEmbedder> testClass, ConfigurableEmbedder configurableEmbedder) throws Exception {
 		// Intentionally left blank.

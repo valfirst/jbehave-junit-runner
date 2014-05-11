@@ -63,7 +63,7 @@ Just add this annotation:
 
     @RunWith(JUnitReportingRunner.class)
     public class MyAcceptanceTests extends JUnitStories {
-        ....
+        ...
     }
 
 Usually, this is everything you have to do. If you want to,
@@ -75,6 +75,34 @@ Embedder so that it works nicely together with the JUnitReportingRunner.
 This tells JBehave to use only one thread, and don't throw any exceptions
 when generating views or otherwise wrapping the execution up. This would
 confuse JUnit considerably, rendering the AfterStories Suite incomplete.
+
+You can also add Spring autowiring support to your JBehave tests by using the `SpringJUnitReportingRunner`:
+
+	@RunWith(SpringJUnitReportingRunner.class)
+	@ContextConfiguration(locations = "classpath:spring-test.xml")
+    public class MyAcceptanceTests extends JUnitStories {
+    		@Autowired
+    		private WebDriverSteps lifecycleSteps;
+    		...
+    }
+
+Your `spring-test.xml` could look like this:
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <beans xmlns="http://www.springframework.org/schema/beans"
+    	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    	   xmlns:context="http://www.springframework.org/schema/context"
+    	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+    
+    	<context:component-scan base-package="com.acme"/>
+    
+    	<bean id="driverProvider" class="org.jbehave.web.selenium.PropertyWebDriverProvider"/>
+    
+    	<bean id="lifecycleSteps" class="org.jbehave.web.selenium.PerStoriesWebDriverSteps">
+    		<constructor-arg ref="driverProvider"/>
+    	</bean>
+    	...
+    </beans>
 
 Caveats
 ----------------------------

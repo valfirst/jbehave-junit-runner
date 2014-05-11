@@ -81,9 +81,9 @@ You can also add Spring autowiring support to your JBehave tests by using the `S
 	@RunWith(SpringJUnitReportingRunner.class)
 	@ContextConfiguration(locations = "classpath:spring-test.xml")
     public class MyAcceptanceTests extends JUnitStories {
-    		@Autowired
-    		private WebDriverSteps lifecycleSteps;
-    		...
+        @Autowired
+        private WebDriverSteps lifecycleSteps;
+        ...
     }
 
 Your `spring-test.xml` could look like this:

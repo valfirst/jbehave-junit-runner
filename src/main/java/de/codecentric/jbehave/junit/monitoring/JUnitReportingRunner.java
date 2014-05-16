@@ -38,6 +38,8 @@ public class JUnitReportingRunner extends Runner {
 			throws Throwable {
 		configurableEmbedder = testClass.newInstance();
 
+		prepareConfigurableEmbedder(testClass, configurableEmbedder);
+
 		if (configurableEmbedder instanceof JUnitStories) {
 			getStoryPathsFromJUnitStories(testClass);
 		} else if (configurableEmbedder instanceof JUnitStory) {
@@ -53,6 +55,18 @@ public class JUnitReportingRunner extends Runner {
 		initRootDescription();
 	}
 
+	/**
+	 * This method is meant to be overridden by child classes to be used as an entry point for manipulating,
+	 * initializing, and parsing test classes before tests are executed.
+	 *
+	 * @param testClass The test class
+	 * @param configurableEmbedder The test class instance
+	 * @see de.codecentric.jbehave.junit.monitoring.SpringJUnitReportingRunner
+	 */
+	protected void prepareConfigurableEmbedder(Class<? extends ConfigurableEmbedder> testClass, ConfigurableEmbedder configurableEmbedder) throws Exception {
+		// Intentionally left blank.
+	}
+
 	@Override
 	public Description getDescription() {
 		return rootDescription;
@@ -65,15 +79,15 @@ public class JUnitReportingRunner extends Runner {
 
 	@Override
 	public void run(RunNotifier notifier) {
-	
+
 		JUnitScenarioReporter junitReporter = new JUnitScenarioReporter(
 				notifier, numberOfTestCases, rootDescription, configuration.keywords());
 		// tell the reporter how to handle pending steps
 		junitReporter.usePendingStepStrategy(configuration
 				.pendingStepStrategy());
-	
+
 		addToStoryReporterFormats(junitReporter);
-	
+
 		try {
 			configuredEmbedder.runStoriesAsPaths(storyPaths);
 		} catch (Throwable e) {
@@ -83,15 +97,15 @@ public class JUnitReportingRunner extends Runner {
 		}
 	}
 
-	
+
 	/**
-	 * @deprecated use {@link #recommendedControls(Embedder)} instead.  
+	 * @deprecated use {@link #recommendedControls(Embedder)} instead.
 	 */
 	@Deprecated
 	public static EmbedderControls recommandedControls(Embedder embedder) {
 		return recommendedControls(embedder);
 	}
-	
+
 	public static EmbedderControls recommendedControls(Embedder embedder) {
 		return embedder.embedderControls()
 		// don't throw an exception on generating reports for failing stories

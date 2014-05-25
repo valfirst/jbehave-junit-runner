@@ -1,14 +1,19 @@
 package de.codecentric.jbehave.junit.monitoring.step;
 
-import org.jbehave.core.annotations.*;
-import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.steps.Parameters;
-import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import org.jbehave.core.annotations.Alias;
+import org.jbehave.core.annotations.Composite;
+import org.jbehave.core.annotations.Given;
+import org.jbehave.core.annotations.Named;
+import org.jbehave.core.annotations.Then;
+import org.jbehave.core.annotations.When;
+import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.steps.Parameters;
+import org.junit.Assert;
 
 public class ExampleSteps {
 	int x;

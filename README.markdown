@@ -42,11 +42,11 @@ library to the classpath as well. They can be
 seen in the `pom.xml`. For convenience, they are
 listed here, too:
 
-  * jbehave-core (3.9.1+)
+  * jbehave-core (3.9+)
   * junit (4.11)
 
 Your project will of course have JBehave already,
-just make sure it is version 3.9.1 or above.
+just make sure it is version 3.9 or above.
 
 
 Usage

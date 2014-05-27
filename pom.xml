@@ -37,6 +37,11 @@
 			<email>daniel.schneller@codecentric.de</email>
 			<organization>codecentric AG</organization>
 		</developer>
+        <developer>
+            <name>Stephen Kurlow</name>
+            <email>skurlow@gmail.com</email>
+            <organization>Top Secret</organization>
+        </developer>
 	</developers>
 
 	<scm>
@@ -47,7 +52,7 @@
 	</scm>
 
 	<properties>
-		<jbehave.version>3.9</jbehave.version>
+		<jbehave.version>3.9.1</jbehave.version>
 		<junit.version>4.11</junit.version>
 		<mockito.version>1.9.0</mockito.version>
 		<spring.version>4.0.4.RELEASE</spring.version>

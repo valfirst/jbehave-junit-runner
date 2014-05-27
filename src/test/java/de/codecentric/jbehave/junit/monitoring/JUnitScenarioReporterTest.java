@@ -1,9 +1,5 @@
 package de.codecentric.jbehave.junit.monitoring;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.verify;
-
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.failures.FailingUponPendingStep;
 import org.jbehave.core.failures.PendingStepStrategy;
@@ -15,12 +11,13 @@ import org.junit.runner.Description;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Matchers;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.mockito.internal.verification.VerificationModeFactory;
+
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class JUnitScenarioReporterTest {
 
@@ -144,7 +141,6 @@ public class JUnitScenarioReporterTest {
 	@Test
 	public void failureInBeforeStoriesShouldCountOnce() {
 		Description beforeStories = addBeforeStories();
-		Description child = addChildToScenario("child");
 
 		reporter = new JUnitScenarioReporter(notifier, ONE_BEFORE_STORIES
 				+ ONE_STEP, rootDescription, keywords);
@@ -159,15 +155,7 @@ public class JUnitScenarioReporterTest {
 		reporter.afterStory(false);
 		verify(notifier).fireTestStarted(beforeStories);
 		verify(notifier).fireTestFailure(Mockito.<Failure> anyObject());
-
-		reportStoryAndScenarioStart(reporter);
-		verifyStoryStarted();
-		verifyScenarioStarted();
-
-		reportStepSuccess(reporter);
-		verifyStepSuccess(child);
-		reportScenarioAndStoryFinish(reporter);
-		verifyTestFinish();
+        // Story, its scenario(s) and its step(s) should not start nor finish if 'before stories' failed.
 	}
 
 	@Test
@@ -309,22 +297,23 @@ public class JUnitScenarioReporterTest {
 	}
 
 	@Test
-	public void shouldFailForPendingStepsIfConfigurationSaysSo() {
+	public void shouldFailForPendingStepsAtBothStepAndScenarioLevelsIfConfigurationSaysSo() {
 		Description child = addChildToScenario("child");
 
-		reporter = new JUnitScenarioReporter(notifier, 3,
+		reporter = new JUnitScenarioReporter(notifier, ONE_STEP,
 				rootDescription, keywords);
 
 		PendingStepStrategy strategy = new FailingUponPendingStep();
 		reporter.usePendingStepStrategy(strategy);
 
 		reportStoryAndScenarioStart(reporter);
-		// reporter.beforeStep("child");
 		reporter.pending("child");
+        reporter.failed("child",
+                new UUIDExceptionWrapper(new Exception("FAIL")));
 		verifyStoryStarted();
 		verifyScenarioStarted();
 		verify(notifier).fireTestStarted(child);
-		verify(notifier).fireTestFailure(Mockito.<Failure> anyObject());
+		verify(notifier, times(2)).fireTestFailure(Mockito.<Failure> anyObject());
 	}
 
 	@Test

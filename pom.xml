@@ -37,11 +37,13 @@
 			<email>daniel.schneller@codecentric.de</email>
 			<organization>codecentric AG</organization>
 		</developer>
-        <developer>
+	</developers>
+    <contributors>
+        <contributor>
             <name>Stephen Kurlow</name>
             <email>skurlow@gmail.com</email>
-        </developer>
-	</developers>
+        </contributor>
+    </contributors>
 
 	<scm>
 		<connection>scm:git:git://github.com/codecentric/jbehave-junit-runner.git</connection>

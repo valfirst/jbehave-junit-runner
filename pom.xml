@@ -38,6 +38,12 @@
 			<organization>codecentric AG</organization>
 		</developer>
 	</developers>
+    <contributors>
+        <contributor>
+            <name>Stephen Kurlow</name>
+            <email>skurlow@gmail.com</email>
+        </contributor>
+    </contributors>
 
 	<scm>
 		<connection>scm:git:git://github.com/codecentric/jbehave-junit-runner.git</connection>
@@ -47,6 +53,7 @@
 	</scm>
 
 	<properties>
+		<jdk.version>1.7</jdk.version>
 		<jbehave.version>3.9</jbehave.version>
 		<junit.version>4.11</junit.version>
 		<mockito.version>1.9.0</mockito.version>
@@ -59,6 +66,15 @@
 
 	<build>
 		<plugins>
+			<plugin>
+				<!-- Ensure we compile with the correct version of the JDK -->
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>${jdk.version}</source>
+					<target>${jdk.version}</target>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
@@ -94,7 +110,6 @@
 					<pushChanges>false</pushChanges>
 				</configuration>
 			</plugin>
-
 		</plugins>
 	</build>
 	<dependencies>

@@ -84,4 +84,14 @@ public class ExampleSteps {
 	public void aComplexSituation() {
 
 	}
+
+    @When("this step fails")
+    public void thisStepFails() {
+        throw new RuntimeException("this step failed on purpose");
+    }
+
+    @Then("this step is not executed")
+    public void thisStepIsNotExecuted() {
+        // This step is to help document a scenario where a prior step is expected to fail and this step will not execute.
+    }
 }

@@ -38,12 +38,12 @@
 			<organization>codecentric AG</organization>
 		</developer>
 	</developers>
-    <contributors>
-        <contributor>
-            <name>Stephen Kurlow</name>
-            <email>skurlow@gmail.com</email>
-        </contributor>
-    </contributors>
+	<contributors>
+		<contributor>
+			<name>Stephen Kurlow</name>
+			<email>skurlow@gmail.com</email>
+		</contributor>
+	</contributors>
 
 	<scm>
 		<connection>scm:git:git://github.com/codecentric/jbehave-junit-runner.git</connection>

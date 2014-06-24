@@ -160,7 +160,7 @@ public class JUnitScenarioReporterTest {
 		reporter.afterStory(false);
 		verify(notifier).fireTestStarted(beforeStories);
 		verify(notifier).fireTestFailure(Mockito.<Failure> anyObject());
-        // Story, its scenario(s) and its step(s) should not start nor finish if 'before stories' failed.
+		// Story, its scenario(s) and its step(s) should not start nor finish if 'before stories' failed.
 	}
 
 	@Test

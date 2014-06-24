@@ -245,6 +245,7 @@ public class JUnitScenarioReporter implements StoryReporter {
 		logger.info("Step Failed: {} (cause: {})", step, e.getMessage());
 		if (!givenStoryContext) {
 			notifier.fireTestFailure(new Failure(currentStep, e));
+			notifier.fireTestFinished(currentStep);
 			failedSteps.add(currentStep);
 			prepareNextStep();
 		}
@@ -276,6 +277,7 @@ public class JUnitScenarioReporter implements StoryReporter {
 						new RuntimeException("Step is pending!")));
                 // Pending step strategy says to fail so treat this step as having failed.
                 failedSteps.add(currentStep);
+				notifier.fireTestFinished(currentStep);
 			} else {
 				notifier.fireTestIgnored(currentStep);
 			}

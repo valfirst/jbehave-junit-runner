@@ -97,6 +97,7 @@ public class JUnitScenarioReporterTest {
 		verifyScenarioStarted();
 		verify(notifier).fireTestStarted(child1);
 		verify(notifier).fireTestFailure(Matchers.<Failure> anyObject());
+		verify(notifier).fireTestFinished(child1);
 	}
 
 	@Test
@@ -318,6 +319,7 @@ public class JUnitScenarioReporterTest {
 		verifyScenarioStarted();
 		verify(notifier).fireTestStarted(child);
 		verify(notifier, times(2)).fireTestFailure(Mockito.<Failure> anyObject());
+		verify(notifier, times(2)).fireTestFinished(child);
 	}
 
 	@Test

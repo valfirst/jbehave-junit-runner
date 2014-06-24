@@ -313,8 +313,8 @@ public class JUnitScenarioReporterTest {
 
 		reportStoryAndScenarioStart(reporter);
 		reporter.pending("child");
-        reporter.failed("child",
-                new UUIDExceptionWrapper(new Exception("FAIL")));
+		reporter.failed("child",
+				new UUIDExceptionWrapper(new Exception("FAIL")));
 		verifyStoryStarted();
 		verifyScenarioStarted();
 		verify(notifier).fireTestStarted(child);

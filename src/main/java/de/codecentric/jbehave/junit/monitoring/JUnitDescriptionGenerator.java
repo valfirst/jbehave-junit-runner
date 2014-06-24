@@ -186,7 +186,7 @@ public class JUnitDescriptionGenerator {
 		// live, that we end up in
 		// the correct class.
 		Description testDescription = Description.createTestDescription(step.getStepsType(),
-		        getJunitSafeString(stringStep));
+				getJunitSafeString(stringStep));
 		description.addChild(testDescription);
 	}
 

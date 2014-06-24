@@ -17,13 +17,13 @@ import org.junit.Test;
  */
 public class IgnoredTestsTest {
 
-    @Test
-    public void shouldPass() {
-        // Nothing to do. Wish this test to pass.
-    }
+	@Test
+	public void shouldPass() {
+		// Nothing to do. Wish this test to pass.
+	}
 
-    @Ignore
-    public void shouldBeIgnored() {
-        // Nothing to do. Wish this test to be ignored.
-    }
+	@Ignore
+	public void shouldBeIgnored() {
+		// Nothing to do. Wish this test to be ignored.
+	}
 }

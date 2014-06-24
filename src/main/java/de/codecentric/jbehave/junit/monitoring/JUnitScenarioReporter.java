@@ -52,10 +52,10 @@ public class JUnitScenarioReporter implements StoryReporter {
 	private PendingStepStrategy pendingStepStrategy = new PassingUponPendingStep();
 	private Keywords keywords;
 
-    /**
-     * Use to track whether any scenario in the current story has failed. This is useful to indicate a story has failed.
-     */
-    private boolean anyScenarioFailedInCurrentStory = false;
+	/**
+	 * Use to track whether any scenario in the current story has failed. This is useful to indicate a story has failed.
+	 */
+	private boolean anyScenarioFailedInCurrentStory = false;
 
 	public JUnitScenarioReporter(RunNotifier notifier, int totalTests,
 			Description rootDescription, Keywords keywords) {
@@ -74,7 +74,7 @@ public class JUnitScenarioReporter implements StoryReporter {
 			givenStoryContext = true;
 
 		} else {
-            anyScenarioFailedInCurrentStory = false;
+			anyScenarioFailedInCurrentStory = false;
 			if (testCounter == 0) {
 				notifier.fireTestRunStarted(rootDescription);
 			}
@@ -119,13 +119,13 @@ public class JUnitScenarioReporter implements StoryReporter {
 			prepareNextStep();
 		} else {
 			if (!failedSteps.contains(currentStoryDescription)) {
-                // IntelliJ 13.1 does not propogate a step failure up to the story level.
-                // When there is a step failure then notify that its story has also failed.
-                if (anyScenarioFailedInCurrentStory == false) {
-                    notifier.fireTestFinished(currentStoryDescription);
-                } else {
-                    notifier.fireTestFailure(new Failure(currentStoryDescription, new RuntimeException("story failed!")));
-                }
+				// IntelliJ 13.1 does not propogate a step failure up to the story level.
+				// When there is a step failure then notify that its story has also failed.
+				if (anyScenarioFailedInCurrentStory == false) {
+					notifier.fireTestFinished(currentStoryDescription);
+				} else {
+					notifier.fireTestFailure(new Failure(currentStoryDescription, new RuntimeException("story failed!")));
+				}
 				if (currentStoryDescription.isTest())
 					testCounter++;
 			}
@@ -190,16 +190,16 @@ public class JUnitScenarioReporter implements StoryReporter {
 	public void afterScenario() {
 		logger.info("After Scenario: {}", currentScenario.getDisplayName());
 		if (!givenStoryContext) {
-            // IntelliJ 13.1 does not propogate a step failure up to the scenario level.
-            // When there is a step failure then notify that its scenario has also failed.
-            if (failedSteps.size() == 0) {
-                notifier.fireTestFinished(currentScenario);
-            } else {
-                notifier.fireTestFailure(new Failure(currentScenario, new RuntimeException("scenario failed!")));
-                anyScenarioFailedInCurrentStory = true;
-                // TODO: Code review this. Do we really need to keep track of failed steps between scenarios?
-                failedSteps.clear();
-            }
+			// IntelliJ 13.1 does not propogate a step failure up to the scenario level.
+			// When there is a step failure then notify that its scenario has also failed.
+			if (failedSteps.size() == 0) {
+				notifier.fireTestFinished(currentScenario);
+			} else {
+				notifier.fireTestFailure(new Failure(currentScenario, new RuntimeException("scenario failed!")));
+				anyScenarioFailedInCurrentStory = true;
+				// TODO: Code review this. Do we really need to keep track of failed steps between scenarios?
+				failedSteps.clear();
+			}
 			if (scenarioDescriptions.hasNext()) {
 				currentScenario = scenarioDescriptions.next();
 				logger.debug("--> updating current scenario to {}",
@@ -275,8 +275,8 @@ public class JUnitScenarioReporter implements StoryReporter {
 				notifier.fireTestStarted(currentStep);
 				notifier.fireTestFailure(new Failure(currentStep,
 						new RuntimeException("Step is pending!")));
-                // Pending step strategy says to fail so treat this step as having failed.
-                failedSteps.add(currentStep);
+				// Pending step strategy says to fail so treat this step as having failed.
+				failedSteps.add(currentStep);
 				notifier.fireTestFinished(currentStep);
 			} else {
 				notifier.fireTestIgnored(currentStep);
@@ -304,18 +304,18 @@ public class JUnitScenarioReporter implements StoryReporter {
 		}
 	}
 
-    /**
-     * Notify the IDE that the current step and scenario is not being executed. Reason is a JBehave meta tag is filtering out this
-     * scenario.
-     *
-     * @param arg0
-     * @param arg1
-     */
-    public void scenarioNotAllowed(Scenario arg0, String arg1) {
-        logger.info("Scenario not allowed: {} {}", arg0, arg1);
-        notifier.fireTestIgnored(currentStep);
-        notifier.fireTestIgnored(currentScenario);
-    }
+	/**
+	 * Notify the IDE that the current step and scenario is not being executed. Reason is a JBehave meta tag is filtering out this
+	 * scenario.
+	 *
+	 * @param arg0
+	 * @param arg1
+	 */
+	public void scenarioNotAllowed(Scenario arg0, String arg1) {
+		logger.info("Scenario not allowed: {} {}", arg0, arg1);
+		notifier.fireTestIgnored(currentStep);
+		notifier.fireTestIgnored(currentScenario);
+	}
 
 	// BASICALLY UN-IMPLEMENTED METHODS
 

@@ -15,7 +15,7 @@ public class ShowIgnoredScenariosAsIgnoredAndNotPassedStory extends JUnitStory {
 
 	public ShowIgnoredScenariosAsIgnoredAndNotPassedStory() {
 		JUnitReportingRunner.recommendedControls(configuredEmbedder());
-        configuredEmbedder().useMetaFilters(Arrays.asList("-skip"));
+		configuredEmbedder().useMetaFilters(Arrays.asList("-skip"));
 	}
 
 	@Override

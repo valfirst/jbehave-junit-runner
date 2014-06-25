@@ -9,7 +9,7 @@ custom test runners.
 Installation
 ==========================
 The project consists of only a handful of classes
-and is easy to use. 
+and is easy to use.
 
 
 Using Maven
@@ -29,7 +29,7 @@ Note that the JBehave library is set to scope `provided`
 in the POM, because any project using this Runner will
 naturally have their own version of JBehave already.
 
-Current development SNAPSHOT versions are available from 
+Current development SNAPSHOT versions are available from
 [Sonatype's Nexus for Open Source projects](https://oss.sonatype.org/content/repositories/snapshots/de/codecentric/jbehave-junit-runner/).
 
 Without Maven
@@ -67,42 +67,14 @@ Just add this annotation:
     }
 
 Usually, this is everything you have to do. If you want to,
-you can use a little helper method to configure the configured 
+you can use a little helper method to configure the configured
 Embedder so that it works nicely together with the JUnitReportingRunner.
 
 	JUnitReportingRunner.recommandedControls(configuredEmbedder());
-	 
+
 This tells JBehave to use only one thread, and don't throw any exceptions
 when generating views or otherwise wrapping the execution up. This would
 confuse JUnit considerably, rendering the AfterStories Suite incomplete.
-
-You can also add Spring autowiring support to your JBehave tests by using the `SpringJUnitReportingRunner`:
-
-	@RunWith(SpringJUnitReportingRunner.class)
-	@ContextConfiguration(locations = "classpath:spring-test.xml")
-    public class MyAcceptanceTests extends JUnitStories {
-        @Autowired
-        private WebDriverSteps lifecycleSteps;
-        ...
-    }
-
-Your `spring-test.xml` could look like this:
-
-    <?xml version="1.0" encoding="UTF-8"?>
-    <beans xmlns="http://www.springframework.org/schema/beans"
-    	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    	   xmlns:context="http://www.springframework.org/schema/context"
-    	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
-    
-    	<context:component-scan base-package="com.acme"/>
-    
-    	<bean id="driverProvider" class="org.jbehave.web.selenium.PropertyWebDriverProvider"/>
-    
-    	<bean id="lifecycleSteps" class="org.jbehave.web.selenium.PerStoriesWebDriverSteps">
-    		<constructor-arg ref="driverProvider"/>
-    	</bean>
-    	...
-    </beans>
 
 Caveats
 ----------------------------
@@ -123,7 +95,7 @@ If you run into problems like this
         at java.lang.reflect.Constructor.newInstance(Constructor.java:513)
         at org.junit.internal.builders.AnnotatedBuilder.buildRunner(AnnotatedBuilder.java:31)
         ....
-        
+
 you are likely extending a custom base class which
 was probably introduced to provide some common methods
 for all  your test classes. This is perfectly fine,
@@ -131,9 +103,9 @@ however in case you pulled up the `storyPaths()` method
 into that common base class, you
 
   1. either need to make it public _OR_
-  1. override it in all descendants of that base class 
+  1. override it in all descendants of that base class
      (just calling the super implementation is fine).
-     
+
 This is due to a reflection issue and might be fixed in
 future versions.
 
@@ -169,12 +141,12 @@ In case you run into problems or have ideas on how to improve this
 piece of software, please do not hesitate to open an issue in the
 issue tracker, here on GitHub.
 
-To make things easier (and quicker) for yourself (and us), please 
+To make things easier (and quicker) for yourself (and us), please
 provide the following pieces of information in your ticket:
 
   * The version you are using (e. g. "1.0.0" or "1.0.1-SNAPSHOT as of 2012-05-25")
   * If possible, a stack trace of the error.
-  * Ideally, a limited test case that allows us to reproduce the 
+  * Ideally, a limited test case that allows us to reproduce the
     problem locally. This is indeed the best way to get a bug fixed
     quickly, because we'll have something specific to work on.
   * Any information about your environment that might be helpful, e. g.

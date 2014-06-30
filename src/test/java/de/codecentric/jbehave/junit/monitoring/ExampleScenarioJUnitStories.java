@@ -1,6 +1,8 @@
 package de.codecentric.jbehave.junit.monitoring;
 
-import de.codecentric.jbehave.junit.monitoring.step.ExampleSteps;
+import java.util.Arrays;
+import java.util.List;
+
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.junit.JUnitStories;
@@ -8,8 +10,7 @@ import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.junit.runner.RunWith;
 
-import java.util.Arrays;
-import java.util.List;
+import de.codecentric.jbehave.junit.monitoring.step.ExampleSteps;
 
 @RunWith(JUnitReportingRunner.class)
 public class ExampleScenarioJUnitStories extends JUnitStories {

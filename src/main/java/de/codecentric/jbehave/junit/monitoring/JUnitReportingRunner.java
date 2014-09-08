@@ -21,10 +21,11 @@ import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.NullStepMonitor;
 import org.jbehave.core.steps.StepMonitor;
 import org.junit.runner.Description;
-import org.junit.runner.Runner;
 import org.junit.runner.notification.RunNotifier;
+import org.junit.runners.BlockJUnit4ClassRunner;
+import org.junit.runners.model.Statement;
 
-public class JUnitReportingRunner extends Runner {
+public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 	private List<Description> storyDescriptions;
 	private Embedder configuredEmbedder;
 	private List<String> storyPaths;
@@ -34,8 +35,10 @@ public class JUnitReportingRunner extends Runner {
 	List<CandidateSteps> candidateSteps;
 	private ConfigurableEmbedder configurableEmbedder;
 
+	@SuppressWarnings("unchecked")
 	public JUnitReportingRunner(Class<? extends ConfigurableEmbedder> testClass)
 			throws Throwable {
+		super(testClass);
 		configurableEmbedder = testClass.newInstance();
 
 		if (configurableEmbedder instanceof JUnitStories) {
@@ -63,31 +66,35 @@ public class JUnitReportingRunner extends Runner {
 		return numberOfTestCases;
 	}
 
-	@Override
-	public void run(RunNotifier notifier) {
-
-		JUnitScenarioReporter junitReporter = new JUnitScenarioReporter(
-				notifier, numberOfTestCases, rootDescription, configuration.keywords());
-		// tell the reporter how to handle pending steps
-		junitReporter.usePendingStepStrategy(configuration
-				.pendingStepStrategy());
-
-		addToStoryReporterFormats(junitReporter);
-
-		try {
-			configuredEmbedder.runStoriesAsPaths(storyPaths);
-		} catch (Throwable e) {
-			throw new RuntimeException(e);
-		} finally {
-			configuredEmbedder.generateCrossReference();
-		}
-	}
-
-
 	/**
-	 * @deprecated use {@link #recommendedControls(Embedder)} instead.
+	 * Returns a {@link Statement}: Call {@link #runChild(Object, RunNotifier)}
+	 * on each object returned by {@link #getChildren()} (subject to any imposed
+	 * filter and sort)
 	 */
-	@Deprecated
+	@Override
+	protected Statement childrenInvoker(final RunNotifier notifier) {
+		return new Statement() {
+			@Override
+			public void evaluate() {
+				JUnitScenarioReporter junitReporter = new JUnitScenarioReporter(
+				notifier, numberOfTestCases, rootDescription, configuration.keywords());
+				// tell the reporter how to handle pending steps
+				junitReporter.usePendingStepStrategy(configuration
+						.pendingStepStrategy());
+			
+				addToStoryReporterFormats(junitReporter);
+			
+				try {
+					configuredEmbedder.runStoriesAsPaths(storyPaths);
+				} catch (Throwable e) {
+					throw new RuntimeException(e);
+				} finally {
+					configuredEmbedder.generateCrossReference();
+				}
+			}
+		};
+	}
+	
 	public static EmbedderControls recommandedControls(Embedder embedder) {
 		return recommendedControls(embedder);
 	}

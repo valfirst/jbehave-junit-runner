@@ -175,7 +175,9 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 	private void initRootDescription() {
 		rootDescription = Description
 				.createSuiteDescription(configurableEmbedder.getClass());
-		rootDescription.getChildren().addAll(storyDescriptions);
+		for (Description storyDescription : storyDescriptions) {
+			rootDescription.addChild(storyDescription);
+		}
 	}
 
 	private void addToStoryReporterFormats(JUnitScenarioReporter junitReporter) {

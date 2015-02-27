@@ -1,6 +1,7 @@
 JBehave JUnit Integration
 =========================
 [![Build Status](https://travis-ci.org/codecentric/jbehave-junit-runner.png?branch=master)](https://travis-ci.org/codecentric/jbehave-junit-runner)
+[![Coverage Status](https://coveralls.io/repos/codecentric/jbehave-junit-runner/badge.svg)](https://coveralls.io/r/codecentric/jbehave-junit-runner)
 
 This little project is designed to make JBehave
 stories & scenarios show up in the JUnit view

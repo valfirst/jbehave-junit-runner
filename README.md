@@ -26,7 +26,7 @@ all available from Maven Central.
     <dependency>
         <groupId>de.codecentric</groupId>
         <artifactId>jbehave-junit-runner</artifactId>
-        <version>1.1.2</version>
+        <version>1.2.0</version>
     </dependency>
 
 Note that the JBehave library is set to scope `provided`

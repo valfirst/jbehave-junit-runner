@@ -10,26 +10,20 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jbehave.core.configuration.Keywords;
+import org.jbehave.core.failures.BeforeOrAfterFailed;
 import org.jbehave.core.failures.FailingUponPendingStep;
 import org.jbehave.core.failures.PassingUponPendingStep;
 import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
-import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.model.GivenStories;
-import org.jbehave.core.model.Lifecycle;
-import org.jbehave.core.model.Meta;
-import org.jbehave.core.model.Narrative;
-import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
-import org.jbehave.core.model.StoryDuration;
-import org.jbehave.core.reporters.StoryReporter;
+import org.jbehave.core.reporters.NullStoryReporter;
 import org.junit.runner.Description;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 
-public class JUnitScenarioReporter implements StoryReporter {
+public class JUnitScenarioReporter extends NullStoryReporter {
 	Logger logger = new Logger();
 
 	private RunNotifier notifier;
@@ -42,12 +36,12 @@ public class JUnitScenarioReporter implements StoryReporter {
 	private Description currentStoryDescription;
 	private Iterator<Description> stepDescriptions;
 	private Iterator<Description> exampleDescriptions;
-	private Description nextExample;
+	private Description currentExample;
 	int testCounter = 0;
 	private final int totalTests;
 
 	private boolean givenStoryContext;
-	public Set<Description> failedSteps = new HashSet<Description>();
+	public Set<Description> failedSteps = new HashSet<>();
 
 	private PendingStepStrategy pendingStepStrategy = new PassingUponPendingStep();
 	private Keywords keywords;
@@ -66,7 +60,7 @@ public class JUnitScenarioReporter implements StoryReporter {
 		this.totalTests = totalTests;
 		this.rootDescription = rootDescription;
 		this.notifier = notifier;
-		this.storyDescriptions = rootDescription.getChildren();
+		storyDescriptions = rootDescription.getChildren();
 		this.keywords = keywords;
 		this.notifyFinished = notifyFinished;
 	}
@@ -76,10 +70,11 @@ public class JUnitScenarioReporter implements StoryReporter {
 		this.totalTests = totalTests;
 		this.rootDescription = rootDescription;
 		this.notifier = notifier;
-		this.storyDescriptions = rootDescription.getChildren();
+		storyDescriptions = rootDescription.getChildren();
 		this.keywords = keywords;
 	}
 
+	@Override
 	public void beforeStory(Story story, boolean isGivenStory) {
 		logger.info("Before Story: {} {}", story.getName(),
 				isGivenStory ? "(given story)" : "");
@@ -101,9 +96,8 @@ public class JUnitScenarioReporter implements StoryReporter {
 
 					scenarioDescriptions = storyDescription.getChildren()
 							.iterator();
-					if (scenarioDescriptions.hasNext()) {
-						currentScenario = scenarioDescriptions.next();
-					}
+					moveToNextScenario();
+					processBeforeStory();
 					currentStep = currentStoryDescription;
 				} else
 				// Related to issue #28: When a story does not contain any
@@ -124,6 +118,7 @@ public class JUnitScenarioReporter implements StoryReporter {
 
 	}
 
+	@Override
 	public void afterStory(boolean isGivenStory) {
 		logger.info("After Story: {} {}", currentStoryDescription
 				.getDisplayName(), isGivenStory ? "(given story)" : "");
@@ -131,6 +126,7 @@ public class JUnitScenarioReporter implements StoryReporter {
 			givenStoryContext = false;
 			notifier.fireTestFinished(currentStep);
 			prepareNextStep();
+			processBeforeScenario();
 		} else {
 			if (!failedSteps.contains(currentStoryDescription)) {
 				// IntelliJ 13.1 does not propogate a step failure up to the
@@ -145,9 +141,11 @@ public class JUnitScenarioReporter implements StoryReporter {
 									"story failed!")));
 				}
 				if (currentStoryDescription.isTest())
+				{
 					testCounter++;
+				}
 			}
-
+			processAfterStory();
 			if (testCounter == totalTests && notifyFinished) {
 				Result result = new Result();
 				notifier.fireTestRunFinished(result);
@@ -155,37 +153,34 @@ public class JUnitScenarioReporter implements StoryReporter {
 		}
 	}
 
+	@Override
 	public void beforeScenario(String title) {
 		logger.info("Before Scenario: {}", title);
 		if (!givenStoryContext) {
 			notifier.fireTestStarted(currentScenario);
 
-			ArrayList<Description> children = currentScenario.getChildren();
+			List<Description> children = currentScenario.getChildren();
 			List<Description> examples = filterExamples(children);
 			if (!examples.isEmpty()) {
 				exampleDescriptions = examples.iterator();
-				if (exampleDescriptions.hasNext()) {
-					nextExample = exampleDescriptions.next();
-				}
+				currentExample = null;
 			}
 			if (children.size() > examples.size()) {
 				// in case of given stories, these steps are actually stories,
-				// for which events
-				// will be fired in beforeStory(..., true)
-				ArrayList<Description> steps = new ArrayList<Description>(
+				// for which events will be fired in beforeStory(..., true)
+				List<Description> steps = new ArrayList<>(
 						currentScenario.getChildren());
 				steps.removeAll(examples);
 				stepDescriptions = getAllDescendants(steps).iterator();
-				if (stepDescriptions.hasNext()) {
-					currentStep = stepDescriptions.next();
-				}
+				moveToNextStep();
+				processBeforeScenario();
 			}
 		}
 	}
 
-	private List<Description> filterExamples(ArrayList<Description> children) {
+	private List<Description> filterExamples(List<Description> children) {
 		for (int i = 0; i < children.size(); i++) {
-			Description child = (Description) children.get(i);
+			Description child = children.get(i);
 			boolean isExample = child.getDisplayName().startsWith(
 					keywords.examplesTableRow() + " ");
 			if (isExample) {
@@ -196,8 +191,8 @@ public class JUnitScenarioReporter implements StoryReporter {
 	}
 
 	private Collection<Description> getAllDescendants(
-			ArrayList<Description> steps) {
-		List<Description> descendants = new ArrayList<Description>();
+			List<Description> steps) {
+		List<Description> descendants = new ArrayList<>();
 		for (Description child : steps) {
 			descendants.add(child);
 			descendants.addAll(getAllDescendants(child.getChildren()));
@@ -205,6 +200,7 @@ public class JUnitScenarioReporter implements StoryReporter {
 		return descendants;
 	}
 
+	@Override
 	public void afterScenario() {
 		logger.info("After Scenario: {}", currentScenario.getDisplayName());
 		if (!givenStoryContext) {
@@ -222,37 +218,81 @@ public class JUnitScenarioReporter implements StoryReporter {
 				// failed steps between scenarios?
 				failedSteps.clear();
 			}
-			if (scenarioDescriptions.hasNext()) {
-				currentScenario = scenarioDescriptions.next();
-				logger.debug("--> updating current scenario to {}",
-						currentScenario.getDisplayName());
+			processAfterScenario();
+			moveToNextScenario();
+		}
+	}
+
+	private void processBeforeStory() {
+		if (currentScenario != null &&
+				currentScenario.getDisplayName().startsWith(JUnitDescriptionGenerator.BEFORE_STORY_STEP_NAME)) {
+			// @BeforeStory has been called already
+			notifier.fireTestStarted(currentScenario);
+			notifier.fireTestFinished(currentScenario);
+			moveToNextScenario();
+		}
+	}
+
+	private void processAfterStory() {
+		if (currentScenario != null) {
+			if (currentScenario.getDisplayName().startsWith(JUnitDescriptionGenerator.AFTER_STORY_STEP_NAME)) {
+				// @AfterStory has been called already
+				notifier.fireTestStarted(currentScenario);
+				notifier.fireTestFinished(currentScenario);
+				moveToNextScenario();
+			}
+			else {
+				moveToNextScenario();
+				processAfterStory();
 			}
 		}
 	}
 
-	public void beforeExamples(List<String> arg0, ExamplesTable arg1) {
-		logger.info("Before Examples: {}", arg0 != null ? arg0 : "n/a");
+	private void processBeforeScenario() {
+		if (currentStep != null &&
+				currentStep.getDisplayName().startsWith(JUnitDescriptionGenerator.BEFORE_SCENARIO_STEP_NAME)) {
+			// @BeforeScenario has been called already
+			notifier.fireTestStarted(currentStep);
+			notifier.fireTestFinished(currentStep);
+			prepareNextStep();
+		}
 	}
 
+	private void processAfterScenario() {
+		if (currentStep != null) {
+			if (currentStep.getDisplayName().startsWith(JUnitDescriptionGenerator.AFTER_SCENARIO_STEP_NAME)) {
+				// @AfterScenario has been called already
+				notifier.fireTestStarted(currentStep);
+				notifier.fireTestFinished(currentStep);
+				prepareNextStep();
+			}
+			else {
+				moveToNextStep();
+				processAfterScenario();
+			}
+		}
+	}
+
+	@Override
 	public void example(Map<String, String> arg0) {
 		logger.info("Example: {}", arg0);
 
-		stepDescriptions = nextExample.getChildren().iterator();
-		if (stepDescriptions.hasNext()) {
-			currentStep = stepDescriptions.next();
+		if (currentExample != null && stepDescriptions != null)
+		{
+			processAfterScenario();
 		}
-
-		if (exampleDescriptions.hasNext()) {
-			nextExample = exampleDescriptions.next();
-		}
-
+		moveToNextExample();
+		stepDescriptions = currentExample.getChildren().iterator();
+		moveToNextStep();
+		processBeforeScenario();
 	}
 
-	public void afterExamples() {
-		logger.info("{}", "afterExamples");
-
+	private void moveToNextExample()
+	{
+		currentExample = exampleDescriptions.hasNext() ? exampleDescriptions.next() : null;
 	}
 
+	@Override
 	public void beforeStep(String title) {
 		logger.info("Before Step: {}", title);
 		if (!givenStoryContext) {
@@ -260,12 +300,17 @@ public class JUnitScenarioReporter implements StoryReporter {
 		}
 	}
 
+	@Override
 	public void failed(String step, Throwable e) {
 		if (e instanceof UUIDExceptionWrapper) {
 			e = ((UUIDExceptionWrapper) e).getCause();
 		}
 		logger.info("Step Failed: {} (cause: {})", step, e.getMessage());
 		if (!givenStoryContext) {
+			if (e instanceof BeforeOrAfterFailed)
+			{
+				notifier.fireTestStarted(currentStep);
+			}
 			notifier.fireTestFailure(new Failure(currentStep, e));
 			notifier.fireTestFinished(currentStep);
 			failedSteps.add(currentStep);
@@ -273,6 +318,7 @@ public class JUnitScenarioReporter implements StoryReporter {
 		}
 	}
 
+	@Override
 	public void successful(String step) {
 		logger.info("Step Succesful: {}", step);
 		if (!givenStoryContext) {
@@ -282,14 +328,27 @@ public class JUnitScenarioReporter implements StoryReporter {
 		}
 	}
 
+	private void moveToNextScenario()
+	{
+		currentScenario = scenarioDescriptions.hasNext() ? scenarioDescriptions.next() : null;
+		currentStep = currentScenario;
+	}
+
 	private void prepareNextStep() {
-		if (currentStep.isTest())
+		if (currentStep != null && currentStep.isTest())
+		{
 			testCounter++;
-		if (stepDescriptions != null && stepDescriptions.hasNext()) {
-			currentStep = stepDescriptions.next();
+		}
+		if (stepDescriptions != null) {
+			moveToNextStep();
 		}
 	}
 
+	 private void moveToNextStep() {
+		currentStep = stepDescriptions.hasNext() ? stepDescriptions.next() : null;
+	}
+
+	@Override
 	public void pending(String arg0) {
 		logger.info("Pending: {}", arg0);
 		if (!givenStoryContext) {
@@ -309,20 +368,20 @@ public class JUnitScenarioReporter implements StoryReporter {
 		}
 	}
 
+	@Override
 	public void ignorable(String arg0) {
 		logger.info("Ignorable: {}", arg0);
 		if (!givenStoryContext) {
 			notifier.fireTestIgnored(currentStep);
-
 			prepareNextStep();
 		}
 	}
 
+	@Override
 	public void notPerformed(String arg0) {
 		logger.info("Not performed: {}", arg0);
 		if (!givenStoryContext) {
 			notifier.fireTestIgnored(currentStep);
-
 			prepareNextStep();
 		}
 	}
@@ -331,64 +390,17 @@ public class JUnitScenarioReporter implements StoryReporter {
 	 * Notify the IDE that the current step and scenario is not being executed.
 	 * Reason is a JBehave meta tag is filtering out this scenario.
 	 *
-	 * @param arg0
-	 * @param arg1
+	 * @param scenario Scenario
+	 * @param filter Filter
 	 */
-	public void scenarioNotAllowed(Scenario arg0, String arg1) {
-		logger.info("Scenario not allowed: {} {}", arg0, arg1);
+	@Override
+	public void scenarioNotAllowed(Scenario scenario, String filter) {
+		logger.info("Scenario not allowed: {} {}", scenario, filter);
 		notifier.fireTestIgnored(currentStep);
 		notifier.fireTestIgnored(currentScenario);
 	}
 
-	// BASICALLY UN-IMPLEMENTED METHODS
-
-	public void dryRun() {
-		logger.info("{}", "dryRun");
+	public void usePendingStepStrategy(PendingStepStrategy pendingStepStrategy) {
+		this.pendingStepStrategy = pendingStepStrategy;
 	}
-
-	public void failedOutcomes(String arg0, OutcomesTable arg1) {
-		logger.info("Failed outcomes: {}", arg0);
-	}
-
-	public void givenStories(GivenStories arg0) {
-		logger.info("Given Stories: {}", arg0);
-	}
-
-	public void givenStories(List<String> arg0) {
-		logger.info("Given Stories (List): {}", arg0);
-	}
-
-	public void narrative(Narrative arg0) {
-		logger.info("Narrative: {}", arg0);
-	}
-
-	public void pendingMethods(List<String> arg0) {
-		logger.info("Pending methods: {}", arg0);
-	}
-
-	public void restarted(String arg0, Throwable arg1) {
-		logger.info("Restarted: {} ({})", arg0, arg1);
-	}
-
-	public void scenarioMeta(Meta arg0) {
-		logger.info("Meta: {}", arg0);
-	}
-
-	public void storyCancelled(Story arg0, StoryDuration arg1) {
-		logger.info("Story cancelled: {} after {}", arg0, arg1);
-		System.out.println("JBehave2JunitReporter.storyCancelled()");
-	}
-
-	public void storyNotAllowed(Story arg0, String arg1) {
-		logger.info("Story not allowed: {}, {}", arg0, arg1);
-	}
-
-	public void usePendingStepStrategy(PendingStepStrategy strategy) {
-		this.pendingStepStrategy = strategy;
-	}
-
-	public void lifecyle(Lifecycle lifecycle) {
-		logger.info("Story lifecycle: {}", lifecycle);
-	}
-
 }

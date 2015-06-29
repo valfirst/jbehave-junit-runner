@@ -59,7 +59,7 @@ public class ExampleSteps {
 
 	@Given("the variables: $variables")
 	public void givenTheVariables(ExamplesTable table) {
-		variables = new HashMap<String, Integer>();
+		variables = new HashMap<>();
 		for (Map<String, String> row : table.getRows()) {
 			variables.put(row.get("name"), Integer.valueOf(row.get("value")));
 		}

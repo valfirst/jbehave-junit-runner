@@ -54,9 +54,9 @@
 
 	<properties>
 		<jdk.version>1.7</jdk.version>
-		<jbehave.version>3.9</jbehave.version>
-		<junit.version>4.11</junit.version>
-		<mockito.version>1.9.0</mockito.version>
+		<jbehave.version>4.0.3</jbehave.version>
+		<junit.version>4.12</junit.version>
+		<mockito.version>1.10.19</mockito.version>
 		<keystore.password>dev_password</keystore.password>
 		<gpg.passphrase>dev</gpg.passphrase>
 		<passphrase>${gpg.passphrase}</passphrase>

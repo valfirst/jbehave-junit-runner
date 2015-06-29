@@ -10,7 +10,7 @@ import org.jbehave.core.ConfigurableEmbedder;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.EmbedderControls;
-import org.jbehave.core.embedder.StoryRunner;
+import org.jbehave.core.embedder.PerformableTree;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.junit.JUnitStory;
@@ -81,9 +81,9 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 				// tell the reporter how to handle pending steps
 				junitReporter.usePendingStepStrategy(configuration
 						.pendingStepStrategy());
-			
+
 				addToStoryReporterFormats(junitReporter);
-			
+
 				try {
 					configuredEmbedder.runStoriesAsPaths(storyPaths);
 				} catch (Throwable e) {
@@ -94,7 +94,7 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 			}
 		};
 	}
-	
+
 	public static EmbedderControls recommandedControls(Embedder embedder) {
 		return recommendedControls(embedder);
 	}
@@ -191,11 +191,10 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 	private List<Description> buildDescriptionFromStories() {
 		JUnitDescriptionGenerator descriptionGenerator = new JUnitDescriptionGenerator(
 				candidateSteps, configuration);
-		StoryRunner storyRunner = new StoryRunner();
-		List<Description> storyDescriptions = new ArrayList<Description>();
+		List<Description> storyDescriptions = new ArrayList<>();
 
 		addSuite(storyDescriptions, "BeforeStories");
-		addStories(storyDescriptions, storyRunner, descriptionGenerator);
+		addStories(storyDescriptions, descriptionGenerator);
 		addSuite(storyDescriptions, "AfterStories");
 
 		numberOfTestCases += descriptionGenerator.getTestCases();
@@ -204,9 +203,10 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 	}
 
 	private void addStories(List<Description> storyDescriptions,
-			StoryRunner storyRunner, JUnitDescriptionGenerator gen) {
+	        JUnitDescriptionGenerator gen) {
+	    PerformableTree performableTree = new PerformableTree();
 		for (String storyPath : storyPaths) {
-			Story parseStory = storyRunner
+			Story parseStory = performableTree
 					.storyOfPath(configuration, storyPath);
 			Description descr = gen.createDescriptionFrom(parseStory);
 			storyDescriptions.add(descr);

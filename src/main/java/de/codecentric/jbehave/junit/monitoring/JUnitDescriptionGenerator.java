@@ -1,28 +1,48 @@
 package de.codecentric.jbehave.junit.monitoring;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jbehave.core.annotations.ScenarioType;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords.StartingWordNotFound;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.steps.BeforeOrAfterStep;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.StepCandidate;
+import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepType;
 import org.junit.runner.Description;
 
 public class JUnitDescriptionGenerator {
 
+	public static final String BEFORE_STORY_STEP_NAME = "@BeforeStory";
+	public static final String AFTER_STORY_STEP_NAME = "@AfterStory";
+	public static final String BEFORE_SCENARIO_STEP_NAME = "@BeforeScenario";
+	public static final String AFTER_SCENARIO_STEP_NAME = "@AfterScenario";
+
 	DescriptionTextUniquefier uniq = new DescriptionTextUniquefier();
 
 	private int testCases;
 
-	private List<StepCandidate> allCandidates = new ArrayList<StepCandidate>();
+	private List<StepCandidate> allCandidates = new ArrayList<>();
+
+	private Map<ScenarioType, List<BeforeOrAfterStep>> beforeOrAfterScenario =
+			new HashMap<>();
+	{
+		for (ScenarioType scenarioType : ScenarioType.values()) {
+			beforeOrAfterScenario.put(scenarioType, new ArrayList<BeforeOrAfterStep>());
+		}
+	}
+
+	private List<BeforeOrAfterStep> beforeOrAfterStory = new ArrayList<>();
 
 	private final Configuration configuration;
 
@@ -33,27 +53,66 @@ public class JUnitDescriptionGenerator {
 		this.configuration = configuration;
 		for (CandidateSteps candidateStep : candidateSteps) {
 			allCandidates.addAll(candidateStep.listCandidates());
+			for (ScenarioType scenarioType : ScenarioType.values()) {
+				beforeOrAfterScenario.get(scenarioType).addAll(candidateStep.listBeforeOrAfterScenario(scenarioType));
+			}
+			beforeOrAfterStory.addAll(candidateStep.listBeforeOrAfterStory(false));
 		}
 	}
 
 	public Description createDescriptionFrom(Story story) {
 		Description storyDescription = createDescriptionForStory(story);
+		addBeforeOrAfterStep(Stage.BEFORE, beforeOrAfterStory, storyDescription, BEFORE_STORY_STEP_NAME);
 		addAllScenariosToDescription(story, storyDescription);
+		addBeforeOrAfterStep(Stage.AFTER, beforeOrAfterStory, storyDescription, AFTER_STORY_STEP_NAME);
 		return storyDescription;
 	}
 
 	public Description createDescriptionFrom(Scenario scenario) {
 		Description scenarioDescription = createDescriptionForScenario(scenario);
-		if (hasGivenStories(scenario)) {
-			insertGivenStories(scenario, scenarioDescription);
-		}
-
 		if (hasExamples(scenario)) {
 			insertDescriptionForExamples(scenario, scenarioDescription);
 		} else {
-			addStepsToExample(scenario, scenarioDescription);
+			if (hasGivenStories(scenario)) {
+				insertGivenStories(scenario, scenarioDescription);
+			}
+			addScenarioSteps(ScenarioType.NORMAL, scenario, scenarioDescription);
 		}
 		return scenarioDescription;
+	}
+
+	private void addScenarioSteps(ScenarioType scenarioType, Scenario scenario, Description scenarioDescription) {
+		addBeforeOrAfterScenarioStep(scenarioType, Stage.BEFORE, scenarioDescription, BEFORE_SCENARIO_STEP_NAME);
+		addStepsToExample(scenario, scenarioDescription);
+		addBeforeOrAfterScenarioStep(scenarioType, Stage.AFTER, scenarioDescription, AFTER_SCENARIO_STEP_NAME);
+	}
+
+	private void addBeforeOrAfterScenarioStep(ScenarioType scenarioType, Stage stage, Description description,
+			String stepName) {
+		List<BeforeOrAfterStep> beforeOrAfterSteps = new ArrayList<>();
+		beforeOrAfterSteps.addAll(beforeOrAfterScenario.get(scenarioType));
+		beforeOrAfterSteps.addAll(beforeOrAfterScenario.get(ScenarioType.ANY));
+		addBeforeOrAfterStep(stage, beforeOrAfterSteps, description, stepName);
+	}
+
+	private void addBeforeOrAfterStep(Stage stage, List<BeforeOrAfterStep> beforeOrAfterSteps, Description description,
+			String stepName)
+	{
+		for (BeforeOrAfterStep beforeOrAfterStep : beforeOrAfterSteps) {
+			if (beforeOrAfterStep.getStage() == stage) {
+				testCases++;
+				addBeforeOrAfterStep(beforeOrAfterStep, description, stepName);
+				break;
+			}
+		}
+	}
+
+	private void addBeforeOrAfterStep(BeforeOrAfterStep beforeOrAfterStep, Description description, String stepName)
+	{
+		Method method = beforeOrAfterStep.getMethod();
+		Description testDescription = Description.createTestDescription(method.getDeclaringClass(),
+				getJunitSafeString(stepName), method.getAnnotations());
+		description.addChild(testDescription);
 	}
 
 	public String getJunitSafeString(String string) {
@@ -76,15 +135,11 @@ public class JUnitDescriptionGenerator {
 
 	private boolean isParameterized(Scenario scenario) {
 		ExamplesTable examplesTable = scenario.getExamplesTable();
-		boolean isParameterized1 = examplesTable != null
-				&& examplesTable.getRowCount() > 0;
-		return isParameterized1;
+		return examplesTable != null && examplesTable.getRowCount() > 0;
 	}
 
 	private boolean parameterNeededForGivenStories(Scenario scenario) {
-		boolean parametersNeededForGivenStories = scenario.getGivenStories()
-				.requireParameters();
-		return parametersNeededForGivenStories;
+		return scenario.getGivenStories().requireParameters();
 	}
 
 	private void insertGivenStories(Scenario scenario,
@@ -108,21 +163,20 @@ public class JUnitDescriptionGenerator {
 
 	private void insertDescriptionForExamples(Scenario scenario,
 			Description scenarioDescription) {
-		ExamplesTable examplesTable = scenario.getExamplesTable();
-		List<Map<String, String>> rows = examplesTable.getRows();
-		for (Map<String, String> row : rows) {
-			Description exampleRowDescription = Description
-					.createSuiteDescription(
+		for (Map<String, String> row : scenario.getExamplesTable().getRows()) {
+			Description exampleRowDescription = Description.createSuiteDescription(
 							configuration.keywords().examplesTableRow() + " " + row,
 							(Annotation[]) null);
 			scenarioDescription.addChild(exampleRowDescription);
-			addStepsToExample(scenario, exampleRowDescription);
+			if (hasGivenStories(scenario)) {
+				insertGivenStories(scenario, exampleRowDescription);
+			}
+			addScenarioSteps(ScenarioType.EXAMPLE, scenario, exampleRowDescription);
 		}
 	}
 
 	private void addStepsToExample(Scenario scenario, Description description) {
-		List<String> steps = scenario.getSteps();
-		addSteps(description, steps);
+		addSteps(description, scenario.getSteps());
 	}
 
 	private void addSteps(Description description, List<String> steps) {
@@ -150,9 +204,7 @@ public class JUnitDescriptionGenerator {
 	private void addNonExistingStep(Description description, String stringStepOneLine,
 			String stringStep) {
 		try {
-			StepType stepType = configuration.keywords()
-					.stepTypeFor(stringStep);
-			if (stepType == StepType.IGNORABLE) {
+			if (configuration.keywords().stepTypeFor(stringStep) == StepType.IGNORABLE) {
 				addIgnorableStep(description, stringStepOneLine);
 			} else {
 				addPendingStep(description, stringStepOneLine);
@@ -164,17 +216,13 @@ public class JUnitDescriptionGenerator {
 
 	private void addIgnorableStep(Description description, String stringStep) {
 		testCases++;
-		Description ignorableDescription = Description
-				.createSuiteDescription(stringStep);
-		description.addChild(ignorableDescription);
+		description.addChild(Description.createSuiteDescription(stringStep));
 	}
 
 	private void addPendingStep(Description description, String stringStep) {
 		testCases++;
-		Description testDescription = Description
-				.createSuiteDescription(getJunitSafeString("[PENDING] "
-						+ stringStep));
-		description.addChild(testDescription);
+		description.addChild(Description.createSuiteDescription(getJunitSafeString("[PENDING] "
+						+ stringStep)));
 	}
 
 	private void addRegularStep(Description description, String stringStep,
@@ -185,15 +233,13 @@ public class JUnitDescriptionGenerator {
 		// jump to the corresponding test method accordingly. For now we have to
 		// live, that we end up in
 		// the correct class.
-		Description testDescription = Description.createTestDescription(step.getStepsType(),
-				getJunitSafeString(stringStep));
-		description.addChild(testDescription);
+		description.addChild(Description.createTestDescription(step.getStepsType(),
+				getJunitSafeString(stringStep)));
 	}
 
 	private void addCompositeSteps(Description description, String stringStep,
 			StepCandidate step) {
-		Description testDescription;
-		testDescription = Description
+		Description testDescription = Description
 				.createSuiteDescription(getJunitSafeString(stringStep));
 		addSteps(testDescription, Arrays.asList(step.composedSteps()));
 		description.addChild(testDescription);
@@ -201,8 +247,7 @@ public class JUnitDescriptionGenerator {
 
 	private void addAllScenariosToDescription(Story story,
 			Description storyDescription) {
-		List<Scenario> scenarios = story.getScenarios();
-		for (Scenario scenario : scenarios) {
+		for (Scenario scenario : story.getScenarios()) {
 			storyDescription.addChild(createDescriptionFrom(scenario));
 		}
 	}
@@ -221,7 +266,7 @@ public class JUnitDescriptionGenerator {
 
 	private String stripLinebreaks(String stringStep) {
 		if (stringStep.indexOf('\n') != -1) {
-			stringStep = stringStep.substring(0, stringStep.indexOf('\n'));
+			return stringStep.substring(0, stringStep.indexOf('\n'));
 		}
 		return stringStep;
 	}
@@ -232,16 +277,11 @@ public class JUnitDescriptionGenerator {
 	}
 
 	private Description createDescriptionForStory(Story story) {
-		Description storyDescription = Description
-				.createSuiteDescription(getJunitSafeString(story.getName()));
-		return storyDescription;
+		return Description.createSuiteDescription(getJunitSafeString(story.getName()));
 	}
 
 	private Description createDescriptionForScenario(Scenario scenario) {
-		Description scenarioDescription = Description
-				.createSuiteDescription(configuration.keywords().scenario() + " "
+		return Description.createSuiteDescription(configuration.keywords().scenario() + " "
 						+ getJunitSafeString(scenario.getTitle()));
-		return scenarioDescription;
 	}
-
 }

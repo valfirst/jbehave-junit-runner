@@ -89,7 +89,7 @@ public class LoggerTest {
 	@Test
 	public void shouldHandleNonStringVars() {
 		setLevel("INFO");
-		List<Long> longs = new ArrayList<Long>();
+		List<Long> longs = new ArrayList<>();
 		longs.add(1L);
 		longs.add(2L);
 		longs.add(3L);

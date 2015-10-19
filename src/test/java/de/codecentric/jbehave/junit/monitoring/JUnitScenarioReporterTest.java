@@ -48,17 +48,15 @@ public class JUnitScenarioReporterTest {
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
-		rootDescription = Description.createTestDescription(this.getClass(),
-				NAME_ROOT);
-		storyDescription = Description.createTestDescription(this.getClass(),
-				NAME_STORY);
+		rootDescription = Description.createSuiteDescription(NAME_ROOT);
+		storyDescription = Description.createSuiteDescription(NAME_STORY);
 		rootDescription.addChild(storyDescription);
 		scenarioDescription = Description.createTestDescription(
 				this.getClass(), NAME_SCENARIO);
 		storyDescription.addChild(scenarioDescription);
 
 		story = new Story();
-		story.namedAs("story(" + this.getClass().getName() + ")");
+		story.namedAs(NAME_STORY);
 		keywords = new Keywords();
 	}
 
@@ -356,19 +354,19 @@ public class JUnitScenarioReporterTest {
 	}
 
 	@Test
-    public void shouldNotifyAboutNotAllowedScenario() {
-	    Description child1 = addChildToScenario("child");
+	public void shouldNotifyAboutNotAllowedScenario() {
+		Description child1 = addChildToScenario("child");
 
-        reporter = new JUnitScenarioReporter(notifier, ONE_STEP,
-                rootDescription, keywords);
+		reporter = new JUnitScenarioReporter(notifier, ONE_STEP,
+				rootDescription, keywords);
 
-        reportStoryAndScenarioStart(reporter);
-        reporter.scenarioNotAllowed(Mockito.mock(Scenario.class), "filter");
-        verifyStoryStarted();
-        verifyScenarioStarted();
-        verify(notifier).fireTestIgnored(child1);
-        verify(notifier).fireTestIgnored(scenarioDescription);
-    }
+		reportStoryAndScenarioStart(reporter);
+		reporter.scenarioNotAllowed(Mockito.mock(Scenario.class), "filter");
+		verifyStoryStarted();
+		verifyScenarioStarted();
+		verify(notifier).fireTestIgnored(child1);
+		verify(notifier).fireTestIgnored(scenarioDescription);
+	}
 
 	private void reportScenarioAndStoryFinish(JUnitScenarioReporter reporter) {
 		reporter.afterScenario();

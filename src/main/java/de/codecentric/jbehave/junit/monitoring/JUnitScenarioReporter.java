@@ -90,7 +90,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 			for (Description storyDescription : storyDescriptions) {
 				if (storyDescription.isSuite()
 						&& storyDescription.getDisplayName().equals(
-								story.getName())) {
+								JUnitStringDecorator.getJunitSafeString(story.getName()))) {
 					currentStoryDescription = storyDescription;
 					notifier.fireTestStarted(storyDescription);
 

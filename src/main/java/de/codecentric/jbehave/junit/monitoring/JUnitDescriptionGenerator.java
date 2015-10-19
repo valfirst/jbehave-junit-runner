@@ -116,8 +116,7 @@ public class JUnitDescriptionGenerator {
 	}
 
 	public String getJunitSafeString(String string) {
-		return uniq.getUniqueDescription(replaceLinebreaks(string)
-				.replaceAll("[\\(\\)]", "|"));
+		return uniq.getUniqueDescription(JUnitStringDecorator.getJunitSafeString(string));
 	}
 
 	public int getTestCases() {
@@ -269,11 +268,6 @@ public class JUnitDescriptionGenerator {
 			return stringStep.substring(0, stringStep.indexOf('\n'));
 		}
 		return stringStep;
-	}
-
-	private String replaceLinebreaks(String string) {
-		return string.replaceAll("\r", "\n")
-				.replaceAll("\n{2,}", "\n").replaceAll("\n", ", ");
 	}
 
 	private Description createDescriptionForStory(Story story) {

@@ -11,6 +11,9 @@ import java.util.Map;
 import org.jbehave.core.annotations.ScenarioType;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords.StartingWordNotFound;
+import org.jbehave.core.embedder.PerformableTree;
+import org.jbehave.core.embedder.PerformableTree.PerformableScenario;
+import org.jbehave.core.embedder.PerformableTree.PerformableStory;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
@@ -60,15 +63,27 @@ public class JUnitDescriptionGenerator {
 		}
 	}
 
-	public Description createDescriptionFrom(Story story) {
-		Description storyDescription = createDescriptionForStory(story);
-		addBeforeOrAfterStep(Stage.BEFORE, beforeOrAfterStory, storyDescription, BEFORE_STORY_STEP_NAME);
-		addAllScenariosToDescription(story, storyDescription);
-		addBeforeOrAfterStep(Stage.AFTER, beforeOrAfterStory, storyDescription, AFTER_STORY_STEP_NAME);
-		return storyDescription;
+	public List<Description> createDescriptionFrom(PerformableTree performableTree) {
+		List<Description> storyDescriptions = new ArrayList<>();
+		for (PerformableStory performableStory : performableTree.getRoot().getStories()) {
+			if (performableStory.isAllowed()) {
+				List<Description> scenarioDescriptions = getScenarioDescriptions(performableStory.getScenarios());
+				if (!scenarioDescriptions.isEmpty()) {
+					Description storyDescription = createDescriptionForStory(performableStory.getStory());
+					addBeforeOrAfterStep(Stage.BEFORE, beforeOrAfterStory, storyDescription, BEFORE_STORY_STEP_NAME);
+					for (Description scenarioDescription : scenarioDescriptions) {
+						storyDescription.addChild(scenarioDescription);
+					}
+					addBeforeOrAfterStep(Stage.AFTER, beforeOrAfterStory, storyDescription, AFTER_STORY_STEP_NAME);
+					storyDescriptions.add(storyDescription);
+				}
+			}
+		}
+		return storyDescriptions;
 	}
 
-	public Description createDescriptionFrom(Scenario scenario) {
+	public Description createDescriptionFrom(PerformableScenario performableScenario) {
+		Scenario scenario = performableScenario.getScenario();
 		Description scenarioDescription = createDescriptionForScenario(scenario);
 		if (hasExamples(scenario)) {
 			insertDescriptionForExamples(scenario, scenarioDescription);
@@ -244,11 +259,14 @@ public class JUnitDescriptionGenerator {
 		description.addChild(testDescription);
 	}
 
-	private void addAllScenariosToDescription(Story story,
-			Description storyDescription) {
-		for (Scenario scenario : story.getScenarios()) {
-			storyDescription.addChild(createDescriptionFrom(scenario));
+	private List<Description> getScenarioDescriptions(List<PerformableScenario> performableScenarios) {
+		List<Description> scenarioDescriptions = new ArrayList<>();
+		for (PerformableScenario scenario : performableScenarios) {
+			if (scenario.isAllowed()) {
+				scenarioDescriptions.add(createDescriptionFrom(scenario));
+			}
 		}
+		return scenarioDescriptions;
 	}
 
 	private StepCandidate findMatchingStep(String stringStep) {

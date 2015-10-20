@@ -11,6 +11,8 @@ import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.PerformableTree;
+import org.jbehave.core.embedder.PerformableTree.RunContext;
+import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.junit.JUnitStory;
@@ -194,7 +196,7 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 		List<Description> storyDescriptions = new ArrayList<>();
 
 		addSuite(storyDescriptions, "BeforeStories");
-		addStories(storyDescriptions, descriptionGenerator);
+		storyDescriptions.addAll(descriptionGenerator.createDescriptionFrom(createPerformableTree()));
 		addSuite(storyDescriptions, "AfterStories");
 
 		numberOfTestCases += descriptionGenerator.getTestCases();
@@ -202,15 +204,21 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 		return storyDescriptions;
 	}
 
-	private void addStories(List<Description> storyDescriptions,
-	        JUnitDescriptionGenerator gen) {
-	    PerformableTree performableTree = new PerformableTree();
+	private PerformableTree createPerformableTree() {
+		BatchFailures failures = new BatchFailures(configuredEmbedder.embedderControls().verboseFailures());
+		PerformableTree performableTree = new PerformableTree();
+		RunContext context = performableTree.newRunContext(configuration, configuredEmbedder.stepsFactory(),
+				configuredEmbedder.embedderMonitor(), configuredEmbedder.metaFilter(), failures);
+		performableTree.addStories(context, storiesOf(performableTree, storyPaths));
+		return performableTree;
+	}
+
+	private List<Story> storiesOf(PerformableTree performableTree, List<String> storyPaths) {
+		List<Story> stories = new ArrayList<>();
 		for (String storyPath : storyPaths) {
-			Story parseStory = performableTree
-					.storyOfPath(configuration, storyPath);
-			Description descr = gen.createDescriptionFrom(parseStory);
-			storyDescriptions.add(descr);
+			stories.add(performableTree.storyOfPath(configuration, storyPath));
 		}
+		return stories;
 	}
 
 	private void addSuite(List<Description> storyDescriptions, String name) {

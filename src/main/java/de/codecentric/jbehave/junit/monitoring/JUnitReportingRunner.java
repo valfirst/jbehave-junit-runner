@@ -42,6 +42,7 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 			throws Throwable {
 		super(testClass);
 		configurableEmbedder = testClass.newInstance();
+		configuredEmbedder = configurableEmbedder.configuredEmbedder();
 
 		if (configurableEmbedder instanceof JUnitStories) {
 			getStoryPathsFromJUnitStories(testClass);
@@ -114,7 +115,7 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 	private void createCandidateStepsWith(StepMonitor stepMonitor) {
 		// reset step monitor and recreate candidate steps
 		configuration.useStepMonitor(stepMonitor);
-		getCandidateSteps();
+		candidateSteps = getCandidateSteps();
 		for (CandidateSteps step : candidateSteps) {
 			step.configuration().useStepMonitor(stepMonitor);
 		}
@@ -127,7 +128,6 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 	}
 
 	private void getStoryPathsFromJUnitStory() {
-		configuredEmbedder = configurableEmbedder.configuredEmbedder();
 		StoryPathResolver resolver = configuredEmbedder.configuration()
 				.storyPathResolver();
 		storyPaths = Arrays.asList(resolver.resolve(configurableEmbedder
@@ -139,7 +139,6 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 			Class<? extends ConfigurableEmbedder> testClass)
 			throws NoSuchMethodException, IllegalAccessException,
 			InvocationTargetException {
-		configuredEmbedder = configurableEmbedder.configuredEmbedder();
 		Method method = makeStoryPathsMethodPublic(testClass);
 		storyPaths = ((List<String>) method.invoke(
 				(JUnitStories) configurableEmbedder, (Object[]) null));
@@ -158,20 +157,18 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 		return method;
 	}
 
-	private void getCandidateSteps() {
-		// candidateSteps = configurableEmbedder.configuredEmbedder()
-		// .stepsFactory().createCandidateSteps();
-		InjectableStepsFactory stepsFactory = configurableEmbedder
-				.stepsFactory();
+	private List<CandidateSteps> getCandidateSteps() {
+		List<CandidateSteps> candidateSteps;
+		InjectableStepsFactory stepsFactory = configurableEmbedder.stepsFactory();
 		if (stepsFactory != null) {
 			candidateSteps = stepsFactory.createCandidateSteps();
 		} else {
-			Embedder embedder = configurableEmbedder.configuredEmbedder();
-			candidateSteps = embedder.candidateSteps();
+			candidateSteps = configuredEmbedder.candidateSteps();
 			if (candidateSteps == null || candidateSteps.isEmpty()) {
-				candidateSteps = embedder.stepsFactory().createCandidateSteps();
+				candidateSteps = configuredEmbedder.stepsFactory().createCandidateSteps();
 			}
 		}
+		return candidateSteps;
 	}
 
 	private void initRootDescription() {

@@ -1,13 +1,9 @@
 package de.codecentric.jbehave.junit.monitoring;
 
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 import org.jbehave.core.configuration.Configuration;
-import org.jbehave.core.configuration.Keywords.StartingWordNotFound;
+import org.jbehave.core.configuration.Keywords;
+import org.jbehave.core.embedder.FilteredStory;
+import org.jbehave.core.embedder.MetaFilter;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
@@ -15,6 +11,12 @@ import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.StepCandidate;
 import org.jbehave.core.steps.StepType;
 import org.junit.runner.Description;
+
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public class JUnitDescriptionGenerator {
 
@@ -25,12 +27,14 @@ public class JUnitDescriptionGenerator {
 	private List<StepCandidate> allCandidates = new ArrayList<StepCandidate>();
 
 	private final Configuration configuration;
+    private MetaFilter filter;
 
 	private String previousNonAndStep;
 
 	public JUnitDescriptionGenerator(List<CandidateSteps> candidateSteps,
-			Configuration configuration) {
+			Configuration configuration,MetaFilter filter) {
 		this.configuration = configuration;
+        this.filter = filter;
 		for (CandidateSteps candidateStep : candidateSteps) {
 			allCandidates.addAll(candidateStep.listCandidates());
 		}
@@ -157,7 +161,7 @@ public class JUnitDescriptionGenerator {
 			} else {
 				addPendingStep(description, stringStepOneLine);
 			}
-		} catch (StartingWordNotFound e) {
+		} catch (Keywords.StartingWordNotFound e) {
 			// WHAT NOW?
 		}
 	}
@@ -201,11 +205,15 @@ public class JUnitDescriptionGenerator {
 
 	private void addAllScenariosToDescription(Story story,
 			Description storyDescription) {
+		FilteredStory filteredStory = new FilteredStory(filter, story, configuration.storyControls());
 		List<Scenario> scenarios = story.getScenarios();
+
 		for (Scenario scenario : scenarios) {
-			storyDescription.addChild(createDescriptionFrom(scenario));
-		}
-	}
+            if (filteredStory.allowed(scenario)) {
+			    storyDescription.addChild(createDescriptionFrom(scenario));
+            }
+        }
+    }
 
 	private StepCandidate findMatchingStep(String stringStep) {
 		for (StepCandidate step : allCandidates) {

@@ -144,17 +144,20 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 				(JUnitStories) configurableEmbedder, (Object[]) null));
 	}
 
-	private Method makeStoryPathsMethodPublic(
-			Class<? extends ConfigurableEmbedder> testClass)
+	@SuppressWarnings("unchecked")
+    private static Method makeStoryPathsMethodPublic(Class<? extends ConfigurableEmbedder> clazz)
 			throws NoSuchMethodException {
-		Method method;
 		try {
-			method = testClass.getDeclaredMethod("storyPaths", (Class[]) null);
+			Method method = clazz.getDeclaredMethod("storyPaths", (Class[]) null);
+			method.setAccessible(true);
+			return method;
 		} catch (NoSuchMethodException e) {
-			method = testClass.getMethod("storyPaths", (Class[]) null);
+			Class<?> superclass = clazz.getSuperclass();
+			if (superclass != null && ConfigurableEmbedder.class.isAssignableFrom(superclass)) {
+				return makeStoryPathsMethodPublic((Class<? extends ConfigurableEmbedder>) superclass);
+			}
+			throw e;
 		}
-		method.setAccessible(true);
-		return method;
 	}
 
 	private List<CandidateSteps> getCandidateSteps() {

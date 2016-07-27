@@ -192,7 +192,7 @@ public class JUnitDescriptionGeneratorTest {
 		when(scenario.getSteps()).thenReturn(
 				Arrays.asList(new String[] { "Given Step1", "Given Step1" }));
 		generateScenarioDescription();
-		assertThat(description.getChildren(), 
+		assertThat(description.getChildren(),
 				everyItem(whoseDisplayName(startsWith("Given Step1"))));
 		assertThat(description.getChildren().size(), is(2));
 		assertThat(description.getChildren(),
@@ -343,7 +343,7 @@ public class JUnitDescriptionGeneratorTest {
 	}
 
 	private void generateStoryDescription() {
-		description = generator.createDescriptionFrom(story);
+		description = generator.createDescriptionFrom(story, JUnitReportLevel.STEP);
 	}
 
 	private Matcher<Description> whoseDisplayName(Matcher<String> startsWith) {

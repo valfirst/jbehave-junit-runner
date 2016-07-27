@@ -23,14 +23,15 @@ import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
-import org.jbehave.core.reporters.StoryReporter;
 import org.junit.runner.Description;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class JUnitScenarioReporter implements StoryReporter {
-	Logger logger = new Logger();
+public class JUnitScenarioReporter implements ExtendedStoryReporter {
+	private static Logger logger = LoggerFactory.getLogger(JUnitScenarioReporter.class);
 
 	private RunNotifier notifier;
 	private Description currentScenario;
@@ -61,17 +62,6 @@ public class JUnitScenarioReporter implements StoryReporter {
 	private boolean notifyFinished = true;
 
 	public JUnitScenarioReporter(RunNotifier notifier, int totalTests,
-			Description rootDescription, Keywords keywords,
-			boolean notifyFinished) {
-		this.totalTests = totalTests;
-		this.rootDescription = rootDescription;
-		this.notifier = notifier;
-		this.storyDescriptions = rootDescription.getChildren();
-		this.keywords = keywords;
-		this.notifyFinished = notifyFinished;
-	}
-
-	public JUnitScenarioReporter(RunNotifier notifier, int totalTests,
 			Description rootDescription, Keywords keywords) {
 		this.totalTests = totalTests;
 		this.rootDescription = rootDescription;
@@ -80,6 +70,7 @@ public class JUnitScenarioReporter implements StoryReporter {
 		this.keywords = keywords;
 	}
 
+	@Override
 	public void beforeStory(Story story, boolean isGivenStory) {
 		logger.info("Before Story: {} {}", story.getName(),
 				isGivenStory ? "(given story)" : "");
@@ -124,6 +115,7 @@ public class JUnitScenarioReporter implements StoryReporter {
 
 	}
 
+	@Override
 	public void afterStory(boolean isGivenStory) {
 		logger.info("After Story: {} {}", currentStoryDescription
 				.getDisplayName(), isGivenStory ? "(given story)" : "");
@@ -155,6 +147,7 @@ public class JUnitScenarioReporter implements StoryReporter {
 		}
 	}
 
+	@Override
 	public void beforeScenario(String title) {
 		logger.info("Before Scenario: {}", title);
 		if (!givenStoryContext) {
@@ -205,6 +198,7 @@ public class JUnitScenarioReporter implements StoryReporter {
 		return descendants;
 	}
 
+	@Override
 	public void afterScenario() {
 		logger.info("After Scenario: {}", currentScenario.getDisplayName());
 		if (!givenStoryContext) {
@@ -230,10 +224,12 @@ public class JUnitScenarioReporter implements StoryReporter {
 		}
 	}
 
+	@Override
 	public void beforeExamples(List<String> arg0, ExamplesTable arg1) {
 		logger.info("Before Examples: {}", arg0 != null ? arg0 : "n/a");
 	}
 
+	@Override
 	public void example(Map<String, String> arg0) {
 		logger.info("Example: {}", arg0);
 
@@ -248,11 +244,13 @@ public class JUnitScenarioReporter implements StoryReporter {
 
 	}
 
+	@Override
 	public void afterExamples() {
 		logger.info("{}", "afterExamples");
 
 	}
 
+	@Override
 	public void beforeStep(String title) {
 		logger.info("Before Step: {}", title);
 		if (!givenStoryContext) {
@@ -260,6 +258,7 @@ public class JUnitScenarioReporter implements StoryReporter {
 		}
 	}
 
+	@Override
 	public void failed(String step, Throwable e) {
 		if (e instanceof UUIDExceptionWrapper) {
 			e = ((UUIDExceptionWrapper) e).getCause();
@@ -273,6 +272,7 @@ public class JUnitScenarioReporter implements StoryReporter {
 		}
 	}
 
+	@Override
 	public void successful(String step) {
 		logger.info("Step Succesful: {}", step);
 		if (!givenStoryContext) {
@@ -290,6 +290,7 @@ public class JUnitScenarioReporter implements StoryReporter {
 		}
 	}
 
+	@Override
 	public void pending(String arg0) {
 		logger.info("Pending: {}", arg0);
 		if (!givenStoryContext) {
@@ -309,6 +310,7 @@ public class JUnitScenarioReporter implements StoryReporter {
 		}
 	}
 
+	@Override
 	public void ignorable(String arg0) {
 		logger.info("Ignorable: {}", arg0);
 		if (!givenStoryContext) {
@@ -318,6 +320,7 @@ public class JUnitScenarioReporter implements StoryReporter {
 		}
 	}
 
+	@Override
 	public void notPerformed(String arg0) {
 		logger.info("Not performed: {}", arg0);
 		if (!givenStoryContext) {
@@ -334,6 +337,7 @@ public class JUnitScenarioReporter implements StoryReporter {
 	 * @param arg0
 	 * @param arg1
 	 */
+	@Override
 	public void scenarioNotAllowed(Scenario arg0, String arg1) {
 		logger.info("Scenario not allowed: {} {}", arg0, arg1);
 		notifier.fireTestIgnored(currentStep);
@@ -342,51 +346,63 @@ public class JUnitScenarioReporter implements StoryReporter {
 
 	// BASICALLY UN-IMPLEMENTED METHODS
 
+	@Override
 	public void dryRun() {
 		logger.info("{}", "dryRun");
 	}
 
+	@Override
 	public void failedOutcomes(String arg0, OutcomesTable arg1) {
 		logger.info("Failed outcomes: {}", arg0);
 	}
 
+	@Override
 	public void givenStories(GivenStories arg0) {
 		logger.info("Given Stories: {}", arg0);
 	}
 
+	@Override
 	public void givenStories(List<String> arg0) {
 		logger.info("Given Stories (List): {}", arg0);
 	}
 
+	@Override
 	public void narrative(Narrative arg0) {
 		logger.info("Narrative: {}", arg0);
 	}
 
+	@Override
 	public void pendingMethods(List<String> arg0) {
 		logger.info("Pending methods: {}", arg0);
 	}
 
+	@Override
 	public void restarted(String arg0, Throwable arg1) {
 		logger.info("Restarted: {} ({})", arg0, arg1);
 	}
 
+	@Override
 	public void scenarioMeta(Meta arg0) {
 		logger.info("Meta: {}", arg0);
 	}
 
+	@Override
 	public void storyCancelled(Story arg0, StoryDuration arg1) {
 		logger.info("Story cancelled: {} after {}", arg0, arg1);
 		System.out.println("JBehave2JunitReporter.storyCancelled()");
 	}
 
+	@Override
 	public void storyNotAllowed(Story arg0, String arg1) {
 		logger.info("Story not allowed: {}, {}", arg0, arg1);
 	}
 
+	@Override
 	public void usePendingStepStrategy(PendingStepStrategy strategy) {
 		this.pendingStepStrategy = strategy;
 	}
 
+	@Override
 	public void lifecyle(Lifecycle lifecycle) {
 		logger.info("Story lifecycle: {}", lifecycle);
 	}

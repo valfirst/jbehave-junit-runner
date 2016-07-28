@@ -12,9 +12,9 @@ import org.jbehave.core.annotations.ScenarioType;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords.StartingWordNotFound;
 import org.jbehave.core.embedder.PerformableTree;
+import org.jbehave.core.embedder.PerformableTree.ExamplePerformableScenario;
 import org.jbehave.core.embedder.PerformableTree.PerformableScenario;
 import org.jbehave.core.embedder.PerformableTree.PerformableStory;
-import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.steps.BeforeOrAfterStep;
@@ -85,8 +85,8 @@ public class JUnitDescriptionGenerator {
 	public Description createDescriptionFrom(PerformableScenario performableScenario) {
 		Scenario scenario = performableScenario.getScenario();
 		Description scenarioDescription = createDescriptionForScenario(scenario);
-		if (hasExamples(scenario)) {
-			insertDescriptionForExamples(scenario, scenarioDescription);
+		if (performableScenario.hasExamples() && !scenario.getGivenStories().requireParameters()) {
+			insertDescriptionForExamples(performableScenario, scenarioDescription);
 		} else {
 			if (hasGivenStories(scenario)) {
 				insertGivenStories(scenario, scenarioDescription);
@@ -142,20 +142,6 @@ public class JUnitDescriptionGenerator {
 		return !scenario.getGivenStories().getPaths().isEmpty();
 	}
 
-	private boolean hasExamples(Scenario scenario) {
-		return isParameterized(scenario)
-				&& !parameterNeededForGivenStories(scenario);
-	}
-
-	private boolean isParameterized(Scenario scenario) {
-		ExamplesTable examplesTable = scenario.getExamplesTable();
-		return examplesTable != null && examplesTable.getRowCount() > 0;
-	}
-
-	private boolean parameterNeededForGivenStories(Scenario scenario) {
-		return scenario.getGivenStories().requireParameters();
-	}
-
 	private void insertGivenStories(Scenario scenario,
 			Description scenarioDescription) {
 		for (String path : scenario.getGivenStories().getPaths()) {
@@ -175,12 +161,13 @@ public class JUnitDescriptionGenerator {
 				"#")[0];
 	}
 
-	private void insertDescriptionForExamples(Scenario scenario,
+	private void insertDescriptionForExamples(PerformableScenario performableScenario,
 			Description scenarioDescription) {
-		for (Map<String, String> row : scenario.getExamplesTable().getRows()) {
+		Scenario scenario = performableScenario.getScenario();
+		for (ExamplePerformableScenario examplePerformableScenario : performableScenario.getExamples()) {
 			Description exampleRowDescription = Description.createSuiteDescription(
-							configuration.keywords().examplesTableRow() + " " + row,
-							(Annotation[]) null);
+							configuration.keywords().examplesTableRow() + " " +
+									examplePerformableScenario.getParameters(), (Annotation[]) null);
 			scenarioDescription.addChild(exampleRowDescription);
 			if (hasGivenStories(scenario)) {
 				insertGivenStories(scenario, exampleRowDescription);

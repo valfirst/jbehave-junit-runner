@@ -35,6 +35,7 @@ import org.jbehave.core.annotations.ScenarioType;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.embedder.PerformableTree;
+import org.jbehave.core.embedder.PerformableTree.ExamplePerformableScenario;
 import org.jbehave.core.embedder.PerformableTree.PerformableRoot;
 import org.jbehave.core.embedder.PerformableTree.PerformableScenario;
 import org.jbehave.core.embedder.PerformableTree.PerformableStory;
@@ -442,6 +443,18 @@ public class JUnitDescriptionGeneratorTest {
 	private void generateScenarioDescription() {
 		PerformableScenario performableScenario = mock(PerformableScenario.class);
 		when(performableScenario.getScenario()).thenReturn(scenario);
+		ExamplesTable examplesTable = scenario.getExamplesTable();
+		boolean hasExamples = examplesTable != null && examplesTable.getRowCount() > 0;
+		when(performableScenario.hasExamples()).thenReturn(hasExamples);
+		if (hasExamples) {
+			List<ExamplePerformableScenario> exampleScenarios = new ArrayList<>();
+			for (Map<String, String> row : examplesTable.getRows()) {
+				ExamplePerformableScenario exampleScenario = mock(ExamplePerformableScenario.class);
+				when(exampleScenario.getParameters()).thenReturn(row);
+				exampleScenarios.add(exampleScenario);
+			}
+			when(performableScenario.getExamples()).thenReturn(exampleScenarios);
+		}
 		description = generator.createDescriptionFrom(performableScenario);
 	}
 

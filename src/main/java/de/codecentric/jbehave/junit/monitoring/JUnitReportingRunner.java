@@ -15,6 +15,7 @@ import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;
@@ -24,18 +25,26 @@ import org.junit.runner.Description;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.Statement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
+
+	private static Logger logger = LoggerFactory.getLogger(JUnitReportingRunner.class);
+
+	private static final String REPORT_STORY_LEVEL = "report.storyLevel";
+	private static final String AFTER_STORIES = "AfterStories";
+	private static final String BEFORE_STORIES = "BeforeStories";
+
 	private List<Description> storyDescriptions;
 	private Embedder configuredEmbedder;
 	private List<String> storyPaths;
 	private Configuration configuration;
 	private int numberOfTestCases;
 	private Description rootDescription;
-	List<CandidateSteps> candidateSteps;
+	private List<CandidateSteps> candidateSteps;
 	private ConfigurableEmbedder configurableEmbedder;
 
-	@SuppressWarnings("unchecked")
 	public JUnitReportingRunner(Class<? extends ConfigurableEmbedder> testClass)
 			throws Throwable {
 		super(testClass);
@@ -76,14 +85,20 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 		return new Statement() {
 			@Override
 			public void evaluate() {
-				JUnitScenarioReporter junitReporter = new JUnitScenarioReporter(
-				notifier, numberOfTestCases, rootDescription, configuration.keywords());
+				ExtendedStoryReporter junitReporter;
+				if (getReportLevel() == JUnitReportLevel.STORY) {
+					junitReporter = new JUnitStoryReporter(
+							notifier, numberOfTestCases, rootDescription);
+				} else {
+					junitReporter = new JUnitScenarioReporter(
+							notifier, numberOfTestCases, rootDescription, configuration.keywords());
+				}
 				// tell the reporter how to handle pending steps
 				junitReporter.usePendingStepStrategy(configuration
 						.pendingStepStrategy());
 			
 				addToStoryReporterFormats(junitReporter);
-			
+
 				try {
 					configuredEmbedder.runStoriesAsPaths(storyPaths);
 				} catch (Throwable e) {
@@ -94,7 +109,7 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 			}
 		};
 	}
-	
+
 	public static EmbedderControls recommandedControls(Embedder embedder) {
 		return recommendedControls(embedder);
 	}
@@ -180,7 +195,7 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 		}
 	}
 
-	private void addToStoryReporterFormats(JUnitScenarioReporter junitReporter) {
+	private void addToStoryReporterFormats(StoryReporter junitReporter) {
 		StoryReporterBuilder storyReporterBuilder = configuration
 				.storyReporterBuilder();
 		StoryReporterBuilder.ProvidedFormat junitReportFormat = new StoryReporterBuilder.ProvidedFormat(
@@ -194,9 +209,9 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 		StoryRunner storyRunner = new StoryRunner();
 		List<Description> storyDescriptions = new ArrayList<Description>();
 
-		addSuite(storyDescriptions, "BeforeStories");
+		addSuite(storyDescriptions, BEFORE_STORIES);
 		addStories(storyDescriptions, storyRunner, descriptionGenerator);
-		addSuite(storyDescriptions, "AfterStories");
+		addSuite(storyDescriptions, AFTER_STORIES);
 
 		numberOfTestCases += descriptionGenerator.getTestCases();
 
@@ -206,16 +221,29 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 	private void addStories(List<Description> storyDescriptions,
 			StoryRunner storyRunner, JUnitDescriptionGenerator gen) {
 		for (String storyPath : storyPaths) {
-			Story parseStory = storyRunner
-					.storyOfPath(configuration, storyPath);
-			Description descr = gen.createDescriptionFrom(parseStory);
+			Story parseStory = storyRunner.storyOfPath(configuration, storyPath);
+			Description descr = gen.createDescriptionFrom(parseStory, getReportLevel());
 			storyDescriptions.add(descr);
 		}
 	}
 
 	private void addSuite(List<Description> storyDescriptions, String name) {
-		storyDescriptions.add(Description.createTestDescription(Object.class,
-				name));
-		numberOfTestCases++;
+		if (getReportLevel() == JUnitReportLevel.STORY &&
+				(name.equals(BEFORE_STORIES) || name.equals(AFTER_STORIES))) {
+			logger.debug("For story level do not include: {}", name);
+		} else {
+			storyDescriptions.add(Description.createTestDescription(Story.class, name));
+		}
+        numberOfTestCases++;
+	}
+
+	private JUnitReportLevel getReportLevel() {
+		JUnitReportLevel result;
+		if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(REPORT_STORY_LEVEL))) {
+			result = JUnitReportLevel.STORY;
+		} else {
+			result = JUnitReportLevel.STEP;
+		}
+		return result;
 	}
 }

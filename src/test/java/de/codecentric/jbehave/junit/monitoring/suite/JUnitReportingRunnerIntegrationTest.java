@@ -22,6 +22,7 @@ import org.mockito.MockitoAnnotations;
 import de.codecentric.jbehave.junit.monitoring.ExampleScenarioJUnitStories;
 import de.codecentric.jbehave.junit.monitoring.ExampleScenarioJUnitStoriesLocalized;
 import de.codecentric.jbehave.junit.monitoring.ExampleScenarioJUnitStory;
+import de.codecentric.jbehave.junit.monitoring.InheritedJUnitStories;
 import de.codecentric.jbehave.junit.monitoring.JUnitReportingRunner;
 
 @RunWith(Parameterized.class)
@@ -43,6 +44,10 @@ public class JUnitReportingRunnerIntegrationTest {
 	@Parameters
 	public static Collection<Object[]> data() {
 		Object[][] params = {
+				{ InheritedJUnitStories.class,
+						"Multiplication.story",
+						"Scenario: 2 squared",
+						"Given a variable x with value 2" },
 				{ ExampleScenarioJUnitStories.class,
 						"Multiplication.story",
 						"Scenario: 2 squared",

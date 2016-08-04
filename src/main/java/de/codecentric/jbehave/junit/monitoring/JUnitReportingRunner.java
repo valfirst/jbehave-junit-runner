@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.xml.crypto.NoSuchMechanismException;
+
 import org.jbehave.core.ConfigurableEmbedder;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.embedder.Embedder;
@@ -135,7 +137,7 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 	@SuppressWarnings("unchecked")
 	private void getStoryPathsFromJUnitStories(
 			Class<? extends ConfigurableEmbedder> testClass)
-			throws NoSuchMethodException, IllegalAccessException,
+			throws NoSuchMethodException, IllegalAccessException ,
 			InvocationTargetException {
 		configuredEmbedder = configurableEmbedder.configuredEmbedder();
 		Method method = makeStoryPathsMethodPublic(testClass);
@@ -148,12 +150,26 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 			throws NoSuchMethodException {
 		Method method;
 		try {
-			method = testClass.getDeclaredMethod("storyPaths", (Class[]) null);
+			method = methodLookup(testClass, "storyPaths");
 		} catch (NoSuchMethodException e) {
 			method = testClass.getMethod("storyPaths", (Class[]) null);
 		}
 		method.setAccessible(true);
 		return method;
+	}
+
+	private Method methodLookup(Class<?> clazz, String methodName) throws NoSuchMethodException {
+		while (clazz != null) {
+			Method[] methods = clazz.getDeclaredMethods();
+			for (Method method : methods) {
+				// Test any other things about it beyond the name...
+				if (method.getName().equals(methodName)) {
+					return method;
+				}
+			}
+			clazz = clazz.getSuperclass();
+		}
+		throw new NoSuchMethodException("Can not find method: " + methodName);
 	}
 
 	private void getCandidateSteps() {

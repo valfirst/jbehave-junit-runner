@@ -88,11 +88,9 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 				addToStoryReporterFormats(junitReporter);
 
 				try {
-					configuredEmbedder.runStoriesAsPaths(storyPaths);
+					configurableEmbedder.run();
 				} catch (Throwable e) {
 					throw new RuntimeException(e);
-				} finally {
-					configuredEmbedder.generateCrossReference();
 				}
 			}
 		};

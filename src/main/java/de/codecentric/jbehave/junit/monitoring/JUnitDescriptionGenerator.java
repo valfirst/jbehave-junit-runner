@@ -36,9 +36,15 @@ public class JUnitDescriptionGenerator {
 		}
 	}
 
-	public Description createDescriptionFrom(Story story) {
-		Description storyDescription = createDescriptionForStory(story);
-		addAllScenariosToDescription(story, storyDescription);
+	public Description createDescriptionFrom(Story story, JUnitReportLevel reportLevel) {
+		Description storyDescription;
+		if (reportLevel == JUnitReportLevel.STORY) {
+			storyDescription = Description.createSuiteDescription(getJunitSafeString(story.getName()));
+			testCases++;
+		} else {
+			storyDescription = createDescriptionForStory(story);
+			addAllScenariosToDescription(story, storyDescription);
+		}
 		return storyDescription;
 	}
 

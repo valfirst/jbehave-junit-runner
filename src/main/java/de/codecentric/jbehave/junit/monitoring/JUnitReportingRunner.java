@@ -1,11 +1,5 @@
 package de.codecentric.jbehave.junit.monitoring;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.jbehave.core.ConfigurableEmbedder;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.embedder.Embedder;
@@ -24,6 +18,12 @@ import org.junit.runner.Description;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.Statement;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 	private List<Description> storyDescriptions;
@@ -81,9 +81,9 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 				// tell the reporter how to handle pending steps
 				junitReporter.usePendingStepStrategy(configuration
 						.pendingStepStrategy());
-			
+
 				addToStoryReporterFormats(junitReporter);
-			
+
 				try {
 					configuredEmbedder.runStoriesAsPaths(storyPaths);
 				} catch (Throwable e) {
@@ -94,7 +94,7 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 			}
 		};
 	}
-	
+
 	public static EmbedderControls recommandedControls(Embedder embedder) {
 		return recommendedControls(embedder);
 	}
@@ -190,7 +190,7 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 
 	private List<Description> buildDescriptionFromStories() {
 		JUnitDescriptionGenerator descriptionGenerator = new JUnitDescriptionGenerator(
-				candidateSteps, configuration);
+				candidateSteps, configuration, configuredEmbedder.metaFilter());
 		StoryRunner storyRunner = new StoryRunner();
 		List<Description> storyDescriptions = new ArrayList<Description>();
 

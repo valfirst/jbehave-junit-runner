@@ -73,9 +73,10 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 		logger.info("Before Story: {} {}", story.getName(),
 				isGivenStory ? "(given story)" : "");
 		if (isGivenStory) {
-			notifier.fireTestStarted(currentStep);
+            if (currentStep != null) {
+                notifier.fireTestStarted(currentStep);
+            }
 			givenStoryContext = true;
-
 		} else {
 			if (testCounter == 0) {
 				notifier.fireTestRunStarted(rootDescription);
@@ -117,7 +118,9 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 				.getDisplayName(), isGivenStory ? "(given story)" : "");
 		if (isGivenStory) {
 			givenStoryContext = false;
-			notifier.fireTestFinished(currentStep);
+            if (currentStep != null) {
+                notifier.fireTestFinished(currentStep);
+            }
 			prepareNextStep();
 			processBeforeScenario();
 		} else {

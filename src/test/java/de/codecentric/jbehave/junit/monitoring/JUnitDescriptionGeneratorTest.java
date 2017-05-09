@@ -1,13 +1,7 @@
 package de.codecentric.jbehave.junit.monitoring;
 
 import static org.hamcrest.CoreMatchers.everyItem;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasProperty;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.startsWith;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyInt;
@@ -292,6 +286,8 @@ public class JUnitDescriptionGeneratorTest {
 							startsWith("Given Step1"))));
 			assertThat(exampleDescription,
 					hasProperty("displayName", startsWith("Example: " + row)));
+			// Test is for verifying that the getAnnotations() is successfully executed
+			assertThat(exampleDescription.getAnnotations(), is(not(nullValue())));
 		}
 	}
 

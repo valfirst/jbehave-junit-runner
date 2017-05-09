@@ -167,7 +167,7 @@ public class JUnitDescriptionGenerator {
 		for (ExamplePerformableScenario examplePerformableScenario : performableScenario.getExamples()) {
 			Description exampleRowDescription = Description.createSuiteDescription(
 							configuration.keywords().examplesTableRow() + " " +
-									examplePerformableScenario.getParameters(), (Annotation[]) null);
+									examplePerformableScenario.getParameters());
 			scenarioDescription.addChild(exampleRowDescription);
 			if (hasGivenStories(scenario)) {
 				insertGivenStories(scenario, exampleRowDescription);

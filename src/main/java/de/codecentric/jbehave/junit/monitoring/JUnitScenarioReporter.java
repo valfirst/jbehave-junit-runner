@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.failures.BeforeOrAfterFailed;
@@ -24,29 +25,24 @@ import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 
 public class JUnitScenarioReporter extends NullStoryReporter {
-	Logger logger = new Logger();
+	private Logger logger = new Logger();
 
 	private RunNotifier notifier;
-	private Description currentScenario;
-	private Description currentStep;
-	private Iterator<Description> scenarioDescriptions;
+
 	private final Description rootDescription;
-	private final ArrayList<Description> storyDescriptions;
-
-	private Description currentStoryDescription;
-	private Iterator<Description> stepDescriptions;
-	private Iterator<Description> exampleDescriptions;
-	private Description currentExample;
-	int testCounter = 0;
 	private final int totalTests;
-
-	private boolean givenStoryContext;
-	public Set<Description> failedSteps = new HashSet<>();
-
+	private final Keywords keywords;
+	private final boolean notifyFinished;
 	private PendingStepStrategy pendingStepStrategy = new PassingUponPendingStep();
-	private Keywords keywords;
 
-	private boolean notifyFinished = true;
+	private ThreadLocal<TestState> testState = new ThreadLocal<TestState>() {
+		@Override
+		protected TestState initialValue() {
+			return new TestState();
+		}
+	};
+
+	private AtomicInteger testCounter = new AtomicInteger();
 
 	public JUnitScenarioReporter(RunNotifier notifier, int totalTests,
 			Description rootDescription, Keywords keywords,
@@ -54,45 +50,40 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 		this.totalTests = totalTests;
 		this.rootDescription = rootDescription;
 		this.notifier = notifier;
-		storyDescriptions = rootDescription.getChildren();
 		this.keywords = keywords;
 		this.notifyFinished = notifyFinished;
 	}
 
 	public JUnitScenarioReporter(RunNotifier notifier, int totalTests,
 			Description rootDescription, Keywords keywords) {
-		this.totalTests = totalTests;
-		this.rootDescription = rootDescription;
-		this.notifier = notifier;
-		storyDescriptions = rootDescription.getChildren();
-		this.keywords = keywords;
+		this(notifier, totalTests, rootDescription, keywords, true);
 	}
 
 	@Override
 	public void beforeStory(Story story, boolean isGivenStory) {
 		logger.info("Before Story: {} {}", story.getName(),
 				isGivenStory ? "(given story)" : "");
+		TestState testState = this.testState.get();
 		if (isGivenStory) {
-            if (currentStep != null) {
-                notifier.fireTestStarted(currentStep);
-            }
-			givenStoryContext = true;
+			if (testState.currentStep != null) {
+				notifier.fireTestStarted(testState.currentStep);
+			}
+			testState.givenStoryContext = true;
 		} else {
-			if (testCounter == 0) {
+			if (testCounter.get() == 0) {
 				notifier.fireTestRunStarted(rootDescription);
 			}
-			for (Description storyDescription : storyDescriptions) {
+			for (Description storyDescription : rootDescription.getChildren()) {
 				if (storyDescription.isSuite()
 						&& storyDescription.getDisplayName().equals(
 								JUnitStringDecorator.getJunitSafeString(story.getName()))) {
-					currentStoryDescription = storyDescription;
+					testState.currentStoryDescription = storyDescription;
 					notifier.fireTestStarted(storyDescription);
 
-					scenarioDescriptions = storyDescription.getChildren()
-							.iterator();
-					moveToNextScenario();
+					testState.scenarioDescriptions = storyDescription.getChildren().iterator();
+					testState.moveToNextScenario();
 					processBeforeStory();
-					currentStep = currentStoryDescription;
+					testState.currentStep = testState.currentStoryDescription;
 				} else
 				// Related to issue #28: When a story does not contain any
 				// scenarios, isTest returns true, but getMethodName
@@ -103,36 +94,35 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 						&& storyDescription.getMethodName().equals(
 								story.getName())) {
 					// Story BeforeStories or After Stories
-					currentStoryDescription = storyDescription;
-					notifier.fireTestStarted(currentStoryDescription);
-					currentStep = currentStoryDescription;
+					testState.currentStoryDescription = storyDescription;
+					notifier.fireTestStarted(testState.currentStoryDescription);
+					testState.currentStep = testState.currentStoryDescription;
 				}
 			}
 		}
-
 	}
 
 	@Override
 	public void afterStory(boolean isGivenStory) {
-		logger.info("After Story: {} {}", currentStoryDescription
+		TestState testState = this.testState.get();
+		logger.info("After Story: {} {}", testState.currentStoryDescription
 				.getDisplayName(), isGivenStory ? "(given story)" : "");
 		if (isGivenStory) {
-			givenStoryContext = false;
-            if (currentStep != null) {
-                notifier.fireTestFinished(currentStep);
-            }
+			testState.givenStoryContext = false;
+			if (testState.currentStep != null) {
+				notifier.fireTestFinished(testState.currentStep);
+			}
 			prepareNextStep();
 			processBeforeScenario();
 		} else {
-			if (!failedSteps.contains(currentStoryDescription)) {
-				notifier.fireTestFinished(currentStoryDescription);
-				if (currentStoryDescription.isTest())
-				{
-					testCounter++;
+			if (!testState.failedSteps.contains(testState.currentStoryDescription)) {
+				notifier.fireTestFinished(testState.currentStoryDescription);
+				if (testState.currentStoryDescription.isTest()) {
+					testCounter.incrementAndGet();
 				}
 			}
 			processAfterStory();
-			if (testCounter == totalTests && notifyFinished) {
+			if (testCounter.get() == totalTests && notifyFinished) {
 				Result result = new Result();
 				notifier.fireTestRunFinished(result);
 			}
@@ -142,23 +132,24 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 	@Override
 	public void beforeScenario(String title) {
 		logger.info("Before Scenario: {}", title);
-		if (!givenStoryContext) {
-			notifier.fireTestStarted(currentScenario);
+		TestState testState = this.testState.get();
+		if (!testState.givenStoryContext) {
+			notifier.fireTestStarted(testState.currentScenario);
 
-			List<Description> children = currentScenario.getChildren();
+			List<Description> children = testState.currentScenario.getChildren();
 			List<Description> examples = filterExamples(children);
 			if (!examples.isEmpty()) {
-				exampleDescriptions = examples.iterator();
-				currentExample = null;
+				testState.exampleDescriptions = examples.iterator();
+				testState.currentExample = null;
 			}
 			if (children.size() > examples.size()) {
 				// in case of given stories, these steps are actually stories,
 				// for which events will be fired in beforeStory(..., true)
 				List<Description> steps = new ArrayList<>(
-						currentScenario.getChildren());
+						testState.currentScenario.getChildren());
 				steps.removeAll(examples);
-				stepDescriptions = getAllDescendants(steps).iterator();
-				moveToNextStep();
+				testState.stepDescriptions = getAllDescendants(steps).iterator();
+				testState.moveToNextStep();
 				processBeforeScenario();
 			}
 		}
@@ -176,8 +167,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 		return Collections.emptyList();
 	}
 
-	private Collection<Description> getAllDescendants(
-			List<Description> steps) {
+	private Collection<Description> getAllDescendants(List<Description> steps) {
 		List<Description> descendants = new ArrayList<>();
 		for (Description child : steps) {
 			descendants.add(child);
@@ -188,40 +178,46 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 
 	@Override
 	public void afterScenario() {
-		logger.info("After Scenario: {}", currentScenario.getDisplayName());
-		if (!givenStoryContext) {
-			notifier.fireTestFinished(currentScenario);
+		TestState testState = this.testState.get();
+		logger.info("After Scenario: {}", testState.currentScenario.getDisplayName());
+		if (!testState.givenStoryContext) {
+			notifier.fireTestFinished(testState.currentScenario);
 			processAfterScenario();
-			moveToNextScenario();
+			testState.moveToNextScenario();
 		}
 	}
 
 	private void processBeforeStory() {
+		TestState testState = this.testState.get();
+		Description currentScenario = testState.currentScenario;
 		if (currentScenario != null &&
 				currentScenario.getDisplayName().startsWith(JUnitDescriptionGenerator.BEFORE_STORY_STEP_NAME)) {
 			// @BeforeStory has been called already
 			notifier.fireTestStarted(currentScenario);
 			notifier.fireTestFinished(currentScenario);
-			moveToNextScenario();
+			testState.moveToNextScenario();
 		}
 	}
 
 	private void processAfterStory() {
+		TestState testState = this.testState.get();
+		Description currentScenario = testState.currentScenario;
 		if (currentScenario != null) {
 			if (currentScenario.getDisplayName().startsWith(JUnitDescriptionGenerator.AFTER_STORY_STEP_NAME)) {
 				// @AfterStory has been called already
 				notifier.fireTestStarted(currentScenario);
 				notifier.fireTestFinished(currentScenario);
-				moveToNextScenario();
+				testState.moveToNextScenario();
 			}
 			else {
-				moveToNextScenario();
+				testState.moveToNextScenario();
 				processAfterStory();
 			}
 		}
 	}
 
 	private void processBeforeScenario() {
+		Description currentStep = testState.get().currentStep;
 		if (currentStep != null &&
 				currentStep.getDisplayName().startsWith(JUnitDescriptionGenerator.BEFORE_SCENARIO_STEP_NAME)) {
 			// @BeforeScenario has been called already
@@ -232,6 +228,8 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 	}
 
 	private void processAfterScenario() {
+		TestState testState = this.testState.get();
+		Description currentStep = testState.currentStep;
 		if (currentStep != null) {
 			if (currentStep.getDisplayName().startsWith(JUnitDescriptionGenerator.AFTER_SCENARIO_STEP_NAME)) {
 				// @AfterScenario has been called already
@@ -240,7 +238,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 				prepareNextStep();
 			}
 			else {
-				moveToNextStep();
+				testState.moveToNextStep();
 				processAfterScenario();
 			}
 		}
@@ -250,26 +248,24 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 	public void example(Map<String, String> arg0) {
 		logger.info("Example: {}", arg0);
 
-		if (currentExample != null && stepDescriptions != null)
-		{
-			processAfterScenario();
+		TestState testState = this.testState.get();
+		if (!testState.givenStoryContext) {
+			if (testState.currentExample != null && testState.stepDescriptions != null) {
+				processAfterScenario();
+			}
+			testState.moveToNextExample();
+			testState.stepDescriptions = testState.currentExample.getChildren().iterator();
+			testState.moveToNextStep();
+			processBeforeScenario();
 		}
-		moveToNextExample();
-		stepDescriptions = currentExample.getChildren().iterator();
-		moveToNextStep();
-		processBeforeScenario();
-	}
-
-	private void moveToNextExample()
-	{
-		currentExample = exampleDescriptions.hasNext() ? exampleDescriptions.next() : null;
 	}
 
 	@Override
 	public void beforeStep(String title) {
 		logger.info("Before Step: {}", title);
-		if (!givenStoryContext) {
-			notifier.fireTestStarted(currentStep);
+		TestState testState = this.testState.get();
+		if (!testState.givenStoryContext) {
+			notifier.fireTestStarted(testState.currentStep);
 		}
 	}
 
@@ -279,14 +275,14 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 			e = ((UUIDExceptionWrapper) e).getCause();
 		}
 		logger.info("Step Failed: {} (cause: {})", step, e.getMessage());
-		if (!givenStoryContext) {
-			if (e instanceof BeforeOrAfterFailed)
-			{
-				notifier.fireTestStarted(currentStep);
+		TestState testState = this.testState.get();
+		if (!testState.givenStoryContext) {
+			if (e instanceof BeforeOrAfterFailed) {
+				notifier.fireTestStarted(testState.currentStep);
 			}
-			notifier.fireTestFailure(new Failure(currentStep, e));
-			notifier.fireTestFinished(currentStep);
-			failedSteps.add(currentStep);
+			notifier.fireTestFailure(new Failure(testState.currentStep, e));
+			notifier.fireTestFinished(testState.currentStep);
+			testState.failedSteps.add(testState.currentStep);
 			prepareNextStep();
 		}
 	}
@@ -294,47 +290,39 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 	@Override
 	public void successful(String step) {
 		logger.info("Step Succesful: {}", step);
-		if (!givenStoryContext) {
-			notifier.fireTestFinished(currentStep);
+		TestState testState = this.testState.get();
+		if (!testState.givenStoryContext) {
+			notifier.fireTestFinished(testState.currentStep);
 
 			prepareNextStep();
 		}
 	}
 
-	private void moveToNextScenario()
-	{
-		currentScenario = scenarioDescriptions.hasNext() ? scenarioDescriptions.next() : null;
-		currentStep = currentScenario;
-	}
-
 	private void prepareNextStep() {
-		if (currentStep != null && currentStep.isTest())
-		{
-			testCounter++;
+		TestState testState = this.testState.get();
+		if (testState.currentStep != null && testState.currentStep.isTest()) {
+			testCounter.incrementAndGet();
 		}
-		if (stepDescriptions != null) {
-			moveToNextStep();
+		if (testState.stepDescriptions != null) {
+			testState.moveToNextStep();
 		}
-	}
-
-	 private void moveToNextStep() {
-		currentStep = stepDescriptions.hasNext() ? stepDescriptions.next() : null;
 	}
 
 	@Override
 	public void pending(String arg0) {
 		logger.info("Pending: {}", arg0);
-		if (!givenStoryContext) {
+		TestState testState = this.testState.get();
+		if (!testState.givenStoryContext) {
 			if (pendingStepStrategy instanceof FailingUponPendingStep) {
-				notifier.fireTestStarted(currentStep);
-				notifier.fireTestFailure(new Failure(currentStep,
+				notifier.fireTestStarted(testState.currentStep);
+				notifier.fireTestFailure(new Failure(testState.currentStep,
 						new RuntimeException("Step is pending!")));
 				// Pending step strategy says to fail so treat this step as
 				// having failed.
-				failedSteps.add(currentStep);
-				notifier.fireTestFinished(currentStep);
+				testState.failedSteps.add(testState.currentStep);
+				notifier.fireTestFinished(testState.currentStep);
 			} else {
-				notifier.fireTestIgnored(currentStep);
+				notifier.fireTestIgnored(testState.currentStep);
 			}
 
 			prepareNextStep();
@@ -344,8 +332,9 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 	@Override
 	public void ignorable(String arg0) {
 		logger.info("Ignorable: {}", arg0);
-		if (!givenStoryContext) {
-			notifier.fireTestIgnored(currentStep);
+		TestState testState = this.testState.get();
+		if (!testState.givenStoryContext) {
+			notifier.fireTestIgnored(testState.currentStep);
 			prepareNextStep();
 		}
 	}
@@ -353,8 +342,9 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 	@Override
 	public void notPerformed(String arg0) {
 		logger.info("Not performed: {}", arg0);
-		if (!givenStoryContext) {
-			notifier.fireTestIgnored(currentStep);
+		TestState testState = this.testState.get();
+		if (!testState.givenStoryContext) {
+			notifier.fireTestIgnored(testState.currentStep);
 			prepareNextStep();
 		}
 	}
@@ -369,11 +359,45 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 	@Override
 	public void scenarioNotAllowed(Scenario scenario, String filter) {
 		logger.info("Scenario not allowed: {} {}", scenario, filter);
-		notifier.fireTestIgnored(currentStep);
-		notifier.fireTestIgnored(currentScenario);
+		TestState testState = this.testState.get();
+		notifier.fireTestIgnored(testState.currentStep);
+		notifier.fireTestIgnored(testState.currentScenario);
 	}
 
 	public void usePendingStepStrategy(PendingStepStrategy pendingStepStrategy) {
 		this.pendingStepStrategy = pendingStepStrategy;
+	}
+
+	private class TestState {
+		private Description currentStep;
+		private Iterator<Description> stepDescriptions;
+
+		private Description currentScenario;
+		private Iterator<Description> scenarioDescriptions;
+
+		private Description currentExample;
+		private Iterator<Description> exampleDescriptions;
+
+		private Description currentStoryDescription;
+		private boolean givenStoryContext;
+
+		private Set<Description> failedSteps = new HashSet<>();
+
+		private void moveToNextScenario() {
+			currentScenario = getNextOrNull(scenarioDescriptions);
+			currentStep = currentScenario;
+		}
+
+		private void moveToNextExample() {
+			currentExample = getNextOrNull(exampleDescriptions);
+		}
+
+		private void moveToNextStep() {
+			currentStep = getNextOrNull(stepDescriptions);
+		}
+
+		private <T> T getNextOrNull(Iterator<T> iterator) {
+			return iterator.hasNext() ? iterator.next() : null;
+		}
 	}
 }

@@ -54,7 +54,7 @@
 
 	<properties>
 		<jdk.version>1.7</jdk.version>
-		<jbehave.version>4.0.5</jbehave.version>
+		<jbehave.version>4.1.1</jbehave.version>
 		<junit.version>4.12</junit.version>
 		<mockito.version>1.10.19</mockito.version>
 		<keystore.password>dev_password</keystore.password>

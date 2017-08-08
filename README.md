@@ -1,7 +1,7 @@
 JBehave JUnit Integration
 =========================
 [![Build Status](https://travis-ci.org/codecentric/jbehave-junit-runner.png?branch=master)](https://travis-ci.org/codecentric/jbehave-junit-runner)
-[![Coverage Status](https://coveralls.io/repos/codecentric/jbehave-junit-runner/badge.svg)](https://coveralls.io/r/codecentric/jbehave-junit-runner)
+[![Coverage Status](https://coveralls.io/repos/github/valfirst/jbehave-junit-runner/badge.svg?branch=master)](https://coveralls.io/github/valfirst/jbehave-junit-runner?branch=master)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.codecentric/jbehave-junit-runner/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.codecentric/jbehave-junit-runner/)
 
 

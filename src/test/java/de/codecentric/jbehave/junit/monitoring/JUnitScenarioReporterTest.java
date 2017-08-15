@@ -15,20 +15,21 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.Description;
 import org.junit.runner.Result;
+import org.junit.runner.RunWith;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.mockito.internal.verification.VerificationModeFactory;
+import org.mockito.junit.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.class)
 public class JUnitScenarioReporterTest {
 
 	private static final String NAME_SCENARIO = "scenario";
 	private static final String NAME_STORY = "story";
-	private static final String NAME_ROOT = "root";
 	private static final int ONE_GIVEN = 1;
 	private static final int ONE_STEP = 1;
 	private static final int THREE_STEPS = 3;
@@ -38,26 +39,18 @@ public class JUnitScenarioReporterTest {
 
 	@Mock
 	private RunNotifier notifier;
-	private Description rootDescription;
-	private Description storyDescription;
-	private Description scenarioDescription;
-	private Story story;
+	private Description rootDescription = Description.createSuiteDescription("root");
+	private Description storyDescription = Description.createSuiteDescription(NAME_STORY);
+	private Description scenarioDescription = Description.createTestDescription(getClass(), NAME_SCENARIO);
+	private Story story = new Story();
 	private JUnitScenarioReporter reporter;
-	private Keywords keywords;
+	private Keywords keywords = new Keywords();
 
 	@Before
 	public void setUp() {
-		MockitoAnnotations.initMocks(this);
-		rootDescription = Description.createSuiteDescription(NAME_ROOT);
-		storyDescription = Description.createSuiteDescription(NAME_STORY);
 		rootDescription.addChild(storyDescription);
-		scenarioDescription = Description.createTestDescription(
-				this.getClass(), NAME_SCENARIO);
 		storyDescription.addChild(scenarioDescription);
-
-		story = new Story();
 		story.namedAs(NAME_STORY);
-		keywords = new Keywords();
 	}
 
 	@Test
@@ -95,7 +88,7 @@ public class JUnitScenarioReporterTest {
 		verifyStoryStarted();
 		verifyScenarioStarted();
 		verify(notifier).fireTestStarted(child1);
-		verify(notifier).fireTestFailure(Matchers.<Failure> anyObject());
+		verify(notifier).fireTestFailure(ArgumentMatchers.<Failure> any());
 		verify(notifier).fireTestFinished(child1);
 	}
 
@@ -158,7 +151,7 @@ public class JUnitScenarioReporterTest {
 		reporter.failed("BeforeStories", new RuntimeException("..."));
 		reporter.afterStory(false);
 		verify(notifier).fireTestStarted(beforeStories);
-		verify(notifier).fireTestFailure(Mockito.<Failure> anyObject());
+		verify(notifier).fireTestFailure(Mockito.<Failure> any());
 		// Story, its scenario(s) and its step(s) should not start nor finish if 'before stories' failed.
 	}
 
@@ -318,7 +311,7 @@ public class JUnitScenarioReporterTest {
 		verifyStoryStarted();
 		verifyScenarioStarted();
 		verify(notifier).fireTestStarted(child1);
-		verify(notifier, times(2)).fireTestFailure(Mockito.<Failure> anyObject());
+		verify(notifier, times(2)).fireTestFailure(Mockito.<Failure> any());
 		verify(notifier, times(1)).fireTestFinished(child1);
 		verify(notifier, times(1)).fireTestFinished(child2);
 	}
@@ -372,7 +365,7 @@ public class JUnitScenarioReporterTest {
 		reporter.afterScenario();
 		// test should not be finished until we send the final event
 		verify(notifier, VerificationModeFactory.times(0)).fireTestRunFinished(
-				Mockito.<Result> anyObject());
+				Mockito.<Result> any());
 		reporter.afterStory(false);
 	}
 
@@ -444,11 +437,11 @@ public class JUnitScenarioReporterTest {
 	}
 
 	private void verifyTestRunFinished() {
-		verify(notifier).fireTestRunFinished(Matchers.<Result> anyObject());
+		verify(notifier).fireTestRunFinished(ArgumentMatchers.<Result> any());
 	}
 
 	private void verifyTestRunStarted() {
-		verify(notifier).fireTestRunStarted(Matchers.<Description> anyObject());
+		verify(notifier).fireTestRunStarted(ArgumentMatchers.<Description> any());
 	}
 
 	private Description addBeforeStories() {

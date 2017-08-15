@@ -1,12 +1,19 @@
 package de.codecentric.jbehave.junit.monitoring;
 
 import static org.hamcrest.CoreMatchers.everyItem;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -45,11 +52,14 @@ import org.jbehave.core.steps.StepType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.Description;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
+@RunWith(MockitoJUnitRunner.class)
 public class JUnitDescriptionGeneratorTest {
 
 	private static final String DEFAULT_STORY_NAME = "Default Story Name";
@@ -71,10 +81,8 @@ public class JUnitDescriptionGeneratorTest {
 
 	@Before
 	public void setUp() {
-		MockitoAnnotations.initMocks(this);
-		when(steps.listCandidates()).thenReturn(Arrays.asList(stepCandidate));
-		when(stepCandidate.matches(anyString())).thenReturn(true);
-		when(stepCandidate.matches(anyString(), anyString())).thenReturn(true);
+		when(steps.listCandidates()).thenReturn(Collections.singletonList(stepCandidate));
+		when(stepCandidate.matches(anyString(), ArgumentMatchers.<String> isNull())).thenReturn(true);
 		when(stepCandidate.getStepsType()).then(returnObjectClass());
 		when(scenario.getTitle()).thenReturn(DEFAULT_SCENARIO_TITLE);
 		when(givenStories.getPaths()).thenReturn(
@@ -82,8 +90,7 @@ public class JUnitDescriptionGeneratorTest {
 		when(scenario.getGivenStories()).thenReturn(givenStories);
 		when(configuration.keywords()).thenReturn(new Keywords());
 
-		generator = new JUnitDescriptionGenerator(
-				Arrays.asList(steps), configuration);
+		generator = new JUnitDescriptionGenerator(Collections.singletonList(steps), configuration);
 	}
 
 	private PerformableTree mockPerformableTree(Scenario... scenarios) {
@@ -145,7 +152,7 @@ public class JUnitDescriptionGeneratorTest {
 		assertEquals(1, generator.getTestCases());
 	}
 
-    @Test
+	@Test
 	public void shouldExcludeFilteredOutStory() {
 		PerformableTree performableTree = mockPerformableTree(scenario);
 		addStepToScenario();
@@ -160,8 +167,7 @@ public class JUnitDescriptionGeneratorTest {
 		PerformableTree performableTree = mockPerformableTree(scenario);
 		when(scenario.getSteps()).thenReturn(
 				Arrays.asList("Given Step1", "!-- ignore me"));
-		when(stepCandidate.matches(anyString(), anyString())).thenReturn(false);
-		when(stepCandidate.matches(eq("Given Step1"), anyString())).thenReturn(
+		when(stepCandidate.matches(eq("Given Step1"), ArgumentMatchers.<String> isNull())).thenReturn(
 				true);
 		generator.createDescriptionFrom(performableTree);
 		assertEquals(2, generator.getTestCases());
@@ -187,8 +193,7 @@ public class JUnitDescriptionGeneratorTest {
 
 	@Test
 	public void shouldGenerateDescriptionForTabularParameterStep() {
-		when(scenario.getSteps()).thenReturn(
-				Arrays.asList("StepWithTableParam:\n|Head|\n|Value|"));
+		when(scenario.getSteps()).thenReturn(Collections.singletonList("StepWithTableParam:\n|Head|\n|Value|"));
 		generateScenarioDescription();
 		assertThat(description.getChildren(),
 				hasItem(stepWithTableDescription()));
@@ -238,6 +243,8 @@ public class JUnitDescriptionGeneratorTest {
 	public void shouldCopeWithSeeminglyDuplicateSteps() throws Exception {
 		when(scenario.getSteps()).thenReturn(
 				Arrays.asList("Given Step1", "Given Step1"));
+		when(stepCandidate.matches("Given Step1", "Given ")).thenReturn(true);
+		when(stepCandidate.getStartingWord()).thenReturn("Given");
 		generateScenarioDescription();
 		assertThat(description.getChildren(),
 				everyItem(whoseDisplayName(startsWith("Given Step1"))));
@@ -249,8 +256,7 @@ public class JUnitDescriptionGeneratorTest {
 	@Test
 	public void shouldCopeWithDuplicateGivenStories() throws Exception {
 		PerformableTree performableTree = mockPerformableTree(scenario, scenario);
-		when(givenStories.getPaths()).thenReturn(
-				Arrays.asList("/some/path/to/GivenStory.story"));
+		when(givenStories.getPaths()).thenReturn(Collections.singletonList("/some/path/to/GivenStory.story"));
 		List<Description> descriptions = generator.createDescriptionFrom(performableTree);
 		assertEquals(1, descriptions.size());
 		Description description = descriptions.get(0);
@@ -262,8 +268,7 @@ public class JUnitDescriptionGeneratorTest {
 
 	@Test
 	public void shouldGenerateDescriptionForGivenStories() {
-		when(givenStories.getPaths()).thenReturn(
-				Arrays.asList("/some/path/to/GivenStory.story"));
+		when(givenStories.getPaths()).thenReturn(Collections.singletonList("/some/path/to/GivenStory.story"));
 		generateScenarioDescription();
 		assertThat(firstChild(description),
 				hasProperty("displayName", is("GivenStory.story")));
@@ -293,18 +298,18 @@ public class JUnitDescriptionGeneratorTest {
 	@Test
 	public void shouldGenerateChildrenForComposedSteps() {
 		addStepToScenario();
-		when(stepCandidate.composedSteps()).thenReturn(
-				new String[] { "compositeStep1", "compositeStep2" });
-		StepCandidate composedStep1 = stepCandidateMock("compositeStep1");
-		StepCandidate composedStep2 = stepCandidateMock("compositeStep2");
-		when(stepCandidate.matches(anyString(), anyString())).thenReturn(false);
-		when(stepCandidate.matches(eq("Given Step1"), anyString())).thenReturn(
+		String compositeStep1 = "When compositeStep1";
+		String compositeStep2 = "When compositeStep2";
+		when(stepCandidate.composedSteps()).thenReturn(new String[] { compositeStep1, compositeStep2 });
+		StepCandidate composedStep1 = mockStepCandidate(compositeStep1, null);
+		StepCandidate composedStep2 = mockStepCandidate(compositeStep2, "When ");
+		when(stepCandidate.matches(anyString(), ArgumentMatchers.<String> isNull())).thenReturn(false);
+		when(stepCandidate.matches(eq("Given Step1"), ArgumentMatchers.<String> isNull())).thenReturn(
 				true);
 		when(stepCandidate.isComposite()).thenReturn(true);
 		when(steps.listCandidates()).thenReturn(
 				Arrays.asList(stepCandidate, composedStep1, composedStep2));
-		generator = new JUnitDescriptionGenerator(
-				Arrays.asList(steps), configuration);
+		generator = new JUnitDescriptionGenerator(Collections.singletonList(steps), configuration);
 
 		generateScenarioDescription();
 
@@ -312,7 +317,7 @@ public class JUnitDescriptionGeneratorTest {
 		verify(stepCandidate, times(0)).getStepsInstance();
 		assertThat(composedStep.getChildren(),
 				everyItem(Matchers.<Description> hasProperty("displayName",
-						startsWith("compositeStep"))));
+						startsWith("When compositeStep"))));
 		assertThat(composedStep.getChildren().size(), is(2));
 		assertThat(composedStep.isSuite(), is(true));
 		assertThat(composedStep.getDisplayName(), startsWith("Given Step1"));
@@ -323,8 +328,7 @@ public class JUnitDescriptionGeneratorTest {
 	public void shouldCreateDescriptionForAndStep() {
 		when(scenario.getSteps()).thenReturn(
 				Arrays.asList("Given Step1", "And Step2"));
-		when(stepCandidate.matches(anyString(), anyString())).thenReturn(false);
-		when(stepCandidate.matches(eq("Given Step1"), anyString())).thenReturn(
+		when(stepCandidate.matches(eq("Given Step1"), ArgumentMatchers.<String> isNull())).thenReturn(
 				true);
 		when(
 				stepCandidate.matches(eq("And Step2"),
@@ -338,10 +342,7 @@ public class JUnitDescriptionGeneratorTest {
 	@Test
 	public void shouldGenerateDescriptionForPendingSteps() {
 		addStepToScenario();
-		when(steps.listCandidates()).thenReturn(
-				Arrays.asList(new StepCandidate[] { null }));
-		when(stepCandidate.matches(anyString())).thenReturn(false);
-		when(stepCandidate.matches(anyString(), anyString())).thenReturn(false);
+		when(stepCandidate.matches(anyString(), ArgumentMatchers.<String> isNull())).thenReturn(false);
 		generateScenarioDescription();
 		assertThat(description.getChildren().size(), is(1));
 		assertThat(description.getChildren(),
@@ -351,28 +352,10 @@ public class JUnitDescriptionGeneratorTest {
 	}
 
 	@Test
-	public void shouldGenerateDescriptionForIgnorableSteps() {
-		when(scenario.getSteps()).thenReturn(Arrays.asList("!-- Comment"));
-
-		when(stepCandidate.matches(anyString(), anyString())).thenReturn(false);
-		when(
-				stepCandidate.matches(eq("!-- Comment"),
-						eq(StepType.IGNORABLE.toString() + " "))).thenReturn(
-				true);
-		when(stepCandidate.getStepType()).thenReturn(StepType.IGNORABLE);
-		when(stepCandidate.getStartingWord()).thenReturn("!--");
-		generateScenarioDescription();
-		assertThat(description.getChildren().size(), is(1));
-
-	}
-
-	@Test
 	public void shouldSkipExampleTablesForParameterizedGivenStories() {
 		// jbehave ignores example tables, when given stories are parameterized
 		addStepToScenario();
-		when(givenStories.getPaths()).thenReturn(
-				Arrays.asList("/some/path/to/GivenStory.story#{0}"));
-		when(givenStories.requireParameters()).thenReturn(true);
+		when(givenStories.getPaths()).thenReturn(Collections.singletonList("/some/path/to/GivenStory.story#{0}"));
 
 		generateScenarioDescription();
 
@@ -389,8 +372,7 @@ public class JUnitDescriptionGeneratorTest {
 	@Test
 	public void shouldCountBeforeScenarioStepWithAnyType()	{
 		mockListBeforeOrAfterScenarioCall(ScenarioType.ANY);
-		generator = new JUnitDescriptionGenerator(
-				Arrays.asList(steps), configuration);
+		generator = new JUnitDescriptionGenerator(Collections.singletonList(steps), configuration);
 		addStepToScenario();
 		generateScenarioDescription();
 		assertEquals(2, generator.getTestCases());
@@ -399,8 +381,7 @@ public class JUnitDescriptionGeneratorTest {
 	@Test
 	public void shouldCountBeforeScenarioStepWithNormalType()  {
 		mockListBeforeOrAfterScenarioCall(ScenarioType.NORMAL);
-		generator = new JUnitDescriptionGenerator(
-				Arrays.asList(steps), configuration);
+		generator = new JUnitDescriptionGenerator(Collections.singletonList(steps), configuration);
 		addStepToScenario();
 		generateScenarioDescription();
 		assertEquals(2, generator.getTestCases());
@@ -409,8 +390,7 @@ public class JUnitDescriptionGeneratorTest {
 	@Test
 	public void shouldCountBeforeScenarioStepWithAnyAndNormalTypes() {
 		mockListBeforeOrAfterScenarioCall(ScenarioType.ANY, ScenarioType.NORMAL);
-		generator = new JUnitDescriptionGenerator(
-				Arrays.asList(steps), configuration);
+		generator = new JUnitDescriptionGenerator(Collections.singletonList(steps), configuration);
 		addStepToScenario();
 		generateScenarioDescription();
 		assertEquals(2, generator.getTestCases());
@@ -419,8 +399,7 @@ public class JUnitDescriptionGeneratorTest {
 	@Test
 	public void shouldCountBeforeScenarioStepWithExampleType()  {
 		mockListBeforeOrAfterScenarioCall(ScenarioType.EXAMPLE);
-		generator = new JUnitDescriptionGenerator(
-				Arrays.asList(steps), configuration);
+		generator = new JUnitDescriptionGenerator(Collections.singletonList(steps), configuration);
 		addStepToScenario();
 		generateScenarioDescription();
 		assertEquals(1, generator.getTestCases());
@@ -430,7 +409,7 @@ public class JUnitDescriptionGeneratorTest {
 		Method method = new Object(){}.getClass().getEnclosingMethod();
 		for(ScenarioType scenarioType : scenarioTypes) {
 			when(steps.listBeforeOrAfterScenario(scenarioType)).thenReturn(
-					Arrays.asList(new BeforeOrAfterStep(Stage.BEFORE, method, null)));
+					Collections.singletonList(new BeforeOrAfterStep(Stage.BEFORE, method, null)));
 		}
 	}
 
@@ -453,18 +432,19 @@ public class JUnitDescriptionGeneratorTest {
 	}
 
 	private Matcher<Description> whoseDisplayName(Matcher<String> startsWith) {
-		return Matchers.hasProperty("displayName", startsWith);
+		return hasProperty("displayName", startsWith);
 	}
 
-	private StepCandidate stepCandidateMock(String name) {
-		StepCandidate step = mock(StepCandidate.class);
-		when(step.getStepsType()).then(returnObjectClass());
-		when(step.matches(eq(name), anyString())).thenReturn(true);
-		return step;
+	private StepCandidate mockStepCandidate(String name, String previousNonAndStep) {
+		StepCandidate stepCandidate = mock(StepCandidate.class);
+		when(stepCandidate.getStepsType()).then(returnObjectClass());
+		when(stepCandidate.matches(name, previousNonAndStep)).thenReturn(true);
+		when(stepCandidate.getStartingWord()).thenReturn(name.split(" ")[0]);
+		return stepCandidate;
 	}
 
 	private void addStepToScenario() {
-		when(scenario.getSteps()).thenReturn(Arrays.asList("Given Step1"));
+		when(scenario.getSteps()).thenReturn(Collections.singletonList("Given Step1"));
 	}
 
 	private Description step1Description() {
@@ -487,7 +467,6 @@ public class JUnitDescriptionGeneratorTest {
 		for (int i = 1; i <= NUM_ROWS; i++) {
 			rows.add(row);
 		}
-		when(examplesTable.getRow(anyInt())).thenReturn(row);
 		when(examplesTable.getRows()).thenReturn(rows);
 		when(scenario.getExamplesTable()).thenReturn(examplesTable);
 		return row;

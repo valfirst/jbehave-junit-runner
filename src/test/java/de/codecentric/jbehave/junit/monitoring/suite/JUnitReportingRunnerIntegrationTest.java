@@ -10,6 +10,7 @@ import java.util.Collection;
 import org.hamcrest.Matchers;
 import org.jbehave.core.ConfigurableEmbedder;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
@@ -17,15 +18,19 @@ import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import de.codecentric.jbehave.junit.monitoring.ExampleScenarioJUnitStories;
 import de.codecentric.jbehave.junit.monitoring.ExampleScenarioJUnitStoriesLocalized;
 import de.codecentric.jbehave.junit.monitoring.ExampleScenarioJUnitStory;
 import de.codecentric.jbehave.junit.monitoring.JUnitReportingRunner;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
 @RunWith(Parameterized.class)
 public class JUnitReportingRunnerIntegrationTest {
+
+	@Rule
+	public MockitoRule rule = MockitoJUnit.rule();
 
 	@Mock
 	private RunNotifier notifier;
@@ -34,11 +39,6 @@ public class JUnitReportingRunnerIntegrationTest {
 	private String expectedFirstStoryName;
 	private String expectedFirstScenario;
 	private String expextedFirstStep;
-
-	@Before
-	public void setUp() throws Throwable {
-		MockitoAnnotations.initMocks(this);
-	}
 
 	@Parameters
 	public static Collection<Object[]> data() {

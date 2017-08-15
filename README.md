@@ -1,9 +1,10 @@
 JBehave JUnit Integration
 =========================
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/d81f58136aa245668240b7d851a54d50)](https://www.codacy.com/app/valfirst/jbehave-junit-runner?utm_source=github.com&utm_medium=referral&utm_content=valfirst/jbehave-junit-runner&utm_campaign=badger)
 [![Build Status](https://travis-ci.org/valfirst/jbehave-junit-runner.svg?branch=master)](https://travis-ci.org/valfirst/jbehave-junit-runner)
 [![Coverage Status](https://coveralls.io/repos/github/valfirst/jbehave-junit-runner/badge.svg?branch=master)](https://coveralls.io/github/valfirst/jbehave-junit-runner?branch=master)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.codecentric/jbehave-junit-runner/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.codecentric/jbehave-junit-runner/)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/d81f58136aa245668240b7d851a54d50)](https://www.codacy.com/app/valfirst/jbehave-junit-runner?utm_source=github.com&utm_medium=referral&utm_content=valfirst/jbehave-junit-runner&utm_campaign=badger)
+
 
 
 This little project is designed to make JBehave

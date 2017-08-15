@@ -37,7 +37,7 @@ public class JUnitScenarioReporterTest {
 	private static final int ONE_AFTER_STORIES = 1;
 
 	@Mock
-	RunNotifier notifier;
+	private RunNotifier notifier;
 	private Description rootDescription;
 	private Description storyDescription;
 	private Description scenarioDescription;

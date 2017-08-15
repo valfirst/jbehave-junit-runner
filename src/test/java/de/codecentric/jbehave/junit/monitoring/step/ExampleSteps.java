@@ -44,7 +44,7 @@ public class ExampleSteps {
 	@Then("x should equal $value")
 	@Alias("ist x gleich $value")
 	public void thenXshouldBe(@Named("value") int value) {
-		Assert.assertEquals(value, x);
+		assertEquals(value, x);
 	}
 
 	@Given("some initialization")

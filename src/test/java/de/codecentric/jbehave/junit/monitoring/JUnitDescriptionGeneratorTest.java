@@ -72,8 +72,7 @@ public class JUnitDescriptionGeneratorTest {
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
-		when(steps.listCandidates()).thenReturn(
-				Arrays.asList(new StepCandidate[] { stepCandidate }));
+		when(steps.listCandidates()).thenReturn(Arrays.asList(stepCandidate));
 		when(stepCandidate.matches(anyString())).thenReturn(true);
 		when(stepCandidate.matches(anyString(), anyString())).thenReturn(true);
 		when(stepCandidate.getStepsType()).then(returnObjectClass());
@@ -84,7 +83,7 @@ public class JUnitDescriptionGeneratorTest {
 		when(configuration.keywords()).thenReturn(new Keywords());
 
 		generator = new JUnitDescriptionGenerator(
-				Arrays.asList(new CandidateSteps[] { steps }), configuration);
+				Arrays.asList(steps), configuration);
 	}
 
 	private PerformableTree mockPerformableTree(Scenario... scenarios) {
@@ -238,7 +237,7 @@ public class JUnitDescriptionGeneratorTest {
 	@Test
 	public void shouldCopeWithSeeminglyDuplicateSteps() throws Exception {
 		when(scenario.getSteps()).thenReturn(
-				Arrays.asList(new String[] { "Given Step1", "Given Step1" }));
+				Arrays.asList("Given Step1", "Given Step1"));
 		generateScenarioDescription();
 		assertThat(description.getChildren(),
 				everyItem(whoseDisplayName(startsWith("Given Step1"))));
@@ -303,10 +302,9 @@ public class JUnitDescriptionGeneratorTest {
 				true);
 		when(stepCandidate.isComposite()).thenReturn(true);
 		when(steps.listCandidates()).thenReturn(
-				Arrays.asList(new StepCandidate[] { stepCandidate,
-						composedStep1, composedStep2 }));
+				Arrays.asList(stepCandidate, composedStep1, composedStep2));
 		generator = new JUnitDescriptionGenerator(
-				Arrays.asList(new CandidateSteps[] { steps }), configuration);
+				Arrays.asList(steps), configuration);
 
 		generateScenarioDescription();
 
@@ -392,7 +390,7 @@ public class JUnitDescriptionGeneratorTest {
 	public void shouldCountBeforeScenarioStepWithAnyType()	{
 		mockListBeforeOrAfterScenarioCall(ScenarioType.ANY);
 		generator = new JUnitDescriptionGenerator(
-				Arrays.asList(new CandidateSteps[] { steps }), configuration);
+				Arrays.asList(steps), configuration);
 		addStepToScenario();
 		generateScenarioDescription();
 		assertEquals(2, generator.getTestCases());
@@ -402,7 +400,7 @@ public class JUnitDescriptionGeneratorTest {
 	public void shouldCountBeforeScenarioStepWithNormalType()  {
 		mockListBeforeOrAfterScenarioCall(ScenarioType.NORMAL);
 		generator = new JUnitDescriptionGenerator(
-				Arrays.asList(new CandidateSteps[] { steps }), configuration);
+				Arrays.asList(steps), configuration);
 		addStepToScenario();
 		generateScenarioDescription();
 		assertEquals(2, generator.getTestCases());
@@ -412,7 +410,7 @@ public class JUnitDescriptionGeneratorTest {
 	public void shouldCountBeforeScenarioStepWithAnyAndNormalTypes() {
 		mockListBeforeOrAfterScenarioCall(ScenarioType.ANY, ScenarioType.NORMAL);
 		generator = new JUnitDescriptionGenerator(
-				Arrays.asList(new CandidateSteps[] { steps }), configuration);
+				Arrays.asList(steps), configuration);
 		addStepToScenario();
 		generateScenarioDescription();
 		assertEquals(2, generator.getTestCases());
@@ -422,7 +420,7 @@ public class JUnitDescriptionGeneratorTest {
 	public void shouldCountBeforeScenarioStepWithExampleType()  {
 		mockListBeforeOrAfterScenarioCall(ScenarioType.EXAMPLE);
 		generator = new JUnitDescriptionGenerator(
-				Arrays.asList(new CandidateSteps[] { steps }), configuration);
+				Arrays.asList(steps), configuration);
 		addStepToScenario();
 		generateScenarioDescription();
 		assertEquals(1, generator.getTestCases());
@@ -432,7 +430,7 @@ public class JUnitDescriptionGeneratorTest {
 		Method method = new Object(){}.getClass().getEnclosingMethod();
 		for(ScenarioType scenarioType : scenarioTypes) {
 			when(steps.listBeforeOrAfterScenario(scenarioType)).thenReturn(
-					Arrays.asList(new BeforeOrAfterStep[] { new BeforeOrAfterStep(Stage.BEFORE, method, null) }));
+					Arrays.asList(new BeforeOrAfterStep(Stage.BEFORE, method, null)));
 		}
 	}
 
@@ -455,7 +453,7 @@ public class JUnitDescriptionGeneratorTest {
 	}
 
 	private Matcher<Description> whoseDisplayName(Matcher<String> startsWith) {
-		return Matchers.<Description> hasProperty("displayName", startsWith);
+		return Matchers.hasProperty("displayName", startsWith);
 	}
 
 	private StepCandidate stepCandidateMock(String name) {

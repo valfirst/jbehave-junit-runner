@@ -15,7 +15,7 @@ import org.mockito.MockitoAnnotations;
 public class LoggerTest {
 
 	@Mock
-	PrintStream stream;
+	private PrintStream stream;
 
 	private Logger logger;
 

@@ -9,7 +9,6 @@ import java.util.Collection;
 
 import org.hamcrest.Matchers;
 import org.jbehave.core.ConfigurableEmbedder;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.Description;

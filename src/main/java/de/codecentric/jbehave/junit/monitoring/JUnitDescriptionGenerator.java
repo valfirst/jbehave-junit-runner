@@ -30,10 +30,8 @@ public class JUnitDescriptionGenerator {
 	public static final String BEFORE_SCENARIO_STEP_NAME = "@BeforeScenario";
 	public static final String AFTER_SCENARIO_STEP_NAME = "@AfterScenario";
 
-	DescriptionTextUniquefier uniq = new DescriptionTextUniquefier();
-
+	private DescriptionTextUniquefier uniq = new DescriptionTextUniquefier();
 	private int testCases;
-
 	private List<StepCandidate> allCandidates = new ArrayList<>();
 
 	private Map<ScenarioType, List<BeforeOrAfterStep>> beforeOrAfterScenario =

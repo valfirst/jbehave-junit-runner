@@ -9,7 +9,7 @@ import java.io.PrintStream;
 public class Logger {
 	public static final String PROP_JJM_LOGLEVEL = "jjm.loglevel";
 	private volatile LogLevel logLevel;
-	PrintStream logStream = System.out;
+	private PrintStream logStream = System.out;
 
 	public void info(String message, Object... params) {
 		if (!isInfoEnabled()) {

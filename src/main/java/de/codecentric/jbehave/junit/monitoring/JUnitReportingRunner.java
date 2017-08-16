@@ -34,7 +34,7 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 	private Configuration configuration;
 	private int numberOfTestCases;
 	private Description rootDescription;
-	List<CandidateSteps> candidateSteps;
+	private List<CandidateSteps> candidateSteps;
 	private ConfigurableEmbedder configurableEmbedder;
 
 	@SuppressWarnings("unchecked")

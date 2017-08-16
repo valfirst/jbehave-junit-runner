@@ -272,7 +272,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 	@Override
 	public void failed(String step, Throwable e) {
 		if (e instanceof UUIDExceptionWrapper) {
-			e = ((UUIDExceptionWrapper) e).getCause();
+			e = e.getCause();
 		}
 		logger.info("Step Failed: {} (cause: {})", step, e.getMessage());
 		TestState testState = this.testState.get();

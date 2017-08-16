@@ -140,8 +140,7 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 			throws NoSuchMethodException, IllegalAccessException,
 			InvocationTargetException {
 		Method method = makeStoryPathsMethodPublic(testClass);
-		storyPaths = ((List<String>) method.invoke(
-				(JUnitStories) configurableEmbedder, (Object[]) null));
+		storyPaths = ((List<String>) method.invoke(configurableEmbedder, (Object[]) null));
 	}
 
 	@SuppressWarnings("unchecked")

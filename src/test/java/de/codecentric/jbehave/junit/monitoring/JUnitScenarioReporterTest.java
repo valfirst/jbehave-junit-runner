@@ -5,6 +5,8 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.util.Collections;
+
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.failures.FailingUponPendingStep;
 import org.jbehave.core.failures.PendingStepStrategy;
@@ -188,9 +190,7 @@ public class JUnitScenarioReporterTest {
 	@Test
 	public void shouldNotifyGivenStory() {
 
-		Description givenStoryDescription = Description
-				.createSuiteDescription("aGivenStory");
-		scenarioDescription.addChild(givenStoryDescription);
+		Description givenStoryDescription = addChildGivenStoryToScenario();
 		Description child = addChildToScenario("child");
 
 		reporter = new JUnitScenarioReporter(notifier, ONE_GIVEN + ONE_STEP,
@@ -199,9 +199,28 @@ public class JUnitScenarioReporterTest {
 		Story givenStory = new Story();
 		givenStory.namedAs("aGivenStory");
 
-		reporter.beforeStory(story, false);
-		reporter.beforeScenario(scenarioDescription.getDisplayName());
+		reportBefore();
 		reportGivenStoryEvents();
+		reportStepSuccess(reporter);
+		reportScenarioAndStoryFinish(reporter);
+
+		verifyTestStart();
+		verifyStepSuccess(givenStoryDescription);
+		verifyStepSuccess(child);
+		verifyTestFinish();
+	}
+
+	@Test
+	public void shouldHandleGivenStoryWithExample() {
+
+		Description givenStoryDescription = addChildGivenStoryToScenario();
+		Description child = addChildToScenario("child");
+
+		reporter = new JUnitScenarioReporter(notifier, ONE_GIVEN + ONE_STEP,
+				rootDescription, keywords);
+
+		reportBefore();
+		reportGivenStoryEventsWithExample();
 		reportStepSuccess(reporter);
 		reportScenarioAndStoryFinish(reporter);
 
@@ -265,9 +284,7 @@ public class JUnitScenarioReporterTest {
 	@Test
 	public void shouldHandleExampleStepsInCombinationWithGivenStories() {
 		// one story, one scenario, one given story, one example, one step
-		Description givenStoryDescription = Description
-				.createSuiteDescription("aGivenStory");
-		scenarioDescription.addChild(givenStoryDescription);
+		Description givenStoryDescription = addChildGivenStoryToScenario();
 		// one story, one scenario, one example, one step,
 		Description example = addChildToScenario(keywords.examplesTableRow() + " "
 				+ "row");
@@ -390,16 +407,36 @@ public class JUnitScenarioReporterTest {
 	}
 
 	private void reportGivenStoryEvents() {
-		Story givenStory = new Story();
-		givenStory.namedAs("aGivenStory");
+		Story givenStory = createGivenStory();
 
 		// Begin Given Story
-		reporter.beforeStory(givenStory, true);
-		reporter.beforeScenario("givenScenario");
+		reportBefore(givenStory, true, "givenScenario");
 		reporter.beforeStep("givenStep");
 		reporter.successful("givenStep");
+		reportAfter();
+		// End Given Story
+	}
+
+	private void reportAfter() {
 		reporter.afterScenario();
 		reporter.afterStory(true);
+	}
+
+	private Story createGivenStory() {
+		Story givenStory = new Story();
+		givenStory.namedAs("aGivenStory");
+		return givenStory;
+	}
+
+	private void reportGivenStoryEventsWithExample() {
+		Story givenStory = createGivenStory();
+
+		// Begin Given Story
+		reportBefore(givenStory, true, "givenScenario");
+		reporter.example(Collections.singletonMap("givenKey", "givenValue"));
+		reporter.beforeStep("givenStep");
+		reporter.successful("givenStep");
+		reportAfter();
 		// End Given Story
 	}
 
@@ -458,5 +495,21 @@ public class JUnitScenarioReporterTest {
 				childName);
 		scenarioDescription.addChild(child);
 		return child;
+	}
+
+	private Description addChildGivenStoryToScenario() {
+		Description givenStoryDescription = Description
+				.createSuiteDescription("aGivenStory");
+		scenarioDescription.addChild(givenStoryDescription);
+		return givenStoryDescription;
+	}
+
+	private void reportBefore() {
+		reportBefore(story, false, scenarioDescription.getDisplayName());
+	}
+
+	private void reportBefore(Story story, boolean isGivenStory, String scenarioTitle) {
+		reporter.beforeStory(story, isGivenStory);
+		reporter.beforeScenario(scenarioTitle);
 	}
 }

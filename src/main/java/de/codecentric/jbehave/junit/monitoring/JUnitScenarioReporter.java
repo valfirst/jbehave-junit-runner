@@ -271,16 +271,14 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 
 	@Override
 	public void failed(String step, Throwable e) {
-		if (e instanceof UUIDExceptionWrapper) {
-			e = e.getCause();
-		}
-		logger.info("Step Failed: {} (cause: {})", step, e.getMessage());
+		Throwable thrownException = e instanceof UUIDExceptionWrapper ? e.getCause() : e;
+		logger.info("Step Failed: {} (cause: {})", step, thrownException.getMessage());
 		TestState testState = this.testState.get();
 		if (!testState.givenStoryContext) {
-			if (e instanceof BeforeOrAfterFailed) {
+			if (thrownException instanceof BeforeOrAfterFailed) {
 				notifier.fireTestStarted(testState.currentStep);
 			}
-			notifier.fireTestFailure(new Failure(testState.currentStep, e));
+			notifier.fireTestFailure(new Failure(testState.currentStep, thrownException));
 			notifier.fireTestFinished(testState.currentStep);
 			testState.failedSteps.add(testState.currentStep);
 			prepareNextStep();

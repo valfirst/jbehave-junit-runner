@@ -24,7 +24,7 @@ public class LoggerTest {
 	private Logger logger;
 
 	@Before
-	public void setup() {
+	public void setUp() {
 		System.clearProperty(Logger.PROP_JJM_LOGLEVEL);
 	}
 

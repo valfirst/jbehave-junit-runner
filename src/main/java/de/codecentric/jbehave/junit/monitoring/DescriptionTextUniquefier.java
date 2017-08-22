@@ -5,14 +5,15 @@ import java.util.Set;
 
 public class DescriptionTextUniquefier {
 
-	private Set<String> strings = new HashSet<>();
+	private Set<String> uniqueDescriptions = new HashSet<>();
 
 	public String getUniqueDescription(String junitSafeString) {
-		while (strings.contains(junitSafeString)) {
-			junitSafeString = junitSafeString + '\u200B'; // zero-width-space
+		String uniqueDescription = junitSafeString;
+		while (uniqueDescriptions.contains(uniqueDescription)) {
+			uniqueDescription += '\u200B'; // zero-width-space
 		}
-		strings.add(junitSafeString);
-		return junitSafeString;
+		uniqueDescriptions.add(uniqueDescription);
+		return uniqueDescription;
 	}
 
 }

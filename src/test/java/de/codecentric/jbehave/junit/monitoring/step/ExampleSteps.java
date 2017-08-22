@@ -15,7 +15,7 @@ import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.steps.Parameters;
 
 public class ExampleSteps {
-	int x;
+	private int x;
 	private Map<String, Integer> variables;
 	private int result;
 

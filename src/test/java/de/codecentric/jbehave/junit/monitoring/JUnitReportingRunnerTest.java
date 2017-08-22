@@ -1,18 +1,25 @@
 package de.codecentric.jbehave.junit.monitoring;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.jbehave.core.ConfigurableEmbedder;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.EmbedderControls;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.mockito.Mockito;
 
 public class JUnitReportingRunnerTest {
+
+	@Rule
+	public ExpectedException expectedException = ExpectedException.none();
 
 	@Test
 	public void shouldPrepareEmbedder() {
@@ -22,29 +29,27 @@ public class JUnitReportingRunnerTest {
 		when(ec.useThreads(Mockito.anyInt())).thenReturn(ec);
 		Embedder e = mock(Embedder.class);
 		when(e.embedderControls()).thenReturn(ec);
-		EmbedderControls recommandedControls = JUnitReportingRunner
-				.recommendedControls(e);
-		assertThat(recommandedControls, is(ec));
+		EmbedderControls recommendedControls = JUnitReportingRunner.recommendedControls(e);
+		assertThat(recommendedControls, is(ec));
 		verify(ec).doIgnoreFailureInView(true);
 		verify(ec).doIgnoreFailureInStories(true);
 		verify(ec).useThreads(1);
 	}
 
 	@Test
-	public void shouldGenerateDescriptionWithoutCrossReference()
-			throws Throwable {
-		assertThat(true, is(not(false)));
-		// TODO ... no idea how this should be tested!
-		// new JUnitReportingRunner(testClass);
-		// verify
-		// configuration.useStepMonitor(nullStepMonitor);
-		// step.configuration().useStepMonitor(nullStepMonitor);
-		// storyDescriptions = buildDescriptionFromStories();
-		// configuration.useStepMonitor(usedStepMonitor);
-		// for (CandidateSteps step : candidateSteps) {
-		// step.configuration().useStepMonitor(usedStepMonitor);
-		// }
-		// candidateSteps = embedder.stepsFactory().createCandidateSteps();
+	public void shouldThrowExceptionWhenTypeOfConfigurableEmbedderIsUnknown()
+			throws Exception {
+		expectedException.expect(IllegalArgumentException.class);
+		expectedException.expectMessage(
+				equalTo("Only ConfigurableEmbedder of types JUnitStory and JUnitStories is supported"));
+		new JUnitReportingRunner(TestConfigurableEmbedder.class);
+	}
 
+	public static class TestConfigurableEmbedder extends ConfigurableEmbedder {
+		@Override
+		@Test
+		public void run() throws Throwable {
+			fail("Should not run");
+		}
 	}
 }

@@ -90,10 +90,6 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 		};
 	}
 
-	public static EmbedderControls recommandedControls(Embedder embedder) {
-		return recommendedControls(embedder);
-	}
-
 	public static EmbedderControls recommendedControls(Embedder embedder) {
 		return embedder.embedderControls()
 		// don't throw an exception on generating reports for failing stories

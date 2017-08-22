@@ -77,7 +77,7 @@ Usually, this is everything you have to do. If you want to,
 you can use a little helper method to configure the configured
 Embedder so that it works nicely together with the JUnitReportingRunner.
 
-	JUnitReportingRunner.recommandedControls(configuredEmbedder());
+	JUnitReportingRunner.recommendedControls(configuredEmbedder());
 
 This tells JBehave to use only one thread, and don't throw any exceptions
 when generating views or otherwise wrapping the execution up. This would

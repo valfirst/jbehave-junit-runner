@@ -27,9 +27,9 @@ a Maven dependency. Binary, Sources and Javadocs are
 all available from Maven Central.
 
     <dependency>
-        <groupId>de.codecentric</groupId>
+        <groupId>com.github.valfirst</groupId>
         <artifactId>jbehave-junit-runner</artifactId>
-        <version>1.2.0</version>
+        <version>2.0.0</version>
     </dependency>
 
 Note that the JBehave library is set to scope `provided`
@@ -37,23 +37,20 @@ in the POM, because any project using this Runner will
 naturally have their own version of JBehave already.
 
 Current development SNAPSHOT versions are available from
-[Sonatype's Nexus for Open Source projects](https://oss.sonatype.org/content/repositories/snapshots/de/codecentric/jbehave-junit-runner/).
+[Sonatype's Nexus for Open Source projects](https://oss.sonatype.org/content/repositories/snapshots/com/github/valfirst/jbehave-junit-runner/).
 
 Without Maven
 ---------------------
 If you cannot or do not want to use Maven, just
 add the library to your classpath.
 
-Also make sure you add the dependencies of this
-library to the classpath as well. They can be
-seen in the `pom.xml`. For convenience, they are
-listed here, too:
+Also make sure you add the dependencies of this library to the classpath as well. They can be
+seen in the `pom.xml`. For convenience, they are listed here, too:
 
-  * jbehave-core (3.9+)
-  * junit (4.11)
+  * jbehave-core (4.1+)
+  * junit (4.12)
 
-Your project will of course have JBehave already,
-just make sure it is version 3.9 or above.
+Your project will of course have JBehave already, just make sure it is version 4.1 or above.
 
 
 Usage

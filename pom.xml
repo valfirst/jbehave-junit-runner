@@ -9,7 +9,7 @@
 
 	<groupId>com.github.valfirst</groupId>
 	<artifactId>jbehave-junit-runner</artifactId>
-	<version>2.0.0-SNAPSHOT</version>
+	<version>2.0.0</version>
 	<packaging>jar</packaging>
 
 	<name>JBehave JUnit Runner</name>
@@ -49,7 +49,7 @@
 		<connection>scm:git:git://github.com/valfirst/jbehave-junit-runner.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/valfirst/jbehave-junit-runner.git</developerConnection>
 		<url>https://github.com/valfirst/jbehave-junit-runner</url>
-		<tag>v1.2.0</tag>
+		<tag>v2.0.0</tag>
 	</scm>
 
 	<distributionManagement>

@@ -26,11 +26,13 @@ it in your acceptance test project(s) by ways of
 a Maven dependency. Binary, Sources and Javadocs are
 all available from Maven Central.
 
-    <dependency>
-        <groupId>com.github.valfirst</groupId>
-        <artifactId>jbehave-junit-runner</artifactId>
-        <version>2.0.0</version>
-    </dependency>
+```xml
+<dependency>
+    <groupId>com.github.valfirst</groupId>
+    <artifactId>jbehave-junit-runner</artifactId>
+    <version>2.0.0</version>
+</dependency>
+```
 
 Note that the JBehave library is set to scope `provided`
 in the POM, because any project using this Runner will
@@ -65,16 +67,20 @@ You will probably already have one or more classes
 that extend the default JBehave `JUnitStories` class.
 Just add this annotation:
 
-    @RunWith(JUnitReportingRunner.class)
-    public class MyAcceptanceTests extends JUnitStories {
-        ...
-    }
+```java
+@RunWith(JUnitReportingRunner.class)
+public class MyAcceptanceTests extends JUnitStories {
+    ...
+}
+```
 
 Usually, this is everything you have to do. If you want to,
 you can use a little helper method to configure the configured
 Embedder so that it works nicely together with the JUnitReportingRunner.
 
-	JUnitReportingRunner.recommendedControls(configuredEmbedder());
+```java
+JUnitReportingRunner.recommendedControls(configuredEmbedder());
+```
 
 This tells JBehave to use only one thread, and don't throw any exceptions
 when generating views or otherwise wrapping the execution up. This would
@@ -90,15 +96,17 @@ few common pitfalls.
 
 If you run into problems like this
 
-    java.lang.NoSuchMethodException: MyAcceptanceTests.storyPaths()
-        at java.lang.Class.getDeclaredMethod(Class.java:1937)
-        at org.jbehave.scenario.finegrained.junit.monitoring.JUnitReportingRunner.<init>(JUnitReportingRunner.java:33)
-        at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
-        at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:39)
-        at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:27)
-        at java.lang.reflect.Constructor.newInstance(Constructor.java:513)
-        at org.junit.internal.builders.AnnotatedBuilder.buildRunner(AnnotatedBuilder.java:31)
-        ....
+```java
+java.lang.NoSuchMethodException: MyAcceptanceTests.storyPaths()
+    at java.lang.Class.getDeclaredMethod(Class.java:1937)
+    at org.jbehave.scenario.finegrained.junit.monitoring.JUnitReportingRunner.<init>(JUnitReportingRunner.java:33)
+    at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+    at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:39)
+    at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:27)
+    at java.lang.reflect.Constructor.newInstance(Constructor.java:513)
+    at org.junit.internal.builders.AnnotatedBuilder.buildRunner(AnnotatedBuilder.java:31)
+    ....
+```	
 
 you are likely extending a custom base class which
 was probably introduced to provide some common methods
@@ -118,12 +126,14 @@ future versions.
 
 If you see JUnit throw an error soon after a test starts, that looks like this
 
-    java.lang.NoSuchMethodError: org.junit.runner.Description.createSuiteDescription(Ljava/lang/String;[Ljava/lang/annotation/Annotation;)Lorg/junit/runner/Description;
-    	at de.codecentric.jbehave.junit.monitoring.JUnitDescriptionGenerator.createDescriptionFrom(JUnitDescriptionGenerator.java:43)
-    	at de.codecentric.jbehave.junit.monitoring.JUnitReportingRunner.buildDescriptionFromStories(JUnitReportingRunner.java:152)
-    	at de.codecentric.jbehave.junit.monitoring.JUnitReportingRunner.<init>(JUnitReportingRunner.java:73)
-    	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
-    	....
+```java
+java.lang.NoSuchMethodError: org.junit.runner.Description.createSuiteDescription(Ljava/lang/String;[Ljava/lang/annotation/Annotation;)Lorg/junit/runner/Description;
+    at de.codecentric.jbehave.junit.monitoring.JUnitDescriptionGenerator.createDescriptionFrom(JUnitDescriptionGenerator.java:43)
+    at de.codecentric.jbehave.junit.monitoring.JUnitReportingRunner.buildDescriptionFromStories(JUnitReportingRunner.java:152)
+    at de.codecentric.jbehave.junit.monitoring.JUnitReportingRunner.<init>(JUnitReportingRunner.java:73)
+    at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+    ...
+```
 
 you most probably have an old version of JUnit on your classpath that does not have
 that method signature yet. Verify that you are using a recent version of

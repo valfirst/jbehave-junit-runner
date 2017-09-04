@@ -7,6 +7,7 @@ jdk:
 jobs:
   include:
     - stage: build
+      script: mvn test
     - stage: code coverage reporting
       jdk: oraclejdk8
       script:

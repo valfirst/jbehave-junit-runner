@@ -9,5 +9,6 @@ jdk:
 
 after_success:
   - mvn jacoco:report coveralls:report
+  - jdk_switcher use oraclejdk8
   - java -cp ~/codacy-coverage-reporter-assembly-latest.jar com.codacy.CodacyCoverageReporter -l Java -r target/site/jacoco/jacoco.xml
   

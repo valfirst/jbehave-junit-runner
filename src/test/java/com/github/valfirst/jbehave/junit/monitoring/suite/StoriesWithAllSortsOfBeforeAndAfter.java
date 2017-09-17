@@ -3,7 +3,6 @@ package com.github.valfirst.jbehave.junit.monitoring.suite;
 import java.util.Arrays;
 import java.util.List;
 
-import com.github.valfirst.jbehave.junit.monitoring.Logger;
 import com.github.valfirst.jbehave.junit.monitoring.step.ExampleSteps;
 import com.github.valfirst.jbehave.junit.monitoring.step.InitSteps;
 import org.jbehave.core.Embeddable;
@@ -39,7 +38,6 @@ public class StoriesWithAllSortsOfBeforeAndAfter extends JUnitStories {
 	private Configuration configuration;
 
 	public StoriesWithAllSortsOfBeforeAndAfter() {
-		System.setProperty(Logger.PROP_JJM_LOGLEVEL, "debug");
 		CrossReference crossReference = new CrossReference("dummy")
 				.withJsonOnly().withOutputAfterEachStory(true)
 				.excludingStoriesWithNoExecutedScenarios(true);
@@ -76,5 +74,4 @@ public class StoriesWithAllSortsOfBeforeAndAfter extends JUnitStories {
 		return Arrays
 				.asList("com/github/valfirst/jbehave/junit/monitoring/MultiplicationWithExamplesAndGiven.story");
 	}
-
 }

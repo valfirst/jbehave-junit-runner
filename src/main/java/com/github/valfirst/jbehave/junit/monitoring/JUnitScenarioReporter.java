@@ -64,7 +64,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 			if (testState.currentStep != null) {
 				notifier.fireTestStarted(testState.currentStep);
 			}
-			testState.givenStoryContext = true;
+			testState.givenStoryLevel++;
 		} else {
 			if (testCounter.get() == 0) {
 				notifier.fireTestRunStarted(rootDescription);
@@ -102,7 +102,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 	public void afterStory(boolean isGivenStory) {
 		TestState testState = this.testState.get();
 		if (isGivenStory) {
-			testState.givenStoryContext = false;
+			testState.givenStoryLevel--;
 			if (testState.currentStep != null) {
 				notifier.fireTestFinished(testState.currentStep);
 			}
@@ -126,7 +126,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 	@Override
 	public void beforeScenario(String title) {
 		TestState testState = this.testState.get();
-		if (!testState.givenStoryContext) {
+		if (!testState.isGivenStoryRunning()) {
 			notifier.fireTestStarted(testState.currentScenario);
 
 			List<Description> children = testState.currentScenario.getChildren();
@@ -172,7 +172,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 	@Override
 	public void afterScenario() {
 		TestState testState = this.testState.get();
-		if (!testState.givenStoryContext) {
+		if (!testState.isGivenStoryRunning()) {
 			notifier.fireTestFinished(testState.currentScenario);
 			processAfterScenario();
 			testState.moveToNextScenario();
@@ -239,7 +239,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 	@Override
 	public void example(Map<String, String> arg0) {
 		TestState testState = this.testState.get();
-		if (!testState.givenStoryContext) {
+		if (!testState.isGivenStoryRunning()) {
 			if (testState.currentExample != null && testState.stepDescriptions != null) {
 				processAfterScenario();
 			}
@@ -253,7 +253,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 	@Override
 	public void beforeStep(String title) {
 		TestState testState = this.testState.get();
-		if (!testState.givenStoryContext) {
+		if (!testState.isGivenStoryRunning()) {
 			notifier.fireTestStarted(testState.currentStep);
 		}
 	}
@@ -261,7 +261,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 	@Override
 	public void failed(String step, Throwable e) {
 		TestState testState = this.testState.get();
-		if (!testState.givenStoryContext) {
+		if (!testState.isGivenStoryRunning()) {
 			Throwable thrownException = e instanceof UUIDExceptionWrapper ? e.getCause() : e;
 			if (thrownException instanceof BeforeOrAfterFailed) {
 				notifier.fireTestStarted(testState.currentStep);
@@ -276,7 +276,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 	@Override
 	public void successful(String step) {
 		TestState testState = this.testState.get();
-		if (!testState.givenStoryContext) {
+		if (!testState.isGivenStoryRunning()) {
 			notifier.fireTestFinished(testState.currentStep);
 
 			prepareNextStep();
@@ -296,7 +296,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 	@Override
 	public void pending(String arg0) {
 		TestState testState = this.testState.get();
-		if (!testState.givenStoryContext) {
+		if (!testState.isGivenStoryRunning()) {
 			if (pendingStepStrategy instanceof FailingUponPendingStep) {
 				notifier.fireTestStarted(testState.currentStep);
 				notifier.fireTestFailure(new Failure(testState.currentStep,
@@ -316,7 +316,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 	@Override
 	public void ignorable(String arg0) {
 		TestState testState = this.testState.get();
-		if (!testState.givenStoryContext) {
+		if (!testState.isGivenStoryRunning()) {
 			notifier.fireTestIgnored(testState.currentStep);
 			prepareNextStep();
 		}
@@ -325,7 +325,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 	@Override
 	public void notPerformed(String arg0) {
 		TestState testState = this.testState.get();
-		if (!testState.givenStoryContext) {
+		if (!testState.isGivenStoryRunning()) {
 			notifier.fireTestIgnored(testState.currentStep);
 			prepareNextStep();
 		}
@@ -360,7 +360,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 		private Iterator<Description> exampleDescriptions;
 
 		private Description currentStoryDescription;
-		private boolean givenStoryContext;
+		private int givenStoryLevel;
 
 		private Set<Description> failedSteps = new HashSet<>();
 
@@ -375,6 +375,10 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 
 		private void moveToNextStep() {
 			currentStep = getNextOrNull(stepDescriptions);
+		}
+
+		private boolean isGivenStoryRunning() {
+			return givenStoryLevel != 0;
 		}
 
 		private <T> T getNextOrNull(Iterator<T> iterator) {

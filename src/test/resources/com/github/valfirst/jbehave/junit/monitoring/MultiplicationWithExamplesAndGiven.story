@@ -29,7 +29,8 @@ Examples:
 Scenario: 2 x 3 success with given stories
 
 GivenStories: 	com/github/valfirst/jbehave/junit/monitoring/Init.story,
-				com/github/valfirst/jbehave/junit/monitoring/Greetings.story
+				com/github/valfirst/jbehave/junit/monitoring/Greetings.story,
+				com/github/valfirst/jbehave/junit/monitoring/GreetingsFromExtraterrestrials.story
 
 Given a variable x with value 3
 When I multiply x by 2

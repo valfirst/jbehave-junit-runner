@@ -4,21 +4,17 @@
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
 		<artifactId>oss-parent</artifactId>
-		<version>7</version>
+		<version>9</version>
 	</parent>
 
-	<groupId>de.codecentric</groupId>
+	<groupId>com.github.valfirst</groupId>
 	<artifactId>jbehave-junit-runner</artifactId>
-	<version>1.2.0-SNAPSHOT</version>
+	<version>2.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>JBehave JUnit Runner</name>
 	<description />
-	<url>https://github.com/codecentric/jbehave-junit-runner</url>
-	<organization>
-		<name>codecentric AG</name>
-		<url>http://www.codecentric.de</url>
-	</organization>
+	<url>https://github.com/valfirst/jbehave-junit-runner</url>
 	<licenses>
 		<license>
 			<name>MIT License</name>
@@ -37,6 +33,10 @@
 			<email>daniel.schneller@codecentric.de</email>
 			<organization>codecentric AG</organization>
 		</developer>
+		<developer>
+			<name>Valery Yatsynovich</name>
+			<email>valfirst@yandex.ru</email>
+		</developer>
 	</developers>
 	<contributors>
 		<contributor>
@@ -46,20 +46,28 @@
 	</contributors>
 
 	<scm>
-		<connection>scm:git:git://github.com/codecentric/jbehave-junit-runner.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com/codecentric/jbehave-junit-runner.git</developerConnection>
-		<url>https://github.com/codecentric/jbehave-junit-runner</url>
-		<tag>jbehave-junit-runner-1.0.0</tag>
+		<connection>scm:git:git://github.com/valfirst/jbehave-junit-runner.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/valfirst/jbehave-junit-runner.git</developerConnection>
+		<url>https://github.com/valfirst/jbehave-junit-runner</url>
+		<tag>v2.0.0</tag>
 	</scm>
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+		  <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
 
 	<properties>
 		<jdk.version>1.7</jdk.version>
-		<jbehave.version>3.9</jbehave.version>
-		<junit.version>4.11</junit.version>
-		<mockito.version>1.9.0</mockito.version>
-		<keystore.password>dev_password</keystore.password>
-		<gpg.passphrase>dev</gpg.passphrase>
-		<passphrase>${gpg.passphrase}</passphrase>
+		<jbehave.version>4.1.1</jbehave.version>
+		<junit.version>4.12</junit.version>
+		<mockito.version>2.10.0</mockito.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -68,16 +76,17 @@
 			<plugin>
 				<!-- Ensure we compile with the correct version of the JDK -->
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
+				<version>3.7.0</version>
 				<configuration>
 					<source>${jdk.version}</source>
 					<target>${jdk.version}</target>
+					<showWarnings>true</showWarnings>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>2.1.2</version>
+				<version>3.0.1</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -90,7 +99,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.8.1</version>
+				<version>3.0.0-M1</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -103,7 +112,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
-				<version>2.3</version>
+				<version>2.5.3</version>
 				<configuration>
 					<localCheckout>true</localCheckout>
 					<pushChanges>false</pushChanges>
@@ -142,10 +151,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>1.4</version>
-						<configuration>
-							<passphrase>${passphrase}</passphrase>
-						</configuration>
+						<version>1.6</version>
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>
@@ -172,7 +178,7 @@
 					<plugin>
 						<groupId>org.jacoco</groupId>
 						<artifactId>jacoco-maven-plugin</artifactId>
-						<version>0.7.3.201502191951</version>
+						<version>0.7.9</version>
 						<executions>
 							<!-- Prepares the property pointing to the JaCoCo
 							runtime agent which is passed as VM argument when Maven the Surefire plugin
@@ -198,7 +204,7 @@
 					<plugin>
 						<groupId>org.eluder.coveralls</groupId>
 						<artifactId>coveralls-maven-plugin</artifactId>
-						<version>3.0.1</version>
+						<version>4.3.0</version>
 					</plugin>
 				</plugins>
 			</build>

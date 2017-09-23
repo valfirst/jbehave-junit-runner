@@ -1,8 +1,13 @@
 JBehave JUnit Integration
 =========================
-[![Build Status](https://travis-ci.org/codecentric/jbehave-junit-runner.svg)](https://travis-ci.org/codecentric/jbehave-junit-runner)
-[![Coverage Status](https://coveralls.io/repos/codecentric/jbehave-junit-runner/badge.svg)](https://coveralls.io/r/codecentric/jbehave-junit-runner)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.codecentric/jbehave-junit-runner/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.codecentric/jbehave-junit-runner/)
+[![Build Status](https://travis-ci.org/valfirst/jbehave-junit-runner.svg?branch=master)](https://travis-ci.org/valfirst/jbehave-junit-runner)
+[![Coverage Status](https://coveralls.io/repos/github/valfirst/jbehave-junit-runner/badge.svg?branch=master)](https://coveralls.io/github/valfirst/jbehave-junit-runner?branch=master)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.valfirst/jbehave-junit-runner/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.valfirst/jbehave-junit-runner/)
+[![Javadocs](http://www.javadoc.io/badge/com.github.valfirst/jbehave-junit-runner.svg)](http://www.javadoc.io/doc/com.github.valfirst/jbehave-junit-runner)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/d81f58136aa245668240b7d851a54d50)](https://www.codacy.com/app/valfirst/jbehave-junit-runner?utm_source=github.com&utm_medium=referral&utm_content=valfirst/jbehave-junit-runner&utm_campaign=badger)
+[![Dependency Status](https://www.versioneye.com/user/projects/5994bda50fb24f00547615ec/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/5994bda50fb24f00547615ec)
+[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/valfirst/jbehave-junit-runner/master/LICENSE.txt)
+
 
 
 This little project is designed to make JBehave
@@ -23,34 +28,33 @@ it in your acceptance test project(s) by ways of
 a Maven dependency. Binary, Sources and Javadocs are
 all available from Maven Central.
 
-    <dependency>
-        <groupId>de.codecentric</groupId>
-        <artifactId>jbehave-junit-runner</artifactId>
-        <version>1.1.2</version>
-    </dependency>
+```xml
+<dependency>
+    <groupId>com.github.valfirst</groupId>
+    <artifactId>jbehave-junit-runner</artifactId>
+    <version>2.0.0</version>
+</dependency>
+```
 
 Note that the JBehave library is set to scope `provided`
 in the POM, because any project using this Runner will
 naturally have their own version of JBehave already.
 
 Current development SNAPSHOT versions are available from
-[Sonatype's Nexus for Open Source projects](https://oss.sonatype.org/content/repositories/snapshots/de/codecentric/jbehave-junit-runner/).
+[Sonatype's Nexus for Open Source projects](https://oss.sonatype.org/content/repositories/snapshots/com/github/valfirst/jbehave-junit-runner/).
 
 Without Maven
 ---------------------
 If you cannot or do not want to use Maven, just
 add the library to your classpath.
 
-Also make sure you add the dependencies of this
-library to the classpath as well. They can be
-seen in the `pom.xml`. For convenience, they are
-listed here, too:
+Also make sure you add the dependencies of this library to the classpath as well. They can be
+seen in the `pom.xml`. For convenience, they are listed here, too:
 
-  * jbehave-core (3.9+)
-  * junit (4.11)
+  * jbehave-core (4.1+)
+  * junit (4.12)
 
-Your project will of course have JBehave already,
-just make sure it is version 3.9 or above.
+Your project will of course have JBehave already, just make sure it is version 4.1 or above.
 
 
 Usage
@@ -65,16 +69,20 @@ You will probably already have one or more classes
 that extend the default JBehave `JUnitStories` class.
 Just add this annotation:
 
-    @RunWith(JUnitReportingRunner.class)
-    public class MyAcceptanceTests extends JUnitStories {
-        ...
-    }
+```java
+@RunWith(JUnitReportingRunner.class)
+public class MyAcceptanceTests extends JUnitStories {
+    ...
+}
+```
 
 Usually, this is everything you have to do. If you want to,
 you can use a little helper method to configure the configured
 Embedder so that it works nicely together with the JUnitReportingRunner.
 
-	JUnitReportingRunner.recommandedControls(configuredEmbedder());
+```java
+JUnitReportingRunner.recommendedControls(configuredEmbedder());
+```
 
 This tells JBehave to use only one thread, and don't throw any exceptions
 when generating views or otherwise wrapping the execution up. This would
@@ -90,15 +98,17 @@ few common pitfalls.
 
 If you run into problems like this
 
-    java.lang.NoSuchMethodException: MyAcceptanceTests.storyPaths()
-        at java.lang.Class.getDeclaredMethod(Class.java:1937)
-        at org.jbehave.scenario.finegrained.junit.monitoring.JUnitReportingRunner.<init>(JUnitReportingRunner.java:33)
-        at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
-        at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:39)
-        at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:27)
-        at java.lang.reflect.Constructor.newInstance(Constructor.java:513)
-        at org.junit.internal.builders.AnnotatedBuilder.buildRunner(AnnotatedBuilder.java:31)
-        ....
+```java
+java.lang.NoSuchMethodException: MyAcceptanceTests.storyPaths()
+    at java.lang.Class.getDeclaredMethod(Class.java:1937)
+    at org.jbehave.scenario.finegrained.junit.monitoring.JUnitReportingRunner.<init>(JUnitReportingRunner.java:33)
+    at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+    at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:39)
+    at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:27)
+    at java.lang.reflect.Constructor.newInstance(Constructor.java:513)
+    at org.junit.internal.builders.AnnotatedBuilder.buildRunner(AnnotatedBuilder.java:31)
+    ....
+```	
 
 you are likely extending a custom base class which
 was probably introduced to provide some common methods
@@ -118,12 +128,14 @@ future versions.
 
 If you see JUnit throw an error soon after a test starts, that looks like this
 
-    java.lang.NoSuchMethodError: org.junit.runner.Description.createSuiteDescription(Ljava/lang/String;[Ljava/lang/annotation/Annotation;)Lorg/junit/runner/Description;
-    	at de.codecentric.jbehave.junit.monitoring.JUnitDescriptionGenerator.createDescriptionFrom(JUnitDescriptionGenerator.java:43)
-    	at de.codecentric.jbehave.junit.monitoring.JUnitReportingRunner.buildDescriptionFromStories(JUnitReportingRunner.java:152)
-    	at de.codecentric.jbehave.junit.monitoring.JUnitReportingRunner.<init>(JUnitReportingRunner.java:73)
-    	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
-    	....
+```java
+java.lang.NoSuchMethodError: org.junit.runner.Description.createSuiteDescription(Ljava/lang/String;[Ljava/lang/annotation/Annotation;)Lorg/junit/runner/Description;
+    at de.codecentric.jbehave.junit.monitoring.JUnitDescriptionGenerator.createDescriptionFrom(JUnitDescriptionGenerator.java:43)
+    at de.codecentric.jbehave.junit.monitoring.JUnitReportingRunner.buildDescriptionFromStories(JUnitReportingRunner.java:152)
+    at de.codecentric.jbehave.junit.monitoring.JUnitReportingRunner.<init>(JUnitReportingRunner.java:73)
+    at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+    ...
+```
 
 you most probably have an old version of JUnit on your classpath that does not have
 that method signature yet. Verify that you are using a recent version of

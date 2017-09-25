@@ -277,8 +277,9 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 	public void successful(String step) {
 		TestState testState = this.testState.get();
 		if (!testState.isGivenStoryRunning()) {
-			notifier.fireTestFinished(testState.currentStep);
-
+			if (testState.currentStep != null) {
+				notifier.fireTestFinished(testState.currentStep);
+			}
 			prepareNextStep();
 		}
 	}

@@ -3,6 +3,8 @@ package com.github.valfirst.jbehave.junit.monitoring;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import static org.junit.Assert.assertTrue;
+
 /**
  * Class IgnoredTestsTest.
  *
@@ -20,10 +22,12 @@ public class IgnoredTestsTest {
 	@Test
 	public void shouldPass() {
 		// Nothing to do. Wish this test to pass.
+		assertTrue(true);
 	}
 
 	@Ignore
 	public void shouldBeIgnored() {
 		// Nothing to do. Wish this test to be ignored.
+		assertTrue(false);
 	}
 }

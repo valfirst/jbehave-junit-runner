@@ -1,6 +1,7 @@
 package com.github.valfirst.jbehave.junit.monitoring.step;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -86,7 +87,7 @@ public class ExampleSteps {
 
 	@When("this step fails")
 	public void thisStepFails() {
-		throw new RuntimeException("this step failed on purpose");
+		fail("this step failed on purpose");
 	}
 
 	@Then("this step is not executed")

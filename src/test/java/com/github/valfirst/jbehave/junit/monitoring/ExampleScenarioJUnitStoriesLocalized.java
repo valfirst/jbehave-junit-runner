@@ -16,9 +16,11 @@ public class ExampleScenarioJUnitStoriesLocalized extends ExampleScenarioJUnitSt
 	public Configuration configuration() {
 		LocalizedKeywords keywords = new LocalizedKeywords(Locale.GERMAN);
 		Configuration configuration = super.configuration();
+		RegexStoryParser storyParser = new RegexStoryParser(keywords, configuration.storyLoader(),
+				configuration.tableTransformers());
 		return configuration
 				.useKeywords(keywords)
-				.useStoryParser(new RegexStoryParser(keywords, configuration.tableTransformers()));
+				.useStoryParser(storyParser);
 	}
 
 	@Override

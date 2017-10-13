@@ -4,6 +4,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Class IgnoredTestsTest.
@@ -28,6 +29,6 @@ public class IgnoredTestsTest {
 	@Ignore
 	public void shouldBeIgnored() {
 		// Nothing to do. Wish this test to be ignored.
-		assertTrue(false);
+		fail();
 	}
 }

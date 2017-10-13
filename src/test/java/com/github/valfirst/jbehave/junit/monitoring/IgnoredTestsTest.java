@@ -10,7 +10,7 @@ import static org.junit.Assert.assertTrue;
  *
  * The purpose of this class is to see how an IDE behaves when there is a unit test that passes and a test is ignored.
  *
- * The result in IntelliJ 13.1 Community Edition is that there are two lines of info reported about test outcomes:
+ * The result in IntelliJ 2017.2.5 Community Edition is that there are two lines of info reported about test outcomes:
  * (OK) IgnoredTestsTest
  *      (OK) shouldPass
  *

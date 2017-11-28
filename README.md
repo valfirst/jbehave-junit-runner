@@ -8,6 +8,7 @@ JBehave JUnit Integration
 [![Dependency Status](https://www.versioneye.com/user/projects/5994bda50fb24f00547615ec/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/5994bda50fb24f00547615ec)
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/valfirst/jbehave-junit-runner/master/LICENSE.txt)
 
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fvalfirst%2Fjbehave-junit-runner.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fvalfirst%2Fjbehave-junit-runner?ref=badge_large)
 
 
 This little project is designed to make JBehave

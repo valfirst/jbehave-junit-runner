@@ -282,6 +282,47 @@ public class JUnitScenarioReporterTest {
 	}
 
 	@Test
+	public void shouldHandleExampleStepsInCombinationWithCompositeSteps() {
+		// one story, one scenario, one example, one composite step of 2 steps
+		Description example = addChildToScenario(keywords.examplesTableRow() + " "
+				+ "row");
+		Description step = Description.createTestDescription(this.getClass(),
+				"Step");
+		example.addChild(step);
+
+		Description comp1 = Description.createTestDescription(this.getClass(),
+				"comp1");
+		step.addChild(comp1);
+		Description comp2 = Description.createTestDescription(this.getClass(),
+				"comp2");
+		step.addChild(comp2);
+
+		reporter = new JUnitScenarioReporter(notifier, TWO_COMPOSITE_STEPS,
+				rootDescription, keywords);
+
+		reportStoryAndScenarioStart(reporter);
+		reporter.example(null);
+		reporter.beforeStep("child");
+		reporter.successful("child");
+		reporter.beforeStep("comp1");
+		reporter.successful("comp1");
+		reporter.beforeStep("comp2");
+		reporter.successful("comp2");
+		reportStepSuccess(reporter);
+		reportScenarioAndStoryFinish(reporter);
+
+		verifyTestRunStarted();
+		verifyStoryStarted();
+		verifyScenarioStarted();
+		verifyTestStart();
+		verify(notifier).fireTestStarted(step);
+		verifyStepSuccess(comp1);
+		verifyStepSuccess(comp2);
+		verify(notifier).fireTestFinished(step);
+		verifyTestFinish();
+	}
+
+	@Test
 	public void shouldHandleExampleStepsInCombinationWithGivenStories() {
 		// one story, one scenario, one given story, one example, one step
 		Description givenStoryDescription = addChildGivenStoryToScenario();

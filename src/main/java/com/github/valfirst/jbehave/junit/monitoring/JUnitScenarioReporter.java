@@ -160,6 +160,12 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 		return Collections.emptyList();
 	}
 
+	private Collection<Description> getAllDescendants(Description step) {
+		List<Description> descendants = new ArrayList<>();
+		descendants.addAll(getAllDescendants(step.getChildren()));
+		return descendants;
+	}
+
 	private Collection<Description> getAllDescendants(List<Description> steps) {
 		List<Description> descendants = new ArrayList<>();
 		for (Description child : steps) {
@@ -244,7 +250,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 				processAfterScenario();
 			}
 			testState.moveToNextExample();
-			testState.stepDescriptions = testState.currentExample.getChildren().iterator();
+			testState.stepDescriptions = getAllDescendants(testState.currentExample).iterator();
 			testState.moveToNextStep();
 			processBeforeScenario();
 		}

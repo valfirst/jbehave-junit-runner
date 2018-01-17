@@ -6,7 +6,7 @@
 	<packaging>jar</packaging>
 
 	<name>JBehave JUnit Runner</name>
-	<description />
+	<description>Library designed to make JBehave stories &amp; scenarios show up in the JUnit view in IDEs supportting custom test runners</description>
 	<url>https://github.com/valfirst/jbehave-junit-runner</url>
 	<licenses>
 		<license>

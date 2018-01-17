@@ -14,3 +14,6 @@ jobs:
         - wget -O ~/codacy-coverage-reporter-assembly-latest.jar $(curl https://api.github.com/repos/codacy/codacy-coverage-reporter/releases/latest | jq -r .assets[0].browser_download_url)
         - mvn test jacoco:report coveralls:report
         - java -cp ~/codacy-coverage-reporter-assembly-latest.jar com.codacy.CodacyCoverageReporter -l Java -r target/site/jacoco/jacoco.xml
+
+notifications:
+  webhooks: https://app.fossa.io/hooks/travisci

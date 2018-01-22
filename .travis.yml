@@ -1,5 +1,12 @@
 language: java
 
+install: true
+addons:
+  sonarcloud:
+    organization: "valfirst-github"
+    token:
+      secure: ${SONAR_CLOUD_TOKEN}
+
 jdk:
   - openjdk7
   - oraclejdk8
@@ -12,5 +19,10 @@ jobs:
       script:
         - sudo apt-get install jq
         - wget -O ~/codacy-coverage-reporter-assembly-latest.jar $(curl https://api.github.com/repos/codacy/codacy-coverage-reporter/releases/latest | jq -r .assets[0].browser_download_url)
-        - mvn test jacoco:report coveralls:report
+        - mvn test jacoco:report coveralls:report sonar:sonar
         - java -cp ~/codacy-coverage-reporter-assembly-latest.jar com.codacy.CodacyCoverageReporter -l Java -r target/site/jacoco/jacoco.xml
+
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+    - '$HOME/.sonar/cache'

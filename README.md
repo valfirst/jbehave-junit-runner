@@ -182,6 +182,7 @@ Credits
 This project is based on the original implementation by Mark Burnett, located at http://code.google.com/p/jbehave-junit-monitor/ which worked with earlier versions of JBehave.
 
 ## spring support
+```
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -387,8 +388,9 @@ public class SpringReportingRunner extends SpringJUnit4ClassRunner{
 		numberOfTestCases++;
 	}
 }
-
+```
 ### springsupport useage
+```
 import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
 
 import java.util.List;
@@ -447,6 +449,6 @@ public class Test2 extends JUnitStories {
 
 
 }
-
+```
 ## License
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fvalfirst%2Fjbehave-junit-runner.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fvalfirst%2Fjbehave-junit-runner?ref=badge_large)

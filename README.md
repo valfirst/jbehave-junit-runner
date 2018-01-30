@@ -176,11 +176,6 @@ been fixed already in the latest snapshot release.
 And, *of course*, we'd also very much appreciate pull requests for fixes
 that you have already made yourself. After all, this is where open source
 shines most :)
-
-Credits
-=================================
-This project is based on the original implementation by Mark Burnett, located at http://code.google.com/p/jbehave-junit-monitor/ which worked with earlier versions of JBehave.
-
 ## spring support
 ```
 import java.lang.reflect.Method;
@@ -389,7 +384,7 @@ public class SpringReportingRunner extends SpringJUnit4ClassRunner{
 	}
 }
 ```
-### springsupport useage
+### spring support useage
 ```
 import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
 
@@ -450,5 +445,10 @@ public class Test2 extends JUnitStories {
 
 }
 ```
+Credits
+=================================
+This project is based on the original implementation by Mark Burnett, located at http://code.google.com/p/jbehave-junit-monitor/ which worked with earlier versions of JBehave.
+
+
 ## License
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fvalfirst%2Fjbehave-junit-runner.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fvalfirst%2Fjbehave-junit-runner?ref=badge_large)

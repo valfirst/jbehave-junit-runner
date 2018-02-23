@@ -331,11 +331,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 
 	@Override
 	public void notPerformed(String step) {
-		TestState testState = this.testState.get();
-		if (!testState.isGivenStoryRunning()) {
-			notifier.fireTestIgnored(testState.currentStep);
-			prepareNextStep();
-		}
+		ignorable(step);
 	}
 
 	/**

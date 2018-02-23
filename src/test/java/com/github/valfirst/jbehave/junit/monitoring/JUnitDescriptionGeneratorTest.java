@@ -270,7 +270,7 @@ public class JUnitDescriptionGeneratorTest {
 		when(givenStories.getPaths()).thenReturn(Collections.singletonList("/some/path/to/GivenStory.story"));
 		generateScenarioDescription();
 		assertThat(firstChild(description),
-				hasProperty("displayName", is("GivenStory.story")));
+				hasProperty("displayName", is("GivenStory\u2024story")));
 		assertEquals(1, generator.getTestCases());
 	}
 
@@ -359,7 +359,7 @@ public class JUnitDescriptionGeneratorTest {
 		generateScenarioDescription();
 
 		assertThat(firstChild(description),
-				hasProperty("displayName", is("GivenStory.story")));
+				hasProperty("displayName", is("GivenStory\u2024story")));
 		assertEquals(2, generator.getTestCases());
 
 		assertEquals(2, description.getChildren().size());

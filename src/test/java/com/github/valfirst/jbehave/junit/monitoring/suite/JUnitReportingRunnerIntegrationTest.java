@@ -43,15 +43,15 @@ public class JUnitReportingRunnerIntegrationTest {
 	public static Collection<Object[]> data() {
 		Object[][] params = {
 				{ ExampleScenarioJUnitStories.class,
-						"Multiplication.story",
+						"Multiplication\u2024story",
 						"Scenario: 2 squared",
 						"Given a variable x with value 2" },
 				{ ExampleScenarioJUnitStory.class,
-						"example_scenario_j_unit_story.story",
+						"example_scenario_j_unit_story\u2024story",
 						"Scenario: 2 squared",
 						"Given a variable x with value 2" },
 				{ ExampleScenarioJUnitStoriesLocalized.class,
-						"Multiplication_de.story",
+						"Multiplication_de\u2024story",
 						"Szenario: 2 Quadrat",
 						"Gegeben ist die Variable x mit dem Wert 2" } };
 		return Arrays.asList(params);

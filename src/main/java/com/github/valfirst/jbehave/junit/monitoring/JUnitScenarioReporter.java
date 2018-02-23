@@ -243,7 +243,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 	}
 
 	@Override
-	public void example(Map<String, String> arg0) {
+	public void example(Map<String, String> tableRow) {
 		TestState testState = this.testState.get();
 		if (!testState.isGivenStoryRunning()) {
 			if (testState.currentExample != null && testState.stepDescriptions != null) {
@@ -301,7 +301,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 	}
 
 	@Override
-	public void pending(String arg0) {
+	public void pending(String step) {
 		TestState testState = this.testState.get();
 		if (!testState.isGivenStoryRunning()) {
 			if (pendingStepStrategy instanceof FailingUponPendingStep) {
@@ -321,7 +321,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 	}
 
 	@Override
-	public void ignorable(String arg0) {
+	public void ignorable(String step) {
 		TestState testState = this.testState.get();
 		if (!testState.isGivenStoryRunning()) {
 			notifier.fireTestIgnored(testState.currentStep);
@@ -330,7 +330,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 	}
 
 	@Override
-	public void notPerformed(String arg0) {
+	public void notPerformed(String step) {
 		TestState testState = this.testState.get();
 		if (!testState.isGivenStoryRunning()) {
 			notifier.fireTestIgnored(testState.currentStep);

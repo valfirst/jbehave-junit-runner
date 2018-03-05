@@ -60,7 +60,7 @@
 
 	<properties>
 		<jdk.version>1.7</jdk.version>
-		<jbehave.version>4.2-beta-3</jbehave.version>
+		<jbehave.version>4.2-beta-4</jbehave.version>
 		<junit.version>4.12</junit.version>
 		<mockito.version>2.15.0</mockito.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

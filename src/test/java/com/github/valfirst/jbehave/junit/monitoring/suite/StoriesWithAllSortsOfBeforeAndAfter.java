@@ -1,6 +1,6 @@
 package com.github.valfirst.jbehave.junit.monitoring.suite;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import com.github.valfirst.jbehave.junit.monitoring.step.ExampleSteps;
@@ -35,7 +35,7 @@ import com.github.valfirst.jbehave.junit.monitoring.JUnitReportingRunner;
 @RunWith(JUnitReportingRunner.class)
 public class StoriesWithAllSortsOfBeforeAndAfter extends JUnitStories {
 
-	private Configuration configuration;
+	private final Configuration configuration;
 
 	public StoriesWithAllSortsOfBeforeAndAfter() {
 		CrossReference crossReference = new CrossReference("dummy")
@@ -71,7 +71,7 @@ public class StoriesWithAllSortsOfBeforeAndAfter extends JUnitStories {
 
 	@Override
 	protected List<String> storyPaths() {
-		return Arrays
-				.asList("com/github/valfirst/jbehave/junit/monitoring/MultiplicationWithExamplesAndGiven.story");
+		return Collections.singletonList(
+				"com/github/valfirst/jbehave/junit/monitoring/MultiplicationWithExamplesAndGiven.story");
 	}
 }

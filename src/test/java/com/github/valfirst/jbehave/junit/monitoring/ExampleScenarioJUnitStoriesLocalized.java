@@ -1,6 +1,6 @@
 package com.github.valfirst.jbehave.junit.monitoring;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -25,6 +25,6 @@ public class ExampleScenarioJUnitStoriesLocalized extends ExampleScenarioJUnitSt
 
 	@Override
 	protected List<String> storyPaths() {
-		return Arrays.asList("com/github/valfirst/jbehave/junit/monitoring/Multiplication_de.story");
+		return Collections.singletonList("com/github/valfirst/jbehave/junit/monitoring/Multiplication_de.story");
 	}
 }

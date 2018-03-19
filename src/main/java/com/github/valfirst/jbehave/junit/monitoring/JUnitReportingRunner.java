@@ -2,7 +2,7 @@ package com.github.valfirst.jbehave.junit.monitoring;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.jbehave.core.ConfigurableEmbedder;
@@ -105,7 +105,7 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 		if (JUnitStories.class.isAssignableFrom(testClass)) {
 			return getStoryPathsFromJUnitStories(testClass);
 		} else if (JUnitStory.class.isAssignableFrom(testClass)) {
-			return Arrays.asList(configuration.storyPathResolver().resolve(testClass));
+			return Collections.singletonList(configuration.storyPathResolver().resolve(testClass));
 		} else {
 			throw new IllegalArgumentException(
 					"Only ConfigurableEmbedder of types JUnitStory and JUnitStories is supported");

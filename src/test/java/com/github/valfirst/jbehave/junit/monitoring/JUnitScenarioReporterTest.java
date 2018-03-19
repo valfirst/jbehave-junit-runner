@@ -43,11 +43,11 @@ public class JUnitScenarioReporterTest {
 	@Mock
 	private RunNotifier notifier;
 	private Description rootDescription = Description.createSuiteDescription("root");
-	private Description storyDescription = Description.createSuiteDescription(NAME_STORY);
-	private Description scenarioDescription = Description.createTestDescription(getClass(), NAME_SCENARIO);
-	private Story story = new Story();
+	private final Description storyDescription = Description.createSuiteDescription(NAME_STORY);
+	private final Description scenarioDescription = Description.createTestDescription(getClass(), NAME_SCENARIO);
+	private final Story story = new Story();
 	private JUnitScenarioReporter reporter;
-	private Keywords keywords = new Keywords();
+	private final Keywords keywords = new Keywords();
 
 	@Before
 	public void setUp() {

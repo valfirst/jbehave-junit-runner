@@ -8,14 +8,14 @@ import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.junit.runner.RunWith;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 @RunWith(JUnitReportingRunner.class)
 public class ShowIgnoredScenariosAsIgnoredAndNotPassedStory extends JUnitStory {
 
 	public ShowIgnoredScenariosAsIgnoredAndNotPassedStory() {
 		JUnitReportingRunner.recommendedControls(configuredEmbedder());
-		configuredEmbedder().useMetaFilters(Arrays.asList("-skip"));
+		configuredEmbedder().useMetaFilters(Collections.singletonList("-skip"));
 	}
 
 	@Override

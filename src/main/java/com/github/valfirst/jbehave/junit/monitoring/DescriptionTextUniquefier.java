@@ -5,7 +5,7 @@ import java.util.Set;
 
 public class DescriptionTextUniquefier {
 
-	private Set<String> uniqueDescriptions = new HashSet<>();
+	private final Set<String> uniqueDescriptions = new HashSet<>();
 
 	public String getUniqueDescription(String junitSafeString) {
 		String uniqueDescription = junitSafeString;

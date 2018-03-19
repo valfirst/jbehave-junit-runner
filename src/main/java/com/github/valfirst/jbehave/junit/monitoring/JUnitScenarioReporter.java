@@ -25,7 +25,7 @@ import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 
 public class JUnitScenarioReporter extends NullStoryReporter {
-	private RunNotifier notifier;
+	private final RunNotifier notifier;
 
 	private final Description rootDescription;
 	private final int totalTests;
@@ -33,14 +33,14 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 	private final boolean notifyFinished;
 	private PendingStepStrategy pendingStepStrategy = new PassingUponPendingStep();
 
-	private ThreadLocal<TestState> testState = new ThreadLocal<TestState>() {
+	private final ThreadLocal<TestState> testState = new ThreadLocal<TestState>() {
 		@Override
 		protected TestState initialValue() {
 			return new TestState();
 		}
 	};
 
-	private AtomicInteger testCounter = new AtomicInteger();
+	private final AtomicInteger testCounter = new AtomicInteger();
 
 	public JUnitScenarioReporter(RunNotifier notifier, int totalTests,
 			Description rootDescription, Keywords keywords,
@@ -160,12 +160,6 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 		return Collections.emptyList();
 	}
 
-	private Collection<Description> getAllDescendants(Description step) {
-		List<Description> descendants = new ArrayList<>();
-		descendants.addAll(getAllDescendants(step.getChildren()));
-		return descendants;
-	}
-
 	private Collection<Description> getAllDescendants(List<Description> steps) {
 		List<Description> descendants = new ArrayList<>();
 		for (Description child : steps) {
@@ -250,7 +244,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 				processAfterScenario();
 			}
 			testState.moveToNextExample();
-			testState.stepDescriptions = getAllDescendants(testState.currentExample).iterator();
+			testState.stepDescriptions = getAllDescendants(testState.currentExample.getChildren()).iterator();
 			testState.moveToNextStep();
 			processBeforeScenario();
 		}
@@ -365,7 +359,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 		private Description currentStoryDescription;
 		private int givenStoryLevel;
 
-		private Set<Description> failedSteps = new HashSet<>();
+		private final Set<Description> failedSteps = new HashSet<>();
 
 		private void moveToNextScenario() {
 			currentScenario = getNextOrNull(scenarioDescriptions);

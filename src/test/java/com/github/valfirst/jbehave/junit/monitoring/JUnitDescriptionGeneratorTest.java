@@ -136,8 +136,7 @@ public class JUnitDescriptionGeneratorTest {
 	private Answer<Class<?>> returnObjectClass() {
 		return new Answer<Class<?>>() {
 			@Override
-			public Class<?> answer(InvocationOnMock invocation)
-					throws Throwable {
+			public Class<?> answer(InvocationOnMock invocation) {
 				return Object.class;
 			}
 		};
@@ -239,7 +238,7 @@ public class JUnitDescriptionGeneratorTest {
 	}
 
 	@Test
-	public void shouldCopeWithSeeminglyDuplicateSteps() throws Exception {
+	public void shouldCopeWithSeeminglyDuplicateSteps() {
 		when(scenario.getSteps()).thenReturn(
 				Arrays.asList("Given Step1", "Given Step1"));
 		when(stepCandidate.matches("Given Step1", "Given ")).thenReturn(true);
@@ -253,7 +252,7 @@ public class JUnitDescriptionGeneratorTest {
 	}
 
 	@Test
-	public void shouldCopeWithDuplicateGivenStories() throws Exception {
+	public void shouldCopeWithDuplicateGivenStories() {
 		PerformableTree performableTree = mockPerformableTree(scenario, scenario);
 		when(givenStories.getPaths()).thenReturn(Collections.singletonList("/some/path/to/GivenStory.story"));
 		List<Description> descriptions = generator.createDescriptionFrom(performableTree);

@@ -30,11 +30,11 @@ public class JUnitDescriptionGenerator {
 	public static final String BEFORE_SCENARIO_STEP_NAME = "@BeforeScenario";
 	public static final String AFTER_SCENARIO_STEP_NAME = "@AfterScenario";
 
-	private DescriptionTextUniquefier uniq = new DescriptionTextUniquefier();
+	private final DescriptionTextUniquefier uniq = new DescriptionTextUniquefier();
 	private int testCases;
-	private List<StepCandidate> allCandidates = new ArrayList<>();
+	private final List<StepCandidate> allCandidates = new ArrayList<>();
 
-	private Map<ScenarioType, List<BeforeOrAfterStep>> beforeOrAfterScenario =
+	private final Map<ScenarioType, List<BeforeOrAfterStep>> beforeOrAfterScenario =
 			new HashMap<>();
 	{
 		for (ScenarioType scenarioType : ScenarioType.values()) {
@@ -42,7 +42,7 @@ public class JUnitDescriptionGenerator {
 		}
 	}
 
-	private List<BeforeOrAfterStep> beforeOrAfterStory = new ArrayList<>();
+	private final List<BeforeOrAfterStep> beforeOrAfterStory = new ArrayList<>();
 
 	private final Configuration configuration;
 

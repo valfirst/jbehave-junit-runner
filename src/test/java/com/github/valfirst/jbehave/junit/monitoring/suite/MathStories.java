@@ -1,6 +1,6 @@
 package com.github.valfirst.jbehave.junit.monitoring.suite;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import com.github.valfirst.jbehave.junit.monitoring.step.ExampleSteps;
@@ -46,8 +46,7 @@ public class MathStories extends JUnitStories {
 
 	@Override
 	protected List<String> storyPaths() {
-		return Arrays
-				.asList("com/github/valfirst/jbehave/junit/monitoring/Multiplication.story");
+		return Collections.singletonList("com/github/valfirst/jbehave/junit/monitoring/Multiplication.story");
 	}
 
 }

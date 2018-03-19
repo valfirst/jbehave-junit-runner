@@ -19,7 +19,7 @@ import org.mockito.Mockito;
 public class JUnitReportingRunnerTest {
 
 	@Rule
-	public ExpectedException expectedException = ExpectedException.none();
+	public final ExpectedException expectedException = ExpectedException.none();
 
 	@Test
 	public void shouldPrepareEmbedder() {
@@ -48,7 +48,7 @@ public class JUnitReportingRunnerTest {
 	public static class TestConfigurableEmbedder extends ConfigurableEmbedder {
 		@Override
 		@Test
-		public void run() throws Throwable {
+		public void run() {
 			fail("Should not run");
 		}
 	}

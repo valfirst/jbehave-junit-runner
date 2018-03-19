@@ -3,9 +3,8 @@ package com.github.valfirst.jbehave.junit.monitoring;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 
 import org.jbehave.core.annotations.ScenarioType;
 import org.jbehave.core.configuration.Configuration;
@@ -34,8 +33,8 @@ public class JUnitDescriptionGenerator {
 	private int testCases;
 	private final List<StepCandidate> allCandidates = new ArrayList<>();
 
-	private final Map<ScenarioType, List<BeforeOrAfterStep>> beforeOrAfterScenario =
-			new HashMap<>();
+	private final EnumMap<ScenarioType, List<BeforeOrAfterStep>> beforeOrAfterScenario = new EnumMap<>(
+			ScenarioType.class);
 	{
 		for (ScenarioType scenarioType : ScenarioType.values()) {
 			beforeOrAfterScenario.put(scenarioType, new ArrayList<BeforeOrAfterStep>());
@@ -154,8 +153,7 @@ public class JUnitDescriptionGenerator {
 	}
 
 	private String getFilename(String path) {
-		return path.substring(path.lastIndexOf("/") + 1, path.length()).split(
-				"#")[0];
+		return path.substring(path.lastIndexOf('/') + 1, path.length()).split("#")[0];
 	}
 
 	private void insertDescriptionForExamples(PerformableScenario performableScenario,

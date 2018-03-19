@@ -124,7 +124,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 	}
 
 	@Override
-	public void beforeScenario(String title) {
+	public void beforeScenario(Scenario scenario) {
 		TestState testState = this.testState.get();
 		if (!testState.isGivenStoryRunning()) {
 			notifier.fireTestStarted(testState.currentScenario);

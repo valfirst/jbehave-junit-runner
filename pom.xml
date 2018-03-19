@@ -42,7 +42,7 @@
 		<connection>scm:git:git://github.com/valfirst/jbehave-junit-runner.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/valfirst/jbehave-junit-runner.git</developerConnection>
 		<url>https://github.com/valfirst/jbehave-junit-runner</url>
-		<tag>v2.1.1</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<distributionManagement>

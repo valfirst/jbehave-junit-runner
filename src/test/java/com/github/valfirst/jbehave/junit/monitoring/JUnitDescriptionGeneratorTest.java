@@ -412,19 +412,13 @@ public class JUnitDescriptionGeneratorTest {
 	}
 
 	private void generateScenarioDescription() {
-		PerformableScenario performableScenario = mock(PerformableScenario.class);
-		when(performableScenario.getScenario()).thenReturn(scenario);
-		ExamplesTable examplesTable = scenario.getExamplesTable();
-		boolean hasExamples = examplesTable != null && examplesTable.getRowCount() > 0;
-		when(performableScenario.hasExamples()).thenReturn(hasExamples);
-		if (hasExamples) {
-			List<ExamplePerformableScenario> exampleScenarios = new ArrayList<>();
-			for (Map<String, String> row : examplesTable.getRows()) {
+		PerformableScenario performableScenario = new PerformableScenario(scenario, null);
+		if (scenario.hasExamplesTable()) {
+			for (Map<String, String> row : scenario.getExamplesTable().getRows()) {
 				ExamplePerformableScenario exampleScenario = mock(ExamplePerformableScenario.class);
 				when(exampleScenario.getParameters()).thenReturn(row);
-				exampleScenarios.add(exampleScenario);
+				performableScenario.addExampleScenario(exampleScenario);
 			}
-			when(performableScenario.getExamples()).thenReturn(exampleScenarios);
 		}
 		description = generator.createDescriptionFrom(performableScenario);
 	}
@@ -456,7 +450,6 @@ public class JUnitDescriptionGeneratorTest {
 
 	private Map<String, String> addExamplesTableToScenario(int NUM_ROWS) {
 		ExamplesTable examplesTable = mock(ExamplesTable.class);
-		when(examplesTable.getRowCount()).thenReturn(NUM_ROWS);
 		Map<String, String> row = new TreeMap<>();
 		List<Map<String, String>> rows = new ArrayList<>();
 		for (int i = 1; i <= 10; i++) {
@@ -467,6 +460,7 @@ public class JUnitDescriptionGeneratorTest {
 		}
 		when(examplesTable.getRows()).thenReturn(rows);
 		when(scenario.getExamplesTable()).thenReturn(examplesTable);
+		when(scenario.hasExamplesTable()).thenReturn(Boolean.TRUE);
 		return row;
 	}
 

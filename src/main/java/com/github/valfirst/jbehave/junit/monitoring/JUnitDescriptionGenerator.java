@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 
-import org.codehaus.plexus.util.ReflectionUtils;
 import org.jbehave.core.annotations.ScenarioType;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords.StartingWordNotFound;
@@ -160,8 +159,7 @@ public class JUnitDescriptionGenerator {
 	private void insertDescriptionForExamples(PerformableScenario performableScenario,
 			Description scenarioDescription) {
 		Scenario scenario = performableScenario.getScenario();
-		for (ExamplePerformableScenario examplePerformableScenario : getExamplePerformableScenarios(
-				performableScenario)) {
+		for (ExamplePerformableScenario examplePerformableScenario : performableScenario.getExamples()) {
 			Description exampleRowDescription = Description.createSuiteDescription(
 							configuration.keywords().examplesTableRow() + " " +
 									examplePerformableScenario.getParameters());
@@ -170,17 +168,6 @@ public class JUnitDescriptionGenerator {
 				insertGivenStories(scenario, exampleRowDescription);
 			}
 			addScenarioSteps(ScenarioType.EXAMPLE, scenario, exampleRowDescription);
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private List<ExamplePerformableScenario> getExamplePerformableScenarios(PerformableScenario performableScenario) {
-		try {
-			return (List<ExamplePerformableScenario>) ReflectionUtils.getValueIncludingSuperclasses("exampleScenarios",
-					performableScenario);
-		}
-		catch (IllegalAccessException e) {
-			throw new IllegalStateException(e);
 		}
 	}
 

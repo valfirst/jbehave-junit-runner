@@ -2,7 +2,7 @@ JBehave JUnit Integration
 =========================
 [![Build Status](https://travis-ci.org/valfirst/jbehave-junit-runner.svg?branch=master)](https://travis-ci.org/valfirst/jbehave-junit-runner)
 [![Coverage Status](https://coveralls.io/repos/github/valfirst/jbehave-junit-runner/badge.svg?branch=master)](https://coveralls.io/github/valfirst/jbehave-junit-runner?branch=master)
-[![Quality Gate](https://sonarcloud.io/api/badges/gate?key=com.github.valfirst:jbehave-junit-runner)](https://sonarcloud.io/dashboard/index/com.github.valfirst:jbehave-junit-runner)
+[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=com.github.valfirst%3Ajbehave-junit-runner&metric=alert_status)](https://sonarcloud.io/dashboard/index/com.github.valfirst:jbehave-junit-runner)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/d81f58136aa245668240b7d851a54d50)](https://www.codacy.com/app/valfirst/jbehave-junit-runner?utm_source=github.com&utm_medium=referral&utm_content=valfirst/jbehave-junit-runner&utm_campaign=badger)
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.valfirst/jbehave-junit-runner.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3Acom.github.valfirst%20a%3Ajbehave-junit-runner)
 [![Javadocs](http://www.javadoc.io/badge/com.github.valfirst/jbehave-junit-runner.svg)](http://www.javadoc.io/doc/com.github.valfirst/jbehave-junit-runner)

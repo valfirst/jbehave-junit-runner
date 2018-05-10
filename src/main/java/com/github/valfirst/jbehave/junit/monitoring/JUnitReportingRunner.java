@@ -159,12 +159,13 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 	}
 
 	private List<Description> buildDescriptionFromStories(List<String> storyPaths) {
-		JUnitDescriptionGenerator descriptionGenerator = new JUnitDescriptionGenerator(
-				getCandidateSteps(), configuration);
+		List<CandidateSteps> candidateSteps = getCandidateSteps();
+		JUnitDescriptionGenerator descriptionGenerator = new JUnitDescriptionGenerator(candidateSteps, configuration);
 		List<Description> storyDescriptions = new ArrayList<>();
 
 		addSuite(storyDescriptions, "BeforeStories");
-		storyDescriptions.addAll(descriptionGenerator.createDescriptionFrom(createPerformableTree(storyPaths)));
+		PerformableTree performableTree = createPerformableTree(candidateSteps, storyPaths);
+		storyDescriptions.addAll(descriptionGenerator.createDescriptionFrom(performableTree));
 		addSuite(storyDescriptions, "AfterStories");
 
 		numberOfTestCases += descriptionGenerator.getTestCases();
@@ -172,10 +173,10 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 		return storyDescriptions;
 	}
 
-	private PerformableTree createPerformableTree(List<String> storyPaths) {
+	private PerformableTree createPerformableTree(List<CandidateSteps> candidateSteps, List<String> storyPaths) {
 		BatchFailures failures = new BatchFailures(configuredEmbedder.embedderControls().verboseFailures());
 		PerformableTree performableTree = new PerformableTree();
-		RunContext context = performableTree.newRunContext(configuration, configuredEmbedder.stepsFactory(),
+		RunContext context = performableTree.newRunContext(configuration, candidateSteps,
 				configuredEmbedder.embedderMonitor(), configuredEmbedder.metaFilter(), failures);
 		performableTree.addStories(context, storiesOf(performableTree, storyPaths));
 		return performableTree;

@@ -34,7 +34,7 @@ all available from Maven Central.
 <dependency>
     <groupId>com.github.valfirst</groupId>
     <artifactId>jbehave-junit-runner</artifactId>
-    <version>2.1.3</version>
+    <version>2.1.4</version>
 </dependency>
 ```
 

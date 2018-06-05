@@ -6,13 +6,16 @@ import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 
+import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.annotations.ScenarioType;
+import org.jbehave.core.annotations.Scope;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords.StartingWordNotFound;
 import org.jbehave.core.embedder.PerformableTree;
 import org.jbehave.core.embedder.PerformableTree.ExamplePerformableScenario;
 import org.jbehave.core.embedder.PerformableTree.PerformableScenario;
 import org.jbehave.core.embedder.PerformableTree.PerformableStory;
+import org.jbehave.core.model.Lifecycle;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.steps.BeforeOrAfterStep;
@@ -63,13 +66,18 @@ public class JUnitDescriptionGenerator {
 		List<Description> storyDescriptions = new ArrayList<>();
 		for (PerformableStory performableStory : performableTree.getRoot().getStories()) {
 			if (performableStory.isAllowed()) {
-				List<Description> scenarioDescriptions = getScenarioDescriptions(performableStory.getScenarios());
+				Story story = performableStory.getStory();
+				Lifecycle lifecycle = story.getLifecycle();
+				List<Description> scenarioDescriptions = getScenarioDescriptions(lifecycle,
+						performableStory.getScenarios());
 				if (!scenarioDescriptions.isEmpty()) {
-					Description storyDescription = createDescriptionForStory(performableStory.getStory());
+					Description storyDescription = createDescriptionForStory(story);
 					addBeforeOrAfterStep(Stage.BEFORE, beforeOrAfterStory, storyDescription, BEFORE_STORY_STEP_NAME);
+					addSteps(storyDescription, lifecycle.getBeforeSteps(Scope.STORY));
 					for (Description scenarioDescription : scenarioDescriptions) {
 						storyDescription.addChild(scenarioDescription);
 					}
+					addSteps(storyDescription, lifecycle.getAfterSteps(Scope.STORY, Outcome.ANY));
 					addBeforeOrAfterStep(Stage.AFTER, beforeOrAfterStory, storyDescription, AFTER_STORY_STEP_NAME);
 					storyDescriptions.add(storyDescription);
 				}
@@ -78,23 +86,25 @@ public class JUnitDescriptionGenerator {
 		return storyDescriptions;
 	}
 
-	public Description createDescriptionFrom(PerformableScenario performableScenario) {
+	public Description createDescriptionFrom(Lifecycle lifecycle, PerformableScenario performableScenario) {
 		Scenario scenario = performableScenario.getScenario();
 		Description scenarioDescription = createDescriptionForScenario(scenario);
 		if (performableScenario.hasExamples() && !scenario.getGivenStories().requireParameters()) {
-			insertDescriptionForExamples(performableScenario, scenarioDescription);
+			insertDescriptionForExamples(lifecycle, performableScenario, scenarioDescription);
 		} else {
 			if (hasGivenStories(scenario)) {
 				insertGivenStories(scenario, scenarioDescription);
 			}
-			addScenarioSteps(ScenarioType.NORMAL, scenario, scenarioDescription);
+			addScenarioSteps(lifecycle, ScenarioType.NORMAL, scenario, scenarioDescription);
 		}
 		return scenarioDescription;
 	}
 
-	private void addScenarioSteps(ScenarioType scenarioType, Scenario scenario, Description scenarioDescription) {
+	private void addScenarioSteps(Lifecycle lifecycle, ScenarioType scenarioType, Scenario scenario, Description scenarioDescription) {
 		addBeforeOrAfterScenarioStep(scenarioType, Stage.BEFORE, scenarioDescription, BEFORE_SCENARIO_STEP_NAME);
-		addStepsToExample(scenario, scenarioDescription);
+		addSteps(scenarioDescription, lifecycle.getBeforeSteps(Scope.SCENARIO));
+		addSteps(scenarioDescription, scenario.getSteps());
+		addSteps(scenarioDescription, lifecycle.getAfterSteps(Scope.SCENARIO, Outcome.ANY));
 		addBeforeOrAfterScenarioStep(scenarioType, Stage.AFTER, scenarioDescription, AFTER_SCENARIO_STEP_NAME);
 	}
 
@@ -156,7 +166,7 @@ public class JUnitDescriptionGenerator {
 		return path.substring(path.lastIndexOf('/') + 1, path.length()).split("#")[0];
 	}
 
-	private void insertDescriptionForExamples(PerformableScenario performableScenario,
+	private void insertDescriptionForExamples(Lifecycle lifecycle, PerformableScenario performableScenario,
 			Description scenarioDescription) {
 		Scenario scenario = performableScenario.getScenario();
 		for (ExamplePerformableScenario examplePerformableScenario : performableScenario.getExamples()) {
@@ -167,12 +177,8 @@ public class JUnitDescriptionGenerator {
 			if (hasGivenStories(scenario)) {
 				insertGivenStories(scenario, exampleRowDescription);
 			}
-			addScenarioSteps(ScenarioType.EXAMPLE, scenario, exampleRowDescription);
+			addScenarioSteps(lifecycle, ScenarioType.EXAMPLE, scenario, exampleRowDescription);
 		}
-	}
-
-	private void addStepsToExample(Scenario scenario, Description description) {
-		addSteps(description, scenario.getSteps());
 	}
 
 	private void addSteps(Description description, List<String> steps) {
@@ -241,11 +247,11 @@ public class JUnitDescriptionGenerator {
 		description.addChild(testDescription);
 	}
 
-	private List<Description> getScenarioDescriptions(List<PerformableScenario> performableScenarios) {
+	private List<Description> getScenarioDescriptions(Lifecycle lifecycle, List<PerformableScenario> performableScenarios) {
 		List<Description> scenarioDescriptions = new ArrayList<>();
 		for (PerformableScenario scenario : performableScenarios) {
 			if (scenario.isAllowed()) {
-				scenarioDescriptions.add(createDescriptionFrom(scenario));
+				scenarioDescriptions.add(createDescriptionFrom(lifecycle, scenario));
 			}
 		}
 		return scenarioDescriptions;

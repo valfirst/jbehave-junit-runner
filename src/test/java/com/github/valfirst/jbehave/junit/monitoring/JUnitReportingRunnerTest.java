@@ -1,14 +1,11 @@
 package com.github.valfirst.jbehave.junit.monitoring;
 
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.jbehave.core.ConfigurableEmbedder;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.junit.Rule;
@@ -34,22 +31,5 @@ public class JUnitReportingRunnerTest {
 		verify(ec).doIgnoreFailureInView(true);
 		verify(ec).doIgnoreFailureInStories(true);
 		verify(ec).useThreads(1);
-	}
-
-	@Test
-	public void shouldThrowExceptionWhenTypeOfConfigurableEmbedderIsUnknown()
-			throws Exception {
-		expectedException.expect(IllegalArgumentException.class);
-		expectedException.expectMessage(
-				equalTo("Only ConfigurableEmbedder of types JUnitStory and JUnitStories is supported"));
-		new JUnitReportingRunner(TestConfigurableEmbedder.class);
-	}
-
-	public static class TestConfigurableEmbedder extends ConfigurableEmbedder {
-		@Override
-		@Test
-		public void run() {
-			fail("Should not run");
-		}
 	}
 }

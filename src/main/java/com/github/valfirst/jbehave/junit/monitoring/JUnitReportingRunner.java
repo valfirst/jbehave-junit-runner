@@ -1,8 +1,6 @@
 package com.github.valfirst.jbehave.junit.monitoring;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.jbehave.core.ConfigurableEmbedder;
@@ -12,8 +10,6 @@ import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.PerformableTree;
 import org.jbehave.core.embedder.PerformableTree.RunContext;
 import org.jbehave.core.failures.BatchFailures;
-import org.jbehave.core.junit.JUnitStories;
-import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
@@ -40,7 +36,7 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 		configuredEmbedder = configurableEmbedder.configuredEmbedder();
 		configuration = configuredEmbedder.configuration();
 
-		List<String> storyPaths = getStoryPaths(testClass);
+		List<String> storyPaths = new StoryPathsExtractor(configurableEmbedder).getStoryPaths();
 
 		StepMonitor originalStepMonitor = configuration.stepMonitor();
 		configuration.useStepMonitor(new NullStepMonitor());
@@ -98,42 +94,6 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 				.doIgnoreFailureInStories(true)
 				// .doVerboseFailures(true)
 				.useThreads(1);
-	}
-
-	private List<String> getStoryPaths(Class<? extends ConfigurableEmbedder> testClass)
-			throws ReflectiveOperationException {
-		if (JUnitStories.class.isAssignableFrom(testClass)) {
-			return getStoryPathsFromJUnitStories(testClass);
-		} else if (JUnitStory.class.isAssignableFrom(testClass)) {
-			return Collections.singletonList(configuration.storyPathResolver().resolve(testClass));
-		} else {
-			throw new IllegalArgumentException(
-					"Only ConfigurableEmbedder of types JUnitStory and JUnitStories is supported");
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private List<String> getStoryPathsFromJUnitStories(
-			Class<? extends ConfigurableEmbedder> testClass)
-			throws ReflectiveOperationException {
-		Method method = makeStoryPathsMethodPublic(testClass);
-		return ((List<String>) method.invoke(configurableEmbedder, (Object[]) null));
-	}
-
-	@SuppressWarnings("unchecked")
-    private static Method makeStoryPathsMethodPublic(Class<? extends ConfigurableEmbedder> clazz)
-			throws NoSuchMethodException {
-		try {
-			Method method = clazz.getDeclaredMethod("storyPaths", (Class[]) null);
-			method.setAccessible(true);
-			return method;
-		} catch (NoSuchMethodException e) {
-			Class<?> superclass = clazz.getSuperclass();
-			if (superclass != null && ConfigurableEmbedder.class.isAssignableFrom(superclass)) {
-				return makeStoryPathsMethodPublic((Class<? extends ConfigurableEmbedder>) superclass);
-			}
-			throw e;
-		}
 	}
 
 	private List<CandidateSteps> getCandidateSteps() {

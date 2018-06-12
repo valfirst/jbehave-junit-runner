@@ -10,7 +10,7 @@ import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.annotations.ScenarioType;
 import org.jbehave.core.annotations.Scope;
 import org.jbehave.core.configuration.Configuration;
-import org.jbehave.core.configuration.Keywords.StartingWordNotFound;
+import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.embedder.PerformableTree;
 import org.jbehave.core.embedder.PerformableTree.ExamplePerformableScenario;
 import org.jbehave.core.embedder.PerformableTree.PerformableScenario;
@@ -204,16 +204,25 @@ public class JUnitDescriptionGenerator {
 	}
 
 	private void addNonExistingStep(Description description, String stringStepOneLine,
-			String stringStep) {
-		try {
-			if (configuration.keywords().stepTypeFor(stringStep) == StepType.IGNORABLE) {
+			String stepAsString) {
+		Keywords keywords = configuration.keywords();
+		if (keywords.isIgnorableStep(stepAsString)) {
+			if (isStep(keywords.stepWithoutStartingWord(stepAsString, StepType.IGNORABLE))) {
 				addIgnorableStep(description, stringStepOneLine);
-			} else {
-				addPendingStep(description, stringStepOneLine);
 			}
-		} catch (StartingWordNotFound e) {
-			// WHAT NOW?
+		} else {
+			addPendingStep(description, stringStepOneLine);
 		}
+	}
+
+	private boolean isStep(String stepAsString) {
+		Keywords keywords = configuration.keywords();
+		for (String stepStartingWord : keywords.startingWordsByType().values()) {
+			if (keywords.stepStartsWithWord(stepAsString, stepStartingWord)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private void addIgnorableStep(Description description, String stringStep) {

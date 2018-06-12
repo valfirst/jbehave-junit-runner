@@ -100,18 +100,26 @@ public class JUnitDescriptionGeneratorTest {
 	}
 
 	@Test
+	public void shouldNotCountComments() {
+		Scenario scenario = createScenario(GIVEN_STEP, "!-- This is a comment");
+		Story story = createStory(scenario);
+		createDescriptionFrom(story);
+		assertEquals(1, generator.getTestCases());
+	}
+
+	@Test
+	public void shouldCountIgnoredSteps() {
+		Scenario scenario = createScenario(GIVEN_STEP, "!-- Then ignored step");
+		Story story = createStory(scenario);
+		createDescriptionFrom(story);
+		assertEquals(2, generator.getTestCases());
+	}
+
+	@Test
 	public void shouldExcludeFilteredOutStory() {
 		Story story = createStory(createScenario(GIVEN_STEP));
 		createDescriptionFrom(false, true, story);
 		assertEquals(0, generator.getTestCases());
-	}
-
-	@Test
-	public void shouldCountIgnorables() {
-		Scenario scenario = createScenario(GIVEN_STEP, "!-- ignore me");
-		Story story = createStory(scenario);
-		createDescriptionFrom(story);
-		assertEquals(2, generator.getTestCases());
 	}
 
 	@Test

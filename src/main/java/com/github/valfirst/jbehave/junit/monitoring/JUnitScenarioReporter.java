@@ -69,33 +69,33 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 			if (testCounter.get() == 0) {
 				notifier.fireTestRunStarted(rootDescription);
 			}
-			for (Description storyDescription : rootDescription.getChildren()) {
-				if (storyDescription.isSuite()
-						&& storyDescription.getDisplayName().equals(
-								JUnitStringDecorator.getJunitSafeString(story.getName()))) {
-					testState.currentStoryDescription = storyDescription;
-					notifier.fireTestStarted(storyDescription);
+			Description storyDescription = findStoryDescription(story.getName());
+			testState.currentStoryDescription = storyDescription;
+			notifier.fireTestStarted(storyDescription);
+			if (storyDescription.isSuite()) {
+				testState.scenarioDescriptions = storyDescription.getChildren().iterator();
+				testState.moveToNextScenario();
+				processBeforeStory();
+			}
+			testState.currentStep = testState.currentStoryDescription;
+		}
+	}
 
-					testState.scenarioDescriptions = storyDescription.getChildren().iterator();
-					testState.moveToNextScenario();
-					processBeforeStory();
-					testState.currentStep = testState.currentStoryDescription;
-				} else
-				// Related to issue #28: When a story does not contain any
-				// scenarios, isTest returns true, but getMethodName
-				// still returns null, because it cannot be parsed by JUnit as a
-				// method name.
-				if (storyDescription.isTest()
-						&& storyDescription.getMethodName() != null
-						&& storyDescription.getMethodName().equals(
-								story.getName())) {
-					// Story BeforeStories or After Stories
-					testState.currentStoryDescription = storyDescription;
-					notifier.fireTestStarted(testState.currentStoryDescription);
-					testState.currentStep = testState.currentStoryDescription;
-				}
+	private Description findStoryDescription(String storyName) {
+		String escapedStoryName = JUnitStringDecorator.getJunitSafeString(storyName);
+		for (Description storyDescription : rootDescription.getChildren()) {
+			if (storyDescription.getDisplayName().equals(escapedStoryName)) {
+				return storyDescription;
+			} else
+			// Related to issue #28: When a story does not contain any scenarios, isTest returns true,
+			// but getMethodName still returns null, because it cannot be parsed by JUnit as a method name.
+			if (storyDescription.isTest() && storyDescription.getMethodName() != null
+					&& storyDescription.getMethodName().equals(storyName)) {
+				// Story BeforeStories or AfterStories
+				return storyDescription;
 			}
 		}
+		throw new IllegalStateException("No JUnit description found for story with name: " + storyName);
 	}
 
 	@Override

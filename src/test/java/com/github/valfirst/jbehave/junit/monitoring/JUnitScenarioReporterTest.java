@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 
 import java.util.Collections;
 
@@ -244,6 +245,16 @@ public class JUnitScenarioReporterTest {
 
 		reportStoryFinish(reporter);
 		verifyStoryFinished();
+	}
+
+	@Test
+	public void shouldNotNotifySubStepWithoutBeforeAction() {
+		scenarioDescription.addChild(Description.TEST_MECHANISM);
+
+		reporter = new JUnitScenarioReporter(notifier, 1, rootDescription, keywords);
+
+		reportStepSuccess(reporter);
+		verifyZeroInteractions(notifier);
 	}
 
 	@Test

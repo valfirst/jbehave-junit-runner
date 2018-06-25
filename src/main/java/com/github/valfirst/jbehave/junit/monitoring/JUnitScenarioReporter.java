@@ -290,13 +290,17 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 
 	private void prepareNextStep() {
 		TestState testState = this.testState.get();
-		if (testState.currentStep != null && testState.currentStep.isTest()) {
-			testCounter.incrementAndGet();
+		if (testState.currentStep != null) {
+			if (testState.currentStep.isTest()) {
+				testCounter.incrementAndGet();
+			}
+			// Lifecycle After story steps
+			if (testState.currentStep == testState.currentScenario) {
+				testState.moveToNextScenario();
+				return;
+			}
 		}
-		// Lifecycle After story steps
-		if (testState.currentStep == testState.currentScenario) {
-			testState.moveToNextScenario();
-		} else if (testState.stepDescriptions != null) {
+		if (testState.stepDescriptions != null) {
 			testState.moveToNextStep();
 		}
 	}

@@ -18,8 +18,13 @@ jobs:
       script:
         - sudo apt-get install jq
         - wget -O ~/codacy-coverage-reporter-assembly-latest.jar $(curl https://api.github.com/repos/codacy/codacy-coverage-reporter/releases/latest | jq -r .assets[0].browser_download_url)
-        - mvn test jacoco:report coveralls:report sonar:sonar
+        - mvn test jacoco:report coveralls:report
         - java -jar ~/codacy-coverage-reporter-assembly-latest.jar report -l Java -r target/site/jacoco/jacoco.xml
+        - if [[ -n "${TRAVIS_PULL_REQUEST_SLUG}" && "${TRAVIS_PULL_REQUEST_SLUG}" != "${TRAVIS_REPO_SLUG}" ]]; then
+            echo "The pull request from ${TRAVIS_PULL_REQUEST_SLUG} is an EXTERNAL pull request. Skip sonar analysis.";
+          else
+            mvn sonar:sonar;
+          fi
 
 cache:
   directories:

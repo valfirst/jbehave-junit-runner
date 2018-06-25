@@ -68,19 +68,16 @@ public class JUnitDescriptionGenerator {
 			if (performableStory.isAllowed()) {
 				Story story = performableStory.getStory();
 				Lifecycle lifecycle = story.getLifecycle();
+				Description storyDescription = createDescriptionForStory(story);
+				addBeforeOrAfterStep(Stage.BEFORE, beforeOrAfterStory, storyDescription, BEFORE_STORY_STEP_NAME);
+				addSteps(storyDescription, lifecycle.getBeforeSteps(Scope.STORY));
 				List<PerformableScenario> scenarios = performableStory.getScenarios();
-				List<Description> scenarioDescriptions = getScenarioDescriptions(lifecycle, scenarios);
-				if (!scenarios.isEmpty()) {
-					Description storyDescription = createDescriptionForStory(story);
-					addBeforeOrAfterStep(Stage.BEFORE, beforeOrAfterStory, storyDescription, BEFORE_STORY_STEP_NAME);
-					addSteps(storyDescription, lifecycle.getBeforeSteps(Scope.STORY));
-					for (Description scenarioDescription : scenarioDescriptions) {
-						storyDescription.addChild(scenarioDescription);
-					}
-					addSteps(storyDescription, lifecycle.getAfterSteps(Scope.STORY, Outcome.ANY));
-					addBeforeOrAfterStep(Stage.AFTER, beforeOrAfterStory, storyDescription, AFTER_STORY_STEP_NAME);
-					storyDescriptions.add(storyDescription);
+				for (Description scenarioDescription : getScenarioDescriptions(lifecycle, scenarios)) {
+					storyDescription.addChild(scenarioDescription);
 				}
+				addSteps(storyDescription, lifecycle.getAfterSteps(Scope.STORY, Outcome.ANY));
+				addBeforeOrAfterStep(Stage.AFTER, beforeOrAfterStory, storyDescription, AFTER_STORY_STEP_NAME);
+				storyDescriptions.add(storyDescription);
 			}
 		}
 		return storyDescriptions;

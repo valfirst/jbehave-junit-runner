@@ -135,19 +135,11 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 
 	private PerformableTree createPerformableTree(List<CandidateSteps> candidateSteps, List<String> storyPaths) {
 		BatchFailures failures = new BatchFailures(configuredEmbedder.embedderControls().verboseFailures());
-		PerformableTree performableTree = new PerformableTree();
+		PerformableTree performableTree = configuredEmbedder.performableTree();
 		RunContext context = performableTree.newRunContext(configuration, candidateSteps,
 				configuredEmbedder.embedderMonitor(), configuredEmbedder.metaFilter(), failures);
-		performableTree.addStories(context, storiesOf(performableTree, storyPaths));
+		performableTree.addStories(context, configuredEmbedder.storyManager().storiesOfPaths(storyPaths));
 		return performableTree;
-	}
-
-	private List<Story> storiesOf(PerformableTree performableTree, List<String> storyPaths) {
-		List<Story> stories = new ArrayList<>();
-		for (String storyPath : storyPaths) {
-			stories.add(performableTree.storyOfPath(configuration, storyPath));
-		}
-		return stories;
 	}
 
 	private void addSuite(List<Description> storyDescriptions, String name) {

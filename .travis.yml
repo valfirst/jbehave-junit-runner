@@ -21,7 +21,7 @@ jobs:
         - if [[ -n "${TRAVIS_PULL_REQUEST_SLUG}" && "${TRAVIS_PULL_REQUEST_SLUG}" != "${TRAVIS_REPO_SLUG}" ]]; then
             echo "The pull request from ${TRAVIS_PULL_REQUEST_SLUG} is an EXTERNAL pull request. Skip sonar analysis and Codacy coverage reporting.";
           else
-            mvn sonar:sonar com.gavinmogan:codacy-maven-plugin:coverage;
+            mvn sonar:sonar com.gavinmogan:codacy-maven-plugin:coverage -DcoverageReportFile=target/site/jacoco/jacoco.xml -DprojectToken=${CODACY_PROJECT_TOKEN} -DapiToken=${CODACY_API_TOKEN} -Dcommit=${TRAVIS_COMMIT};
           fi
 
 cache:

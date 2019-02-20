@@ -339,7 +339,7 @@ public class JUnitScenarioReporterTest {
 		reporter = new JUnitScenarioReporter(notifier, ONE_STEP, rootDescription, keywords);
 
 		reportBefore();
-		reporter.example(null);
+		reporter.example(null, 0);
 		reportStepSuccess(reporter);
 		reportScenarioFinish(reporter);
 		reportStoryFinish(reporter);
@@ -364,7 +364,7 @@ public class JUnitScenarioReporterTest {
 		reporter = new JUnitScenarioReporter(notifier, TWO_COMPOSITE_STEPS, rootDescription, keywords);
 
 		reportBefore();
-		reporter.example(null);
+		reporter.example(null, 0);
 		reporter.beforeStep("child");
 		reporter.successful("child");
 		reporter.beforeStep("comp1");
@@ -399,7 +399,7 @@ public class JUnitScenarioReporterTest {
 
 		reportBefore();
 		reportGivenStoryEvents();
-		reporter.example(null);
+		reporter.example(null, 0);
 		reportStepSuccess(reporter);
 		reportScenarioFinish(reporter);
 		reportStoryFinish(reporter);
@@ -529,7 +529,7 @@ public class JUnitScenarioReporterTest {
 		// Begin Given Story
 		reportBeforeStory(givenStory, true);
 		reportBeforeScenario("givenScenario");
-		reporter.example(Collections.singletonMap("givenKey", "givenValue"));
+		reporter.example(Collections.singletonMap("givenKey", "givenValue"), 0);
 		reporter.beforeStep("givenStep");
 		reporter.successful("givenStep");
 		reportAfter();

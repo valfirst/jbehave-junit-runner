@@ -237,7 +237,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 	}
 
 	@Override
-	public void example(Map<String, String> tableRow) {
+	public void example(Map<String, String> tableRow, int exampleIndex) {
 		TestState testState = this.testState.get();
 		if (!testState.isGivenStoryRunning()) {
 			if (testState.currentExample != null && testState.stepDescriptions != null) {

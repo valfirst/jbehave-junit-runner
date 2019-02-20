@@ -160,7 +160,7 @@ public class JUnitDescriptionGenerator {
 	}
 
 	private String getFilename(String path) {
-		return path.substring(path.lastIndexOf('/') + 1, path.length()).split("#")[0];
+		return path.substring(path.lastIndexOf('/') + 1).split("#")[0];
 	}
 
 	private void insertDescriptionForExamples(Lifecycle lifecycle, PerformableScenario performableScenario,

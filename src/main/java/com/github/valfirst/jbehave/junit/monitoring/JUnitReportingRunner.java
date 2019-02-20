@@ -77,11 +77,7 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 
 				addToStoryReporterFormats(junitReporter);
 
-				try {
-					configurableEmbedder.run();
-				} catch (Throwable e) {
-					throw new RuntimeException(e);
-				}
+				configurableEmbedder.run();
 			}
 		};
 	}

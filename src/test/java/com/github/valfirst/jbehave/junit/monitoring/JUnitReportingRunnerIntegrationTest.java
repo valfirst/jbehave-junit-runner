@@ -1,4 +1,4 @@
-package com.github.valfirst.jbehave.junit.monitoring.suite;
+package com.github.valfirst.jbehave.junit.monitoring;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -18,9 +18,9 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.mockito.Mock;
 
-import com.github.valfirst.jbehave.junit.monitoring.ExampleScenarioJUnitStories;
-import com.github.valfirst.jbehave.junit.monitoring.ExampleScenarioJUnitStoriesLocalized;
-import com.github.valfirst.jbehave.junit.monitoring.ExampleScenarioJUnitStory;
+import com.github.valfirst.jbehave.junit.monitoring.story.ExampleScenarioJUnitStories;
+import com.github.valfirst.jbehave.junit.monitoring.story.ExampleScenarioJUnitStoriesLocalized;
+import com.github.valfirst.jbehave.junit.monitoring.story.ExampleScenarioJUnitStory;
 import com.github.valfirst.jbehave.junit.monitoring.JUnitReportingRunner;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;

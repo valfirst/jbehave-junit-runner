@@ -1,4 +1,4 @@
-package com.github.valfirst.jbehave.junit.monitoring.suite;
+package com.github.valfirst.jbehave.junit.monitoring.story;
 
 import java.util.Collections;
 import java.util.List;
@@ -72,6 +72,6 @@ public class StoriesWithAllSortsOfBeforeAndAfter extends JUnitStories {
 	@Override
 	protected List<String> storyPaths() {
 		return Collections.singletonList(
-				"com/github/valfirst/jbehave/junit/monitoring/MultiplicationWithExamplesAndGiven.story");
+				"com/github/valfirst/jbehave/junit/monitoring/story/MultiplicationWithExamplesAndGiven.story");
 	}
 }

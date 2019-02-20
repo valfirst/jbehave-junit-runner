@@ -1,8 +1,10 @@
-package com.github.valfirst.jbehave.junit.monitoring;
+package com.github.valfirst.jbehave.junit.monitoring.story;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+
+import com.github.valfirst.jbehave.junit.monitoring.JUnitReportingRunner;
 
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.i18n.LocalizedKeywords;
@@ -10,7 +12,8 @@ import org.jbehave.core.parsers.RegexStoryParser;
 import org.junit.runner.RunWith;
 
 @RunWith(JUnitReportingRunner.class)
-public class ExampleScenarioJUnitStoriesLocalized extends ExampleScenarioJUnitStories {
+public class ExampleScenarioJUnitStoriesLocalized extends ExampleScenarioJUnitStories
+{
 
 	@Override
 	public Configuration configuration() {
@@ -25,6 +28,6 @@ public class ExampleScenarioJUnitStoriesLocalized extends ExampleScenarioJUnitSt
 
 	@Override
 	protected List<String> storyPaths() {
-		return Collections.singletonList("com/github/valfirst/jbehave/junit/monitoring/Multiplication_de.story");
+		return Collections.singletonList("com/github/valfirst/jbehave/junit/monitoring/story/Multiplication_de.story");
 	}
 }

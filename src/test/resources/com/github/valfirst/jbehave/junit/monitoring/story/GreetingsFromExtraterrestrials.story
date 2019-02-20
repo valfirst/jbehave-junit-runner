@@ -1,4 +1,4 @@
-GivenStories: com/github/valfirst/jbehave/junit/monitoring/Greetings.story
+GivenStories: com/github/valfirst/jbehave/junit/monitoring/story/Greetings.story
 
 Scenario: Greetings from Extraterrestrials to Earthlings
 

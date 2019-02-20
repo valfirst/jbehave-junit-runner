@@ -1,4 +1,4 @@
-package com.github.valfirst.jbehave.junit.monitoring;
+package com.github.valfirst.jbehave.junit.monitoring.story;
 
 import java.util.Arrays;
 import java.util.List;
@@ -10,6 +10,7 @@ import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.junit.runner.RunWith;
 
+import com.github.valfirst.jbehave.junit.monitoring.JUnitReportingRunner;
 import com.github.valfirst.jbehave.junit.monitoring.step.ExampleSteps;
 
 @RunWith(JUnitReportingRunner.class)
@@ -31,8 +32,8 @@ public class ExampleScenarioJUnitStories extends JUnitStories {
 
 	@Override
 	protected List<String> storyPaths() {
-		return Arrays.asList("com/github/valfirst/jbehave/junit/monitoring/Multiplication.story",
-				"com/github/valfirst/jbehave/junit/monitoring/Empty.story");
+		return Arrays.asList("com/github/valfirst/jbehave/junit/monitoring/story/Multiplication.story",
+				"com/github/valfirst/jbehave/junit/monitoring/story/Empty.story");
 	}
 
 }

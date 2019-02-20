@@ -10,7 +10,6 @@ import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.PerformableTree;
 import org.jbehave.core.embedder.PerformableTree.RunContext;
 import org.jbehave.core.failures.BatchFailures;
-import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;

@@ -100,7 +100,7 @@ public class JUnitDescriptionGenerator {
 	private void addScenarioSteps(Lifecycle lifecycle, ScenarioType scenarioType, Scenario scenario, Description scenarioDescription) {
 		addBeforeOrAfterScenarioStep(scenarioType, Stage.BEFORE, scenarioDescription, BEFORE_SCENARIO_STEP_NAME);
 		addSteps(scenarioDescription, lifecycle.getBeforeSteps(Scope.SCENARIO));
-		addSteps(scenarioDescription, scenario.getSteps());
+		addScenarioSteps(lifecycle, scenarioDescription, scenario);
 		addSteps(scenarioDescription, lifecycle.getAfterSteps(Scope.SCENARIO, Outcome.ANY));
 		addBeforeOrAfterScenarioStep(scenarioType, Stage.AFTER, scenarioDescription, AFTER_SCENARIO_STEP_NAME);
 	}
@@ -111,6 +111,20 @@ public class JUnitDescriptionGenerator {
 		beforeOrAfterSteps.addAll(beforeOrAfterScenario.get(scenarioType));
 		beforeOrAfterSteps.addAll(beforeOrAfterScenario.get(ScenarioType.ANY));
 		addBeforeOrAfterStep(stage, beforeOrAfterSteps, description, stepName);
+	}
+
+	private void addScenarioSteps(Lifecycle lifecycle, Description scenarioDescription, Scenario scenario) {
+		List<String> beforeSteps = lifecycle.getBeforeSteps(Scope.STEP);
+		List<String> afterSteps = lifecycle.getAfterSteps(Scope.STEP);
+		previousNonAndStep = null;
+		String tempPreviousNonAndStep = null;
+		for (String scenarioStep : scenario.getSteps()) {
+			addSteps(scenarioDescription, beforeSteps);
+			previousNonAndStep = tempPreviousNonAndStep;
+			addStep(scenarioDescription, scenarioStep);
+			tempPreviousNonAndStep = previousNonAndStep;
+			addSteps(scenarioDescription, afterSteps);
+		}
 	}
 
 	private void addBeforeOrAfterStep(Stage stage, List<BeforeOrAfterStep> beforeOrAfterSteps, Description description,
@@ -181,13 +195,17 @@ public class JUnitDescriptionGenerator {
 	private void addSteps(Description description, List<String> steps) {
 		previousNonAndStep = null;
 		for (String stringStep : steps) {
-			String stringStepOneLine = stripLinebreaks(stringStep);
-			StepCandidate matchingStep = findMatchingStep(stringStep);
-			if (matchingStep == null) {
-				addNonExistingStep(description, stringStepOneLine, stringStep);
-			} else {
-				addExistingStep(description, stringStepOneLine, matchingStep);
-			}
+			addStep(description, stringStep);
+		}
+	}
+
+	private void addStep(Description description, String step) {
+		String stringStepOneLine = stripLinebreaks(step);
+		StepCandidate matchingStep = findMatchingStep(step);
+		if (matchingStep == null) {
+			addNonExistingStep(description, stringStepOneLine, step);
+		} else {
+			addExistingStep(description, stringStepOneLine, matchingStep);
 		}
 	}
 

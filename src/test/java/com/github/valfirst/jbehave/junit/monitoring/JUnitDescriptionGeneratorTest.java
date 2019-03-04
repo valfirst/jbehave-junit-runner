@@ -134,7 +134,7 @@ public class JUnitDescriptionGeneratorTest {
 		Scenario scenario = createScenario(step1, step2);
 		Story story = createStory(lifecycle, scenario);
 		List<Description> storyDescriptions = createDescriptionFrom(story);
-		assertEquals(6, generator.getTestCases());
+		assertEquals(10, generator.getTestCases());
 		assertEquals(1, storyDescriptions.size());
 		Description storyDescription = storyDescriptions.get(0);
 		assertEquals(Description.createSuiteDescription(story.getName()), storyDescription);
@@ -146,8 +146,12 @@ public class JUnitDescriptionGeneratorTest {
 		Description scenarioDescription = storyDescription.getChildren().get(1);
 		List<Description> scenarioLevelDescriptions = asList(
 				Description.createTestDescription(STEPS_TYPE, "Then before SCENARIO"),
+				Description.createTestDescription(STEPS_TYPE, "Then before STEP"),
 				Description.createTestDescription(STEPS_TYPE, step1),
+				Description.createTestDescription(STEPS_TYPE, "Then after STEP"),
+				Description.createTestDescription(STEPS_TYPE, "Then before STEP\u200B"),
 				Description.createTestDescription(Object.class, "And step with table param:"),
+				Description.createTestDescription(STEPS_TYPE, "Then after STEP\u200B"),
 				Description.createTestDescription(STEPS_TYPE, "Then after ANY SCENARIO"));
 		assertEquals(scenarioLevelDescriptions, scenarioDescription.getChildren());
 	}
@@ -414,11 +418,12 @@ public class JUnitDescriptionGeneratorTest {
 
 	private List<Steps> createAfterLifecycleSteps() {
 		List<Steps> steps = new ArrayList<>();
-		for (Scope scope : Scope.values()) {
+		for (Scope scope : new Scope[] { Scope.SCENARIO, Scope.STORY }) {
 			for (Outcome outcome : Outcome.values()) {
 				steps.add(new Steps(scope, outcome, singletonList("Then after " + outcome + " " + scope)));
 			}
 		}
+		steps.add(new Steps(Scope.STEP, Outcome.ANY, singletonList("Then after "+ Scope.STEP)));
 		return steps;
 	}
 

@@ -121,7 +121,7 @@ public class JUnitDescriptionGenerator {
 		for (String scenarioStep : scenario.getSteps()) {
 			addSteps(scenarioDescription, beforeSteps);
 			previousNonAndStep = tempPreviousNonAndStep;
-			addStep(scenarioDescription, scenarioStep);
+			addStep(scenarioDescription, scenarioStep.trim());
 			tempPreviousNonAndStep = previousNonAndStep;
 			addSteps(scenarioDescription, afterSteps);
 		}

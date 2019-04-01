@@ -123,6 +123,23 @@ public class JUnitDescriptionGeneratorTest {
 	}
 
 	@Test
+	public void shouldNotMarkStepsWithLinebreaksAsPending() {
+		String step = GIVEN_STEP + "\n\n\n";
+		when(stepCandidate.getStartingWord()).thenReturn("Given");
+		Scenario scenario = createScenario(step);
+		Story story = createStory(new Lifecycle(), scenario);
+		List<Description> storyDescriptions = createDescriptionFrom(story);
+		assertEquals(1, generator.getTestCases());
+		assertEquals(1, storyDescriptions.size());
+		Description storyDescription = storyDescriptions.get(0);
+		assertEquals(1, storyDescriptions.size());
+		Description scenarioDescription = storyDescription.getChildren().get(0);
+		assertEquals(1, storyDescriptions.size());
+		Description stepDescription = scenarioDescription.getChildren().get(0);
+		assertEquals(Description.createTestDescription(Object.class, GIVEN_STEP), stepDescription);
+	}
+
+	@Test
 	public void shouldGenerateDescriptionForStory() {
 		String step1 = GIVEN_STEP;
 		String step2 = "And step with table param:\n|Head|\n|Value|";

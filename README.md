@@ -33,7 +33,7 @@ all available from Maven Central.
 <dependency>
     <groupId>com.github.valfirst</groupId>
     <artifactId>jbehave-junit-runner</artifactId>
-    <version>2.2.0</version>
+    <version>2.2.1</version>
 </dependency>
 ```
 
@@ -109,7 +109,7 @@ java.lang.NoSuchMethodException: MyAcceptanceTests.storyPaths()
     at java.lang.reflect.Constructor.newInstance(Constructor.java:513)
     at org.junit.internal.builders.AnnotatedBuilder.buildRunner(AnnotatedBuilder.java:31)
     ....
-```	
+```
 
 you are likely extending a custom base class which
 was probably introduced to provide some common methods

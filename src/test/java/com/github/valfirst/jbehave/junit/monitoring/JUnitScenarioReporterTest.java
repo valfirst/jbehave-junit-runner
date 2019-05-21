@@ -248,6 +248,56 @@ public class JUnitScenarioReporterTest {
 	}
 
 	@Test
+	public void shouldNotifyAboutCompositeLifecycleStorySteps() {
+		storyDescription = storyDescription.childlessCopy();
+
+		rootDescription = rootDescription.childlessCopy();
+		rootDescription.addChild(storyDescription);
+
+		addTestToStory("@BeforeStory");
+		Description beforeStoryStep = addTestToStory("before story step");
+		Description composedBefore = Description.createTestDescription(this.getClass(), "composedBefore");
+		beforeStoryStep.addChild(composedBefore);
+		storyDescription.addChild(scenarioDescription);
+		Description scenarioStep = addTestToScenario("scenario step");
+		Description afterStoryStep = addTestToStory("after story step");
+		Description composedAfter = Description.createTestDescription(this.getClass(), "composedAfter");
+		Description composedComposedAfter = Description.createTestDescription(this.getClass(), "composedComposedAfter");
+		composedAfter.addChild(composedComposedAfter);
+		afterStoryStep.addChild(composedAfter);
+		addTestToStory("@AfterStory");
+
+		reporter = new JUnitScenarioReporter(notifier, 5, rootDescription, keywords);
+
+		reportBeforeStory(story, false);
+		verifyStoryStarted();
+
+		reporter.beforeStep(beforeStoryStep.getDisplayName());
+		reportSuccessfulStep(composedBefore);
+		reporter.successful(beforeStoryStep.getDisplayName());
+		verifyStepSuccess(beforeStoryStep);
+
+		reportBeforeScenario(NAME_SCENARIO);
+		verifyScenarioStarted();
+
+		reportSuccessfulStep(scenarioStep);
+
+		reportScenarioFinish(reporter);
+		verifyScenarioFinished();
+
+		reporter.beforeStep(afterStoryStep.getDisplayName());
+		reporter.beforeStep(composedAfter.getDisplayName());
+		reportSuccessfulStep(composedComposedAfter);
+		reporter.successful(composedAfter.getDisplayName());
+		verifyStepSuccess(composedAfter);
+		reporter.successful(afterStoryStep.getDisplayName());
+		verifyStepSuccess(afterStoryStep);
+
+		reportStoryFinish(reporter);
+		verifyStoryFinished();
+	}
+
+	@Test
 	public void shouldNotNotifySubStepWithoutBeforeAction() {
 		scenarioDescription.addChild(Description.TEST_MECHANISM);
 
@@ -484,6 +534,12 @@ public class JUnitScenarioReporterTest {
 		// test should not be finished until we send the final event
 		verify(notifier, VerificationModeFactory.times(0)).fireTestRunFinished(
 				Mockito.<Result> any());
+	}
+
+	private void reportSuccessfulStep(Description step) {
+		reporter.beforeStep(step.getDisplayName());
+		reporter.successful(step.getDisplayName());
+		verifyStepSuccess(step);
 	}
 
 	private void reportStepSuccess(JUnitScenarioReporter reporter) {

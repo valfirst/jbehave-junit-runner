@@ -143,7 +143,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 				List<Description> steps = new ArrayList<>(
 						testState.currentScenario.getChildren());
 				steps.removeAll(examples);
-				testState.stepDescriptions = getAllDescendants(steps).iterator();
+				testState.loadStepDescriptions(steps);
 				testState.moveToNextStep();
 				processBeforeScenario();
 			}
@@ -160,15 +160,6 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 			}
 		}
 		return Collections.emptyList();
-	}
-
-	private Collection<Description> getAllDescendants(List<Description> steps) {
-		List<Description> descendants = new ArrayList<>();
-		for (Description child : steps) {
-			descendants.add(child);
-			descendants.addAll(getAllDescendants(child.getChildren()));
-		}
-		return descendants;
 	}
 
 	@Override
@@ -246,7 +237,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 				processAfterScenario();
 			}
 			testState.moveToNextExample();
-			testState.stepDescriptions = getAllDescendants(testState.currentExample.getChildren()).iterator();
+			testState.loadStepDescriptions(testState.currentExample.getChildren());
 			testState.moveToNextStep();
 			processBeforeScenario();
 		}
@@ -262,6 +253,10 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 			}
 			if (testState.currentStepStatus == StepStatus.STARTED) {
 				testState.parentSteps.push(testState.currentStep);
+				// Composite Lifecycle Before/After story steps
+				if (testState.stepDescriptions == null) {
+					testState.loadStepDescriptions(testState.currentStep.getChildren());
+				}
 				testState.moveToNextStep();
 			}
 			notifier.fireTestStarted(testState.currentStep);
@@ -301,8 +296,9 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 			if (testState.currentStep.isTest()) {
 				testCounter.incrementAndGet();
 			}
-			// Lifecycle After story steps
-			if (testState.currentStep == testState.currentScenario) {
+			// Lifecycle Before/After story steps
+			if (testState.currentStep == testState.currentScenario || !testState.parentSteps.isEmpty()
+					&& testState.parentSteps.peekLast() == testState.currentScenario) {
 				testState.moveToNextScenario();
 				return;
 			}
@@ -394,6 +390,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 		private void moveToNextScenario() {
 			currentScenario = getNextOrNull(scenarioDescriptions);
 			currentStep = currentScenario;
+			stepDescriptions = null;
 		}
 
 		private void moveToNextExample() {
@@ -408,8 +405,21 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 			return givenStoryLevel != 0;
 		}
 
+		private void loadStepDescriptions(List<Description> steps) {
+			stepDescriptions = getAllDescendants(steps).iterator();
+		}
+
 		private <T> T getNextOrNull(Iterator<T> iterator) {
 			return iterator.hasNext() ? iterator.next() : null;
+		}
+
+		private Collection<Description> getAllDescendants(List<Description> steps) {
+			List<Description> descendants = new ArrayList<>();
+			for (Description child : steps) {
+				descendants.add(child);
+				descendants.addAll(getAllDescendants(child.getChildren()));
+			}
+			return descendants;
 		}
 	}
 

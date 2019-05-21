@@ -59,7 +59,7 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 	}
 
 	/**
-	 * Returns a {@link Statement}: Call {@link #runChild(Object, RunNotifier)}
+	 * Returns a {@link Statement}: Call {@link #runChild(org.junit.runners.model.FrameworkMethod, RunNotifier)}
 	 * on each object returned by {@link #getChildren()} (subject to any imposed
 	 * filter and sort)
 	 */

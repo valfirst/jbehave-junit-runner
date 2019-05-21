@@ -40,7 +40,7 @@ public class JUnitDescriptionGenerator {
 			ScenarioType.class);
 	{
 		for (ScenarioType scenarioType : ScenarioType.values()) {
-			beforeOrAfterScenario.put(scenarioType, new ArrayList<BeforeOrAfterStep>());
+			beforeOrAfterScenario.put(scenarioType, new ArrayList<>());
 		}
 	}
 

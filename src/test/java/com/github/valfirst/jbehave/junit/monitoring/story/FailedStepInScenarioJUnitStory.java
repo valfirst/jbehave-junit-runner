@@ -24,7 +24,7 @@ public class FailedStepInScenarioJUnitStory extends JUnitStory {
 
 	@Override
 	public Configuration configuration() {
-		// add custom coverters
+		// add custom converters
 		return new MostUsefulConfiguration();
 	}
 

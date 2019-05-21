@@ -59,7 +59,6 @@ import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
@@ -86,7 +85,7 @@ public class JUnitDescriptionGeneratorTest {
 	public void setUp() {
 		when(steps.listCandidates()).thenReturn(singletonList(stepCandidate));
 		when(stepCandidate.matches(anyString(), ArgumentMatchers.isNull())).thenReturn(true);
-		when(stepCandidate.getStepsType()).then(returnObjectClass());
+		when(stepCandidate.getStepsType()).then((Answer<Class<?>>) invocation -> STEPS_TYPE);
 		when(givenStories.getPaths()).thenReturn(Collections.emptyList());
 		when(configuration.keywords()).thenReturn(new Keywords());
 	}
@@ -386,15 +385,6 @@ public class JUnitDescriptionGeneratorTest {
 		return performableScenarios;
 	}
 
-	private Answer<Class<?>> returnObjectClass() {
-		return new Answer<Class<?>>() {
-			@Override
-			public Class<?> answer(InvocationOnMock invocation) {
-				return STEPS_TYPE;
-			}
-		};
-	}
-
 	private PerformableScenario mockPerformableScenario(Scenario scenario, String storyPath, boolean allowed) {
 		PerformableScenario performableScenario = new PerformableScenario(scenario, storyPath);
 		performableScenario.allowed(allowed);
@@ -433,7 +423,7 @@ public class JUnitDescriptionGeneratorTest {
 
 	private StepCandidate mockStepCandidate(String name, String previousNonAndStep) {
 		StepCandidate stepCandidate = mock(StepCandidate.class);
-		when(stepCandidate.getStepsType()).then(returnObjectClass());
+		when(stepCandidate.getStepsType()).then((Answer<Class<?>>) invocation -> STEPS_TYPE);
 		when(stepCandidate.matches(name, previousNonAndStep)).thenReturn(true);
 		when(stepCandidate.getStartingWord()).thenReturn(name.split(" ")[0]);
 		return stepCandidate;

@@ -35,12 +35,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 	private final boolean notifyFinished;
 	private PendingStepStrategy pendingStepStrategy = new PassingUponPendingStep();
 
-	private final ThreadLocal<TestState> testState = new ThreadLocal<TestState>() {
-		@Override
-		protected TestState initialValue() {
-			return new TestState();
-		}
-	};
+	private final ThreadLocal<TestState> testState = ThreadLocal.withInitial(TestState::new);
 
 	private final AtomicInteger testCounter = new AtomicInteger();
 

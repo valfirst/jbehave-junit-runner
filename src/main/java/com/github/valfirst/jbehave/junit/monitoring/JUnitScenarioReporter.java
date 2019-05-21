@@ -3,8 +3,10 @@ package com.github.valfirst.jbehave.junit.monitoring;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -258,7 +260,12 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 			if (testState.currentStep == testState.currentStoryDescription) {
 				testState.currentStep = testState.currentScenario;
 			}
+			if (testState.currentStepStatus == StepStatus.STARTED) {
+				testState.parentSteps.push(testState.currentStep);
+				testState.moveToNextStep();
+			}
 			notifier.fireTestStarted(testState.currentStep);
+			testState.currentStepStatus = StepStatus.STARTED;
 		}
 	}
 
@@ -271,9 +278,8 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 				notifier.fireTestStarted(testState.currentStep);
 			}
 			notifier.fireTestFailure(new Failure(testState.currentStep, thrownException));
-			notifier.fireTestFinished(testState.currentStep);
 			testState.failedSteps.add(testState.currentStep);
-			prepareNextStep();
+			finishStep(testState);
 		}
 	}
 
@@ -282,9 +288,10 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 		TestState testState = this.testState.get();
 		if (!testState.isGivenStoryRunning()) {
 			if (testState.currentStep != null) {
-				notifier.fireTestFinished(testState.currentStep);
+			    finishStep(testState);
+			} else {
+			    prepareNextStep();
 			}
-			prepareNextStep();
 		}
 	}
 
@@ -305,6 +312,16 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 		}
 	}
 
+	private void finishStep(TestState testState) {
+		if (testState.currentStepStatus == StepStatus.FINISHED && !testState.parentSteps.isEmpty()) {
+			notifier.fireTestFinished(testState.parentSteps.poll());
+		} else {
+			notifier.fireTestFinished(testState.currentStep);
+			testState.currentStepStatus = StepStatus.FINISHED;
+			prepareNextStep();
+		}
+	}
+
 	@Override
 	public void pending(String step) {
 		TestState testState = this.testState.get();
@@ -316,12 +333,11 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 				// Pending step strategy says to fail so treat this step as
 				// having failed.
 				testState.failedSteps.add(testState.currentStep);
-				notifier.fireTestFinished(testState.currentStep);
+				finishStep(testState);
 			} else {
 				notifier.fireTestIgnored(testState.currentStep);
+				prepareNextStep();
 			}
-
-			prepareNextStep();
 		}
 	}
 
@@ -330,6 +346,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 		TestState testState = this.testState.get();
 		if (!testState.isGivenStoryRunning()) {
 			notifier.fireTestIgnored(testState.currentStep);
+			testState.currentStepStatus = StepStatus.FINISHED;
 			prepareNextStep();
 		}
 	}
@@ -359,6 +376,8 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 
 	private class TestState {
 		private Description currentStep;
+		private StepStatus currentStepStatus;
+		private final Deque<Description> parentSteps = new LinkedList<>();
 		private Iterator<Description> stepDescriptions;
 
 		private Description currentScenario;
@@ -392,5 +411,9 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 		private <T> T getNextOrNull(Iterator<T> iterator) {
 			return iterator.hasNext() ? iterator.next() : null;
 		}
+	}
+
+	private enum StepStatus {
+		STARTED, FINISHED
 	}
 }

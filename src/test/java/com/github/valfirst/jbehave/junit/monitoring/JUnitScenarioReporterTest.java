@@ -18,7 +18,6 @@ import org.jbehave.core.model.Story;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.Description;
-import org.junit.runner.Result;
 import org.junit.runner.RunWith;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
@@ -89,7 +88,7 @@ public class JUnitScenarioReporterTest {
 		verifyStoryStarted();
 		verifyScenarioStarted();
 		verify(notifier).fireTestStarted(child1);
-		verify(notifier).fireTestFailure(ArgumentMatchers.<Failure> any());
+		verify(notifier).fireTestFailure(ArgumentMatchers.any());
 		verify(notifier).fireTestFinished(child1);
 	}
 
@@ -151,7 +150,7 @@ public class JUnitScenarioReporterTest {
 		reporter.failed("BeforeStories", new RuntimeException("..."));
 		reportStoryFinish(reporter);
 		verify(notifier).fireTestStarted(beforeStories);
-		verify(notifier).fireTestFailure(Mockito.<Failure> any());
+		verify(notifier).fireTestFailure(Mockito.any());
 		// Story, its scenario(s) and its step(s) should not start nor finish if 'before stories' failed.
 	}
 
@@ -478,7 +477,7 @@ public class JUnitScenarioReporterTest {
 		verifyStoryStarted();
 		verifyScenarioStarted();
 		verify(notifier).fireTestStarted(child1);
-		verify(notifier, times(2)).fireTestFailure(Mockito.<Failure> any());
+		verify(notifier, times(2)).fireTestFailure(Mockito.any());
 		verify(notifier, times(1)).fireTestFinished(child1);
 		verify(notifier, times(1)).fireTestFinished(child2);
 	}
@@ -533,7 +532,7 @@ public class JUnitScenarioReporterTest {
 		reporter.afterScenario();
 		// test should not be finished until we send the final event
 		verify(notifier, VerificationModeFactory.times(0)).fireTestRunFinished(
-				Mockito.<Result> any());
+				Mockito.any());
 	}
 
 	private void reportSuccessfulStep(Description step) {
@@ -626,11 +625,11 @@ public class JUnitScenarioReporterTest {
 	}
 
 	private void verifyTestRunFinished() {
-		verify(notifier).fireTestRunFinished(ArgumentMatchers.<Result> any());
+		verify(notifier).fireTestRunFinished(ArgumentMatchers.any());
 	}
 
 	private void verifyTestRunStarted() {
-		verify(notifier).fireTestRunStarted(ArgumentMatchers.<Description> any());
+		verify(notifier).fireTestRunStarted(ArgumentMatchers.any());
 	}
 
 	private Description addBeforeStories() {

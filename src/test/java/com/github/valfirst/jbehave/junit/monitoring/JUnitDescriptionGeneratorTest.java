@@ -85,9 +85,9 @@ public class JUnitDescriptionGeneratorTest {
 	@Before
 	public void setUp() {
 		when(steps.listCandidates()).thenReturn(singletonList(stepCandidate));
-		when(stepCandidate.matches(anyString(), ArgumentMatchers.<String> isNull())).thenReturn(true);
+		when(stepCandidate.matches(anyString(), ArgumentMatchers.isNull())).thenReturn(true);
 		when(stepCandidate.getStepsType()).then(returnObjectClass());
-		when(givenStories.getPaths()).thenReturn(Collections.<String>emptyList());
+		when(givenStories.getPaths()).thenReturn(Collections.emptyList());
 		when(configuration.keywords()).thenReturn(new Keywords());
 	}
 
@@ -238,7 +238,7 @@ public class JUnitDescriptionGeneratorTest {
 		when(stepCandidate.composedSteps()).thenReturn(new String[] { compositeStep1, compositeStep2 });
 		StepCandidate composedStep1 = mockStepCandidate(compositeStep1, null);
 		StepCandidate composedStep2 = mockStepCandidate(compositeStep2, "When ");
-		when(stepCandidate.matches(anyString(), ArgumentMatchers.<String>isNull())).thenReturn(false);
+		when(stepCandidate.matches(anyString(), ArgumentMatchers.isNull())).thenReturn(false);
 		when(stepCandidate.matches(GIVEN_STEP, null)).thenReturn(true);
 		when(stepCandidate.isComposite()).thenReturn(true);
 		when(steps.listCandidates()).thenReturn(asList(stepCandidate, composedStep1, composedStep2));
@@ -248,7 +248,7 @@ public class JUnitDescriptionGeneratorTest {
 		Description composedStep = firstChild(description);
 		verify(stepCandidate, times(0)).getStepsInstance();
 		assertThat(composedStep.getChildren(),
-				everyItem(Matchers.<Description>hasProperty("displayName", startsWith("When compositeStep"))));
+				everyItem(hasProperty("displayName", startsWith("When compositeStep"))));
 		assertEquals(2, composedStep.getChildren().size());
 		assertTrue(composedStep.isSuite());
 		assertThat(composedStep.getDisplayName(), startsWith(GIVEN_STEP));
@@ -269,11 +269,11 @@ public class JUnitDescriptionGeneratorTest {
 	@Test
 	public void shouldGenerateDescriptionForPendingSteps() {
 		Scenario scenario = createScenario(GIVEN_STEP);
-		when(stepCandidate.matches(anyString(), ArgumentMatchers.<String> isNull())).thenReturn(false);
+		when(stepCandidate.matches(anyString(), ArgumentMatchers.isNull())).thenReturn(false);
 		Description description = createDescriptionFrom(scenario);
 		assertEquals(1, description.getChildren().size());
 		assertThat(description.getChildren(),
-				everyItem(Matchers.<Description>hasProperty("displayName", containsString("PENDING"))));
+				everyItem(hasProperty("displayName", containsString("PENDING"))));
 		assertEquals(1, generator.getTestCases());
 	}
 

@@ -113,6 +113,49 @@
 					<pushChanges>false</pushChanges>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<includes>
+						<include>**/*Test.java</include>
+					</includes>
+				</configuration>
+				<executions>
+					<execution>
+						<id>integration-test-successful-stories</id>
+						<goals>
+							<goal>test</goal>
+						</goals>
+						<phase>test</phase>
+						<configuration>
+							<includes>
+								<include>**/story/ExampleScenarioJUnitStory.java</include>
+								<include>**/story/FilteredOutScenariosNotStory.java</include>
+								<include>**/story/ShowIgnoredScenariosAsIgnoredAndNotPassedStory.java</include>
+							</includes>
+						</configuration>
+					</execution>
+					<execution>
+						<id>integration-test-failing-stories</id>
+						<goals>
+							<goal>test</goal>
+						</goals>
+						<phase>test</phase>
+						<configuration>
+							<testFailureIgnore>true</testFailureIgnore>
+							<includes>
+								<include>**/story/*.java</include>
+							</includes>
+							<excludes>
+								<exclude>**/story/ExampleScenarioJUnitStory.java</exclude>
+								<exclude>**/story/FilteredOutScenariosNotStory.java</exclude>
+								<exclude>**/story/ShowIgnoredScenariosAsIgnoredAndNotPassedStory.java</exclude>
+							</excludes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 	<dependencies>

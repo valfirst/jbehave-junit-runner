@@ -132,6 +132,7 @@
 							<includes>
 								<include>**/story/ExampleScenarioJUnitStory.java</include>
 								<include>**/story/FilteredOutScenariosNotStory.java</include>
+								<include>**/story/LifecycleStepsStory.java</include>
 								<include>**/story/ShowIgnoredScenariosAsIgnoredAndNotPassedStory.java</include>
 							</includes>
 						</configuration>
@@ -150,6 +151,7 @@
 							<excludes>
 								<exclude>**/story/ExampleScenarioJUnitStory.java</exclude>
 								<exclude>**/story/FilteredOutScenariosNotStory.java</exclude>
+								<exclude>**/story/LifecycleStepsStory.java</exclude>
 								<exclude>**/story/ShowIgnoredScenariosAsIgnoredAndNotPassedStory.java</exclude>
 							</excludes>
 						</configuration>

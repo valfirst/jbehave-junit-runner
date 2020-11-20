@@ -1,7 +1,7 @@
 package com.github.valfirst.jbehave.junit.monitoring;
 
-import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -16,16 +16,11 @@ import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.junit.JUnitStory;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 public class StoryPathsExtractorTest {
 
 	private static final List<String> JUNIT_STORIES_PATHS = Arrays.asList("/path/story1.story", "/path/story2.story");
-
-	@Rule
-	public final ExpectedException expectedException = ExpectedException.none();
 
 	@Test
 	public void shouldExtractStoryPathsFromJUnitStory() throws ReflectiveOperationException {
@@ -52,11 +47,11 @@ public class StoryPathsExtractorTest {
 	}
 
 	@Test
-	public void shouldThrowExceptionWhenTypeOfConfigurableEmbedderIsUnknown() throws ReflectiveOperationException {
-		expectedException.expect(IllegalArgumentException.class);
-		expectedException.expectMessage(
-				equalTo("Only ConfigurableEmbedder of types JUnitStory and JUnitStories is supported"));
-		new StoryPathsExtractor(new TestConfigurableEmbedder()).getStoryPaths();
+	public void shouldThrowExceptionWhenTypeOfConfigurableEmbedderIsUnknown() {
+		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+				() -> new StoryPathsExtractor(new TestConfigurableEmbedder()).getStoryPaths());
+		assertEquals("Only ConfigurableEmbedder of types JUnitStory and JUnitStories is supported",
+				exception.getMessage());
 	}
 
 	public static class TestJUnitStory extends JUnitStory {

@@ -1,10 +1,10 @@
 package com.github.valfirst.jbehave.junit.monitoring;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 import java.util.Collections;
 
@@ -303,7 +303,7 @@ public class JUnitScenarioReporterTest {
 		reporter = new JUnitScenarioReporter(notifier, 1, rootDescription, keywords);
 
 		reportStepSuccess(reporter);
-		verifyZeroInteractions(notifier);
+		verifyNoInteractions(notifier);
 	}
 
 	@Test

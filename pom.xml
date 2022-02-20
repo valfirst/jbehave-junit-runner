@@ -206,10 +206,10 @@
 			</build>
 		</profile>
 		<profile>
-			<id>travis</id>
+			<id>ci</id>
 			<activation>
 				<property>
-					<name>env.TRAVIS</name>
+					<name>env.CI</name>
 					<value>true</value>
 				</property>
 			</activation>
@@ -218,7 +218,7 @@
 					<plugin>
 						<groupId>org.jacoco</groupId>
 						<artifactId>jacoco-maven-plugin</artifactId>
-						<version>0.8.6</version>
+						<version>0.8.7</version>
 						<executions>
 							<!-- Prepares the property pointing to the JaCoCo
 							runtime agent which is passed as VM argument when Maven the Surefire plugin

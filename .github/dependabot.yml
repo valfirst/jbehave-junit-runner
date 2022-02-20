@@ -8,3 +8,12 @@ updates:
   open-pull-requests-limit: 99
   reviewers:
   - valfirst
+- package-ecosystem: github-actions
+  directory: "/"
+  schedule:
+    interval: weekly
+    time: "03:00"
+  open-pull-requests-limit: 99
+  reviewers:
+  - valfirst
+  

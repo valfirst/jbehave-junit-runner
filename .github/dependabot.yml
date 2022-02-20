@@ -5,10 +5,6 @@ updates:
   schedule:
     interval: weekly
     time: "03:00"
-  open-pull-requests-limit: 10
+  open-pull-requests-limit: 99
   reviewers:
   - valfirst
-  ignore:
-  - dependency-name: org.mockito:mockito-core
-    versions:
-    - 3.8.0

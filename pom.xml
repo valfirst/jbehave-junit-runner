@@ -62,7 +62,7 @@
 		<jdk.version>1.8</jdk.version>
 		<jbehave.version>4.8.2</jbehave.version>
 		<junit.version>4.13.2</junit.version>
-		<mockito.version>3.7.7</mockito.version>
+		<mockito.version>4.3.1</mockito.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -71,7 +71,7 @@
 			<plugin>
 				<!-- Ensure we compile with the correct version of the JDK -->
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.1</version>
+				<version>3.10.0</version>
 				<configuration>
 					<source>${jdk.version}</source>
 					<target>${jdk.version}</target>
@@ -94,7 +94,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.2.0</version>
+				<version>3.3.2</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -206,10 +206,10 @@
 			</build>
 		</profile>
 		<profile>
-			<id>travis</id>
+			<id>ci</id>
 			<activation>
 				<property>
-					<name>env.TRAVIS</name>
+					<name>env.CI</name>
 					<value>true</value>
 				</property>
 			</activation>
@@ -218,7 +218,7 @@
 					<plugin>
 						<groupId>org.jacoco</groupId>
 						<artifactId>jacoco-maven-plugin</artifactId>
-						<version>0.8.6</version>
+						<version>0.8.7</version>
 						<executions>
 							<!-- Prepares the property pointing to the JaCoCo
 							runtime agent which is passed as VM argument when Maven the Surefire plugin

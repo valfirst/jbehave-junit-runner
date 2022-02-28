@@ -3,11 +3,11 @@ JBehave JUnit Integration
 [![jbehave-junit-runner CI](https://github.com/valfirst/jbehave-junit-runner/actions/workflows/ci.yml/badge.svg)](https://github.com/valfirst/jbehave-junit-runner/actions/workflows/ci.yml)
 [![Coverage Status](https://coveralls.io/repos/github/valfirst/jbehave-junit-runner/badge.svg?branch=master)](https://coveralls.io/github/valfirst/jbehave-junit-runner?branch=master)
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=com.github.valfirst%3Ajbehave-junit-runner&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=com.github.valfirst%3Ajbehave-junit-runner)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/d81f58136aa245668240b7d851a54d50)](https://www.codacy.com/app/valfirst/jbehave-junit-runner?utm_source=github.com&utm_medium=referral&utm_content=valfirst/jbehave-junit-runner&utm_campaign=badger)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/d81f58136aa245668240b7d851a54d50)](https://www.codacy.com/gh/valfirst/jbehave-junit-runner/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=valfirst/jbehave-junit-runner&amp;utm_campaign=Badge_Grade)
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.valfirst/jbehave-junit-runner.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3Acom.github.valfirst%20a%3Ajbehave-junit-runner)
 [![Javadocs](http://www.javadoc.io/badge/com.github.valfirst/jbehave-junit-runner.svg)](http://www.javadoc.io/doc/com.github.valfirst/jbehave-junit-runner)
 [![Known Vulnerabilities](https://snyk.io/test/github/valfirst/jbehave-junit-runner/badge.svg?targetFile=pom.xml)](https://snyk.io/test/github/valfirst/jbehave-junit-runner?targetFile=pom.xml)
-[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/valfirst/jbehave-junit-runner/master/LICENSE.txt)
+[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/valfirst/jbehave-junit-runner/master/LICENSE)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fvalfirst%2Fjbehave-junit-runner.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fvalfirst%2Fjbehave-junit-runner?ref=badge_shield)
 
 

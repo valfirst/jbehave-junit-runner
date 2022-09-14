@@ -59,7 +59,7 @@ public class StoryPathsExtractorTest {
 
 	public static class TestJUnitStories extends JUnitStories {
 		@Override
-		protected List<String> storyPaths() {
+		public List<String> storyPaths() {
 			return JUNIT_STORIES_PATHS;
 		}
 	}

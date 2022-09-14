@@ -36,15 +36,19 @@ public class JUnitDescriptionGenerator {
 	private int testCases;
 	private final List<StepCandidate> allCandidates = new ArrayList<>();
 
-	private final EnumMap<ScenarioType, List<BeforeOrAfterStep>> beforeOrAfterScenario = new EnumMap<>(
+	private final EnumMap<ScenarioType, List<BeforeOrAfterStep>> beforeScenario = new EnumMap<>(
+			ScenarioType.class);
+	private final EnumMap<ScenarioType, List<BeforeOrAfterStep>> afterScenario = new EnumMap<>(
 			ScenarioType.class);
 	{
 		for (ScenarioType scenarioType : ScenarioType.values()) {
-			beforeOrAfterScenario.put(scenarioType, new ArrayList<>());
+			beforeScenario.put(scenarioType, new ArrayList<>());
+			afterScenario.put(scenarioType, new ArrayList<>());
 		}
 	}
 
-	private final List<BeforeOrAfterStep> beforeOrAfterStory = new ArrayList<>();
+	private final List<BeforeOrAfterStep> beforeStory = new ArrayList<>();
+	private final List<BeforeOrAfterStep> afterStory = new ArrayList<>();
 
 	private final Configuration configuration;
 
@@ -56,27 +60,41 @@ public class JUnitDescriptionGenerator {
 		for (CandidateSteps candidateStep : candidateSteps) {
 			allCandidates.addAll(candidateStep.listCandidates());
 			for (ScenarioType scenarioType : ScenarioType.values()) {
-				beforeOrAfterScenario.get(scenarioType).addAll(candidateStep.listBeforeOrAfterScenario(scenarioType));
+				addAllBeforeOrAfterScenarios(scenarioType, candidateStep);
 			}
-			beforeOrAfterStory.addAll(candidateStep.listBeforeOrAfterStory(false));
+			addAllBeforeOrAfterStories(candidateStep);
 		}
+	}
+
+	private void addAllBeforeOrAfterScenarios(ScenarioType scenarioType, CandidateSteps candidateStep) {
+		if (candidateStep.listBeforeScenario().containsKey(scenarioType)) {
+			beforeScenario.get(scenarioType).addAll(candidateStep.listBeforeScenario().get(scenarioType));
+		}
+		if (candidateStep.listAfterScenario().containsKey(scenarioType)) {
+			afterScenario.get(scenarioType).addAll(candidateStep.listAfterScenario().get(scenarioType));
+		}
+	}
+
+	private void addAllBeforeOrAfterStories(CandidateSteps candidateStep) {
+		beforeStory.addAll(candidateStep.listBeforeStory(false));
+		afterStory.addAll(candidateStep.listAfterStory(false));
 	}
 
 	public List<Description> createDescriptionFrom(PerformableTree performableTree) {
 		List<Description> storyDescriptions = new ArrayList<>();
 		for (PerformableStory performableStory : performableTree.getRoot().getStories()) {
-			if (performableStory.isAllowed()) {
+			if (!performableStory.isExcluded()) {
 				Story story = performableStory.getStory();
 				Lifecycle lifecycle = story.getLifecycle();
 				Description storyDescription = createDescriptionForStory(story);
-				addBeforeOrAfterStep(Stage.BEFORE, beforeOrAfterStory, storyDescription, BEFORE_STORY_STEP_NAME);
+				addBeforeOrAfterStep(beforeStory, storyDescription, BEFORE_STORY_STEP_NAME);
 				addSteps(storyDescription, lifecycle.getBeforeSteps(Scope.STORY));
 				List<PerformableScenario> scenarios = performableStory.getScenarios();
 				for (Description scenarioDescription : getScenarioDescriptions(lifecycle, scenarios)) {
 					storyDescription.addChild(scenarioDescription);
 				}
 				addSteps(storyDescription, lifecycle.getAfterSteps(Scope.STORY, Outcome.ANY));
-				addBeforeOrAfterStep(Stage.AFTER, beforeOrAfterStory, storyDescription, AFTER_STORY_STEP_NAME);
+				addBeforeOrAfterStep(afterStory, storyDescription, AFTER_STORY_STEP_NAME);
 				storyDescriptions.add(storyDescription);
 			}
 		}
@@ -108,9 +126,14 @@ public class JUnitDescriptionGenerator {
 	private void addBeforeOrAfterScenarioStep(ScenarioType scenarioType, Stage stage, Description description,
 			String stepName) {
 		List<BeforeOrAfterStep> beforeOrAfterSteps = new ArrayList<>();
-		beforeOrAfterSteps.addAll(beforeOrAfterScenario.get(scenarioType));
-		beforeOrAfterSteps.addAll(beforeOrAfterScenario.get(ScenarioType.ANY));
-		addBeforeOrAfterStep(stage, beforeOrAfterSteps, description, stepName);
+		if (stage.equals(Stage.BEFORE)) {
+			beforeOrAfterSteps.addAll(beforeScenario.get(scenarioType));
+			beforeOrAfterSteps.addAll(beforeScenario.get(ScenarioType.ANY));
+		} else if (stage.equals(Stage.AFTER)) {
+			beforeOrAfterSteps.addAll(afterScenario.get(scenarioType));
+			beforeOrAfterSteps.addAll(afterScenario.get(ScenarioType.ANY));
+		}
+		addBeforeOrAfterStep(beforeOrAfterSteps, description, stepName);
 	}
 
 	private void addScenarioSteps(Lifecycle lifecycle, Description scenarioDescription, Scenario scenario) {
@@ -127,15 +150,12 @@ public class JUnitDescriptionGenerator {
 		}
 	}
 
-	private void addBeforeOrAfterStep(Stage stage, List<BeforeOrAfterStep> beforeOrAfterSteps, Description description,
+	private void addBeforeOrAfterStep(List<BeforeOrAfterStep> beforeOrAfterSteps, Description description,
 			String stepName)
 	{
-		for (BeforeOrAfterStep beforeOrAfterStep : beforeOrAfterSteps) {
-			if (beforeOrAfterStep.getStage() == stage) {
-				testCases++;
-				addBeforeOrAfterStep(beforeOrAfterStep, description, stepName);
-				break;
-			}
+		if (beforeOrAfterSteps.size() != 0) {
+			testCases++;
+			addBeforeOrAfterStep(beforeOrAfterSteps.get(0), description, stepName);
 		}
 	}
 
@@ -274,7 +294,7 @@ public class JUnitDescriptionGenerator {
 	private List<Description> getScenarioDescriptions(Lifecycle lifecycle, List<PerformableScenario> performableScenarios) {
 		List<Description> scenarioDescriptions = new ArrayList<>();
 		for (PerformableScenario scenario : performableScenarios) {
-			if (scenario.isAllowed()) {
+			if (!scenario.isExcluded()) {
 				scenarioDescriptions.add(createDescriptionFrom(lifecycle, scenario));
 			}
 		}

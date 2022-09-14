@@ -14,7 +14,10 @@ import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Scenario;
+import org.jbehave.core.model.Step;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.steps.Timing;
+import org.jbehave.core.steps.StepCreator.StepExecutionType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.Description;
@@ -271,7 +274,7 @@ public class JUnitScenarioReporterTest {
 		reportBeforeStory(story, false);
 		verifyStoryStarted();
 
-		reporter.beforeStep(beforeStoryStep.getDisplayName());
+		reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, beforeStoryStep.getDisplayName()));
 		reportSuccessfulStep(composedBefore);
 		reporter.successful(beforeStoryStep.getDisplayName());
 		verifyStepSuccess(beforeStoryStep);
@@ -284,8 +287,8 @@ public class JUnitScenarioReporterTest {
 		reportScenarioFinish(reporter);
 		verifyScenarioFinished();
 
-		reporter.beforeStep(afterStoryStep.getDisplayName());
-		reporter.beforeStep(composedAfter.getDisplayName());
+		reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, afterStoryStep.getDisplayName()));
+		reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, composedAfter.getDisplayName()));
 		reportSuccessfulStep(composedComposedAfter);
 		reporter.successful(composedAfter.getDisplayName());
 		verifyStepSuccess(composedAfter);
@@ -361,11 +364,11 @@ public class JUnitScenarioReporterTest {
 		reporter = new JUnitScenarioReporter(notifier, TWO_COMPOSITE_STEPS, rootDescription, keywords);
 
 		reportBefore();
-		reporter.beforeStep("child");
+		reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, "child"));
 		reporter.successful("child");
-		reporter.beforeStep("comp1");
+		reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, "comp1"));
 		reporter.successful("comp1");
-		reporter.beforeStep("comp2");
+		reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, "comp2"));
 		reporter.successful("comp2");
 		reportScenarioFinish(reporter);
 		reportStoryFinish(reporter);
@@ -414,11 +417,11 @@ public class JUnitScenarioReporterTest {
 
 		reportBefore();
 		reporter.example(null, 0);
-		reporter.beforeStep("child");
+		reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, "child"));
 		reporter.successful("child");
-		reporter.beforeStep("comp1");
+		reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, "comp1"));
 		reporter.successful("comp1");
-		reporter.beforeStep("comp2");
+		reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, "comp2"));
 		reporter.successful("comp2");
 		reportStepSuccess(reporter);
 		reportScenarioFinish(reporter);
@@ -517,7 +520,7 @@ public class JUnitScenarioReporterTest {
 		reporter = new JUnitScenarioReporter(notifier, ONE_STEP, rootDescription, keywords);
 
 		reportBefore();
-		reporter.scenarioNotAllowed(Mockito.mock(Scenario.class), "filter");
+		reporter.scenarioExcluded(Mockito.mock(Scenario.class), "filter");
 		verifyStoryStarted();
 		verifyScenarioStarted();
 		verify(notifier).fireTestIgnored(child1);
@@ -529,25 +532,25 @@ public class JUnitScenarioReporterTest {
 	}
 
 	private void reportScenarioFinish(JUnitScenarioReporter reporter) {
-		reporter.afterScenario();
+		reporter.afterScenario(new Timing());
 		// test should not be finished until we send the final event
 		verify(notifier, VerificationModeFactory.times(0)).fireTestRunFinished(
 				Mockito.any());
 	}
 
 	private void reportSuccessfulStep(Description step) {
-		reporter.beforeStep(step.getDisplayName());
+		reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, step.getDisplayName()));
 		reporter.successful(step.getDisplayName());
 		verifyStepSuccess(step);
 	}
 
 	private void reportStepSuccess(JUnitScenarioReporter reporter) {
-		reporter.beforeStep("child");
+		reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, "child"));
 		reporter.successful("child");
 	}
 
 	private void reportStepFailure(JUnitScenarioReporter reporter) {
-		reporter.beforeStep("child");
+		reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, "child"));
 		reporter.failed("child", new UUIDExceptionWrapper(new Exception("FAIL")));
 	}
 
@@ -561,14 +564,14 @@ public class JUnitScenarioReporterTest {
 		// Begin Given Story
 		reportBeforeStory(givenStory, true);
 		reportBeforeScenario("givenScenario");
-		reporter.beforeStep("givenStep");
+		reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, "givenStep"));
 		reporter.successful("givenStep");
 		reportAfter();
 		// End Given Story
 	}
 
 	private void reportAfter() {
-		reporter.afterScenario();
+		reporter.afterScenario(new Timing());
 		reporter.afterStory(true);
 	}
 
@@ -585,7 +588,7 @@ public class JUnitScenarioReporterTest {
 		reportBeforeStory(givenStory, true);
 		reportBeforeScenario("givenScenario");
 		reporter.example(Collections.singletonMap("givenKey", "givenValue"), 0);
-		reporter.beforeStep("givenStep");
+		reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, "givenStep"));
 		reporter.successful("givenStep");
 		reportAfter();
 		// End Given Story

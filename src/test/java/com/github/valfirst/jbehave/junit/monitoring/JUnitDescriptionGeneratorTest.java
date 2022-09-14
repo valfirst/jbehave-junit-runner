@@ -22,6 +22,7 @@ import static java.util.Collections.singletonList;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +52,6 @@ import org.jbehave.core.model.Story;
 import org.jbehave.core.steps.BeforeOrAfterStep;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.StepCandidate;
-import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepType;
 import org.junit.Before;
 import org.junit.Test;
@@ -117,7 +117,7 @@ public class JUnitDescriptionGeneratorTest {
 	@Test
 	public void shouldExcludeFilteredOutStory() {
 		Story story = createStory(createScenario(GIVEN_STEP));
-		createDescriptionFrom(false, true, story);
+		createDescriptionFrom(true, false, story);
 		assertEquals(0, generator.getTestCases());
 	}
 
@@ -296,7 +296,7 @@ public class JUnitDescriptionGeneratorTest {
 	@Test
 	public void shouldExcludeFilteredOutScenarios()  {
 		Story story = createStory(createScenario(GIVEN_STEP));
-		createDescriptionFrom(true, false, story);
+		createDescriptionFrom(false, true, story);
 		assertEquals(0, generator.getTestCases());
 	}
 
@@ -335,8 +335,10 @@ public class JUnitDescriptionGeneratorTest {
 	private void mockListBeforeOrAfterScenarioCall(ScenarioType... scenarioTypes) {
 		Method method = new Object(){}.getClass().getEnclosingMethod();
 		for(ScenarioType scenarioType : scenarioTypes) {
-			when(steps.listBeforeOrAfterScenario(scenarioType)).thenReturn(
-					singletonList(new BeforeOrAfterStep(Stage.BEFORE, method, null)));
+			Map<ScenarioType, List<BeforeOrAfterStep>> listBeforeScenario = new EnumMap<>(ScenarioType.class);
+			listBeforeScenario.put(scenarioType,
+				singletonList(new BeforeOrAfterStep(method, 0, null)));
+			when(steps.listBeforeScenario()).thenReturn(listBeforeScenario);
 		}
 	}
 
@@ -351,15 +353,15 @@ public class JUnitDescriptionGeneratorTest {
 	}
 
 	private List<Description> createDescriptionFrom(Story story) {
-		return createDescriptionFrom(true, true, story);
+		return createDescriptionFrom(false, false, story);
 	}
 
-	private List<Description> createDescriptionFrom(boolean storyAllowed, boolean scenariosAllowed, Story story) {
-		List<PerformableScenario> performableScenarios = mockPerformableScenarios(story.getPath(), scenariosAllowed,
+	private List<Description> createDescriptionFrom(boolean storyExcluded, boolean scenariosExcluded, Story story) {
+		List<PerformableScenario> performableScenarios = mockPerformableScenarios(story.getPath(), scenariosExcluded,
 				story.getScenarios());
 
 		PerformableStory performableStory = mock(PerformableStory.class);
-		when(performableStory.isAllowed()).thenReturn(Boolean.valueOf(storyAllowed));
+		when(!performableStory.isExcluded()).thenReturn(Boolean.valueOf(storyExcluded));
 		when(performableStory.getStory()).thenReturn(story);
 		when(performableStory.getScenarios()).thenReturn(performableScenarios);
 
@@ -376,18 +378,18 @@ public class JUnitDescriptionGeneratorTest {
 		return generator.createDescriptionFrom(performableTree);
 	}
 
-	private List<PerformableScenario> mockPerformableScenarios(String storyPath, boolean scenariosAllowed,
+	private List<PerformableScenario> mockPerformableScenarios(String storyPath, boolean scenariosExcluded,
 			List<Scenario> scenarios) {
 		List<PerformableScenario> performableScenarios = new ArrayList<>(scenarios.size());
 		for (Scenario scenario : scenarios) {
-			performableScenarios.add(mockPerformableScenario(scenario, storyPath, scenariosAllowed));
+			performableScenarios.add(mockPerformableScenario(scenario, storyPath, scenariosExcluded));
 		}
 		return performableScenarios;
 	}
 
-	private PerformableScenario mockPerformableScenario(Scenario scenario, String storyPath, boolean allowed) {
+	private PerformableScenario mockPerformableScenario(Scenario scenario, String storyPath, boolean excluded) {
 		PerformableScenario performableScenario = new PerformableScenario(scenario, storyPath);
-		performableScenario.allowed(allowed);
+		performableScenario.excluded(excluded);
 		if (scenario.hasExamplesTable()) {
 			for (Map<String, String> row : scenario.getExamplesTable().getRows()) {
 				ExamplePerformableScenario exampleScenario = mock(ExamplePerformableScenario.class);

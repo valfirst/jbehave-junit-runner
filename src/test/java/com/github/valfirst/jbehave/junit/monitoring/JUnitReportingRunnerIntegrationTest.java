@@ -21,7 +21,6 @@ import org.mockito.Mock;
 import com.github.valfirst.jbehave.junit.monitoring.story.ExampleScenarioJUnitStories;
 import com.github.valfirst.jbehave.junit.monitoring.story.ExampleScenarioJUnitStoriesLocalized;
 import com.github.valfirst.jbehave.junit.monitoring.story.ExampleScenarioJUnitStory;
-import com.github.valfirst.jbehave.junit.monitoring.JUnitReportingRunner;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 

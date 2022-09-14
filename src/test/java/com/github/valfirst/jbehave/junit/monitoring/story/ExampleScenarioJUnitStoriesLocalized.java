@@ -8,6 +8,7 @@ import com.github.valfirst.jbehave.junit.monitoring.JUnitReportingRunner;
 
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.i18n.LocalizedKeywords;
+import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.parsers.RegexStoryParser;
 import org.junit.runner.RunWith;
 
@@ -19,15 +20,15 @@ public class ExampleScenarioJUnitStoriesLocalized extends ExampleScenarioJUnitSt
 	public Configuration configuration() {
 		LocalizedKeywords keywords = new LocalizedKeywords(Locale.GERMAN);
 		Configuration configuration = super.configuration();
-		RegexStoryParser storyParser = new RegexStoryParser(keywords, configuration.storyLoader(),
-				configuration.tableTransformers());
+		RegexStoryParser storyParser = new RegexStoryParser(new ExamplesTableFactory(keywords, configuration.storyLoader(),
+				configuration.tableTransformers()));
 		return configuration
 				.useKeywords(keywords)
 				.useStoryParser(storyParser);
 	}
 
 	@Override
-	protected List<String> storyPaths() {
+	public List<String> storyPaths() {
 		return Collections.singletonList("com/github/valfirst/jbehave/junit/monitoring/story/Multiplication_de.story");
 	}
 }

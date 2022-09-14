@@ -19,8 +19,10 @@ import org.jbehave.core.failures.PassingUponPendingStep;
 import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.Scenario;
+import org.jbehave.core.model.Step;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.NullStoryReporter;
+import org.jbehave.core.steps.Timing;
 import org.junit.runner.Description;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
@@ -158,7 +160,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 	}
 
 	@Override
-	public void afterScenario() {
+	public void afterScenario(Timing timing) {
 		TestState testState = this.testState.get();
 		if (!testState.isGivenStoryRunning()) {
 			notifier.fireTestFinished(testState.currentScenario);
@@ -239,7 +241,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 	}
 
 	@Override
-	public void beforeStep(String title) {
+	public void beforeStep(Step title) {
 		TestState testState = this.testState.get();
 		if (!testState.isGivenStoryRunning() && testState.currentStep != null) {
 			// Lifecycle Before story steps
@@ -355,7 +357,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 	 * @param filter Filter
 	 */
 	@Override
-	public void scenarioNotAllowed(Scenario scenario, String filter) {
+	public void scenarioExcluded(Scenario scenario, String filter) {
 		TestState testState = this.testState.get();
 		notifier.fireTestIgnored(testState.currentStep);
 		notifier.fireTestIgnored(testState.currentScenario);

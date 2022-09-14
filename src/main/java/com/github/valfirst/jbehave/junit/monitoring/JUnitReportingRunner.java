@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.jbehave.core.ConfigurableEmbedder;
 import org.jbehave.core.configuration.Configuration;
+import org.jbehave.core.embedder.AllStepCandidates;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.PerformableTree;
@@ -97,7 +98,7 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 		if (stepsFactory != null) {
 			candidateSteps = stepsFactory.createCandidateSteps();
 		} else {
-			candidateSteps = configuredEmbedder.candidateSteps();
+			candidateSteps = configuredEmbedder.stepsFactory().createCandidateSteps();
 			if (candidateSteps == null || candidateSteps.isEmpty()) {
 				candidateSteps = configuredEmbedder.stepsFactory().createCandidateSteps();
 			}
@@ -115,11 +116,12 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 
 	private List<Description> buildDescriptionFromStories(List<String> storyPaths) {
 		List<CandidateSteps> candidateSteps = getCandidateSteps();
+		AllStepCandidates allStepCandidates = new AllStepCandidates(candidateSteps);
 		JUnitDescriptionGenerator descriptionGenerator = new JUnitDescriptionGenerator(candidateSteps, configuration);
 		List<Description> storyDescriptions = new ArrayList<>();
 
 		addSuite(storyDescriptions, "BeforeStories");
-		PerformableTree performableTree = createPerformableTree(candidateSteps, storyPaths);
+		PerformableTree performableTree = createPerformableTree(allStepCandidates, storyPaths);
 		storyDescriptions.addAll(descriptionGenerator.createDescriptionFrom(performableTree));
 		addSuite(storyDescriptions, "AfterStories");
 
@@ -128,10 +130,10 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 		return storyDescriptions;
 	}
 
-	private PerformableTree createPerformableTree(List<CandidateSteps> candidateSteps, List<String> storyPaths) {
+	private PerformableTree createPerformableTree(AllStepCandidates allStepCandidates, List<String> storyPaths) {
 		BatchFailures failures = new BatchFailures(configuredEmbedder.embedderControls().verboseFailures());
 		PerformableTree performableTree = configuredEmbedder.performableTree();
-		RunContext context = performableTree.newRunContext(configuration, candidateSteps,
+		RunContext context = performableTree.newRunContext(configuration, allStepCandidates,
 				configuredEmbedder.embedderMonitor(), configuredEmbedder.metaFilter(), failures);
 		performableTree.addStories(context, configuredEmbedder.storyManager().storiesOfPaths(storyPaths));
 		return performableTree;

@@ -4,7 +4,7 @@ JBehave JUnit Integration
 [![Coverage Status](https://coveralls.io/repos/github/valfirst/jbehave-junit-runner/badge.svg?branch=master)](https://coveralls.io/github/valfirst/jbehave-junit-runner?branch=master)
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=com.github.valfirst%3Ajbehave-junit-runner&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=com.github.valfirst%3Ajbehave-junit-runner)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d81f58136aa245668240b7d851a54d50)](https://www.codacy.com/gh/valfirst/jbehave-junit-runner/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=valfirst/jbehave-junit-runner&amp;utm_campaign=Badge_Grade)
-[![Maven Central](https://img.shields.io/maven-central/v/com.github.valfirst/jbehave-junit-runner.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3Acom.github.valfirst%20a%3Ajbehave-junit-runner)
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.valfirst/jbehave-junit-runner.svg)](https://central.sonatype.com/search?q=jbehave-junit-runner&namespace=com.github.valfirst)
 [![Javadocs](http://www.javadoc.io/badge/com.github.valfirst/jbehave-junit-runner.svg)](http://www.javadoc.io/doc/com.github.valfirst/jbehave-junit-runner)
 [![Known Vulnerabilities](https://snyk.io/test/github/valfirst/jbehave-junit-runner/badge.svg?targetFile=pom.xml)](https://snyk.io/test/github/valfirst/jbehave-junit-runner?targetFile=pom.xml)
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/valfirst/jbehave-junit-runner/master/LICENSE)

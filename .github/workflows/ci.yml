@@ -43,7 +43,7 @@ jobs:
           fi;
 
       - name: Analyze with Codacy
-        if: matrix.java == '17'
+        if: matrix.java == '11'
         env:
           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
           CODACY_API_TOKEN: ${{ secrets.CODACY_API_TOKEN }}

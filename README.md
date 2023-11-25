@@ -10,7 +10,6 @@ JBehave JUnit Integration
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d81f58136aa245668240b7d851a54d50)](https://www.codacy.com/gh/TurquoiseSpace/jbehave-junit-runner/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=TurquoiseSpace/jbehave-junit-runner&amp;utm_campaign=Badge_Grade)
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.TurquoiseSpace/jbehave-junit-runner.svg)](https://central.sonatype.com/search?q=jbehave-junit-runner&namespace=com.github.TurquoiseSpace)
-
 [![Javadocs](http://www.javadoc.io/badge/com.github.TurquoiseSpace/jbehave-junit-runner.svg)](http://www.javadoc.io/doc/com.github.TurquoiseSpace/jbehave-junit-runner)
 
 [![Known Vulnerabilities](https://snyk.io/test/github/TurquoiseSpace/jbehave-junit-runner/badge.svg?targetFile=pom.xml)](https://snyk.io/test/github/TurquoiseSpace/jbehave-junit-runner?targetFile=pom.xml)

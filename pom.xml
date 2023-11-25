@@ -7,7 +7,7 @@
 
 	<name>JBehave JUnit Runner</name>
 	<description>Library designed to make JBehave stories &amp; scenarios show up in the JUnit view in IDEs supportting custom test runners</description>
-	<url>https://github.com/valfirst/jbehave-junit-runner</url>
+	<url>https://github.com/TurquoiseSpace/jbehave-junit-runner</url>
 	<licenses>
 		<license>
 			<name>MIT License</name>
@@ -39,9 +39,9 @@
 	</contributors>
 
 	<scm>
-		<connection>scm:git:git://github.com/valfirst/jbehave-junit-runner.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com/valfirst/jbehave-junit-runner.git</developerConnection>
-		<url>https://github.com/valfirst/jbehave-junit-runner</url>
+		<connection>scm:git:git://github.com/TurquoiseSpace/jbehave-junit-runner.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/TurquoiseSpace/jbehave-junit-runner.git</developerConnection>
+		<url>https://github.com/TurquoiseSpace/jbehave-junit-runner</url>
 		<tag>HEAD</tag>
 	</scm>
 

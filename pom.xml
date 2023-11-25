@@ -17,24 +17,28 @@
 	</licenses>
 	<developers>
 		<developer>
-			<name>Andreas Ebbert-Karroum</name>
-			<email>andreas.ebbert-karroum@codecentric.de</email>
-			<organization>codecentric AG</organization>
-		</developer>
-		<developer>
-			<name>Daniel Schneller</name>
-			<email>daniel.schneller@codecentric.de</email>
-			<organization>codecentric AG</organization>
-		</developer>
-		<developer>
-			<name>Valery Yatsynovich</name>
-			<email>valfirst@yandex.ru</email>
+			<name></name>
+			<email></email>
 		</developer>
 	</developers>
 	<contributors>
 		<contributor>
 			<name>Stephen Kurlow</name>
 			<email>skurlow@gmail.com</email>
+		</contributor>
+		<contributor>
+			<name>Andreas Ebbert-Karroum</name>
+			<email>andreas.ebbert-karroum@codecentric.de</email>
+			<organization>codecentric AG</organization>
+		</contributor>
+		<contributor>
+			<name>Daniel Schneller</name>
+			<email>daniel.schneller@codecentric.de</email>
+			<organization>codecentric AG</organization>
+		</contributor>
+		<contributor>
+			<name>Valery Yatsynovich</name>
+			<email>valfirst@yandex.ru</email>
 		</contributor>
 	</contributors>
 

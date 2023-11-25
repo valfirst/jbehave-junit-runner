@@ -7,7 +7,7 @@ updates:
     time: "03:00"
   open-pull-requests-limit: 99
   reviewers:
-  - valfirst
+  - matcdac
 - package-ecosystem: github-actions
   directory: "/"
   schedule:
@@ -15,5 +15,4 @@ updates:
     time: "03:00"
   open-pull-requests-limit: 99
   reviewers:
-  - valfirst
-  
+  - matcdac

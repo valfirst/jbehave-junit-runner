@@ -1,4 +1,4 @@
-package com.github.valfirst.jbehave.junit.monitoring;
+package com.github.TurquoiseSpace.jbehave.junit.monitoring;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;

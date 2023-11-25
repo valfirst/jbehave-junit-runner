@@ -1,9 +1,9 @@
-package com.github.valfirst.jbehave.junit.monitoring.story;
+package com.github.TurquoiseSpace.jbehave.junit.monitoring.story;
 
 import java.util.Collections;
 import java.util.List;
 
-import com.github.valfirst.jbehave.junit.monitoring.step.ExampleSteps;
+import com.github.TurquoiseSpace.jbehave.junit.monitoring.step.ExampleSteps;
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
@@ -14,7 +14,7 @@ import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.junit.runner.RunWith;
 
-import com.github.valfirst.jbehave.junit.monitoring.JUnitReportingRunner;
+import com.github.TurquoiseSpace.jbehave.junit.monitoring.JUnitReportingRunner;
 
 /**
  * <p>

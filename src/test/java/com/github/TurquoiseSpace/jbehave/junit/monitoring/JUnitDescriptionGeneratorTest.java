@@ -1,4 +1,4 @@
-package com.github.valfirst.jbehave.junit.monitoring;
+package com.github.TurquoiseSpace.jbehave.junit.monitoring;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.everyItem;

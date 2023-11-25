@@ -1,4 +1,4 @@
-package com.github.valfirst.jbehave.junit.monitoring;
+package com.github.TurquoiseSpace.jbehave.junit.monitoring;
 
 /**
  * @author Valery_Yatsynovich

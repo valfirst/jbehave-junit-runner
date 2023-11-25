@@ -1,10 +1,10 @@
-package com.github.valfirst.jbehave.junit.monitoring.story;
+package com.github.TurquoiseSpace.jbehave.junit.monitoring.story;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import com.github.valfirst.jbehave.junit.monitoring.JUnitReportingRunner;
+import com.github.TurquoiseSpace.jbehave.junit.monitoring.JUnitReportingRunner;
 
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.i18n.LocalizedKeywords;

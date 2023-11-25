@@ -1,4 +1,4 @@
-package com.github.valfirst.jbehave.junit.monitoring.step;
+package com.github.TurquoiseSpace.jbehave.junit.monitoring.step;
 
 import java.sql.SQLException;
 

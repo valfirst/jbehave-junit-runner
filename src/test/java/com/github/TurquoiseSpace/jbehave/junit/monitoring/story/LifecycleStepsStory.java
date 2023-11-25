@@ -1,7 +1,7 @@
-package com.github.valfirst.jbehave.junit.monitoring.story;
+package com.github.TurquoiseSpace.jbehave.junit.monitoring.story;
 
-import com.github.valfirst.jbehave.junit.monitoring.JUnitReportingRunner;
-import com.github.valfirst.jbehave.junit.monitoring.step.ExampleSteps;
+import com.github.TurquoiseSpace.jbehave.junit.monitoring.JUnitReportingRunner;
+import com.github.TurquoiseSpace.jbehave.junit.monitoring.step.ExampleSteps;
 
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;

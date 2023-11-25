@@ -1,4 +1,4 @@
-package com.github.valfirst.jbehave.junit.monitoring;
+package com.github.TurquoiseSpace.jbehave.junit.monitoring;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;

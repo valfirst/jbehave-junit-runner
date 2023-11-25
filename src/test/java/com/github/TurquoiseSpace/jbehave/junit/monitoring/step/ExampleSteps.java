@@ -1,4 +1,4 @@
-package com.github.valfirst.jbehave.junit.monitoring.step;
+package com.github.TurquoiseSpace.jbehave.junit.monitoring.step;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;

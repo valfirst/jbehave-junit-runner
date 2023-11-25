@@ -2,7 +2,7 @@ JBehave JUnit Integration
 =========================
 [![jbehave-junit-runner CI](https://github.com/TurquoiseSpace/jbehave-junit-runner/actions/workflows/ci.yml/badge.svg)](https://github.com/TurquoiseSpace/jbehave-junit-runner/actions/workflows/ci.yml)
 [![Coverage Status](https://coveralls.io/repos/github/TurquoiseSpace/jbehave-junit-runner/badge.svg?branch=master)](https://coveralls.io/github/TurquoiseSpace/jbehave-junit-runner?branch=master)
-[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=com.github.TurquoiseSpace%3Ajbehave-junit-runner&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=com.github.TurquoiseSpace%3Ajbehave-junit-runner)
+[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=TurquoiseSpace_jbehave-junit-runner&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=TurquoiseSpace_jbehave-junit-runner)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d81f58136aa245668240b7d851a54d50)](https://www.codacy.com/gh/TurquoiseSpace/jbehave-junit-runner/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=TurquoiseSpace/jbehave-junit-runner&amp;utm_campaign=Badge_Grade)
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.TurquoiseSpace/jbehave-junit-runner.svg)](https://central.sonatype.com/search?q=jbehave-junit-runner&namespace=com.github.TurquoiseSpace)
 [![Javadocs](http://www.javadoc.io/badge/com.github.TurquoiseSpace/jbehave-junit-runner.svg)](http://www.javadoc.io/doc/com.github.TurquoiseSpace/jbehave-junit-runner)

@@ -28,6 +28,6 @@ public class ExampleScenarioJUnitStoriesLocalized extends ExampleScenarioJUnitSt
 
 	@Override
 	protected List<String> storyPaths() {
-		return Collections.singletonList("com/github/valfirst/jbehave/junit/monitoring/story/Multiplication_de.story");
+		return Collections.singletonList("com/github/TurquoiseSpace/jbehave/junit/monitoring/story/Multiplication_de.story");
 	}
 }

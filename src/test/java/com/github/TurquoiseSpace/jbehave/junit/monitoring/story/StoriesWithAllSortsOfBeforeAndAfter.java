@@ -72,6 +72,6 @@ public class StoriesWithAllSortsOfBeforeAndAfter extends JUnitStories {
 	@Override
 	protected List<String> storyPaths() {
 		return Collections.singletonList(
-				"com/github/valfirst/jbehave/junit/monitoring/story/MultiplicationWithExamplesAndGiven.story");
+				"com/github/TurquoiseSpace/jbehave/junit/monitoring/story/MultiplicationWithExamplesAndGiven.story");
 	}
 }

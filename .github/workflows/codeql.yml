@@ -1,4 +1,4 @@
-name: "CodeQL"
+name: "Turquoise Space - JBehave Junit Runner - CodeQL Cron"
 
 on:
   push:

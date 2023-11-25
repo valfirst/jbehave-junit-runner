@@ -1,4 +1,4 @@
-name: jbehave-junit-runner CI
+name: Turquoise Space - JBehave Junit Runner - CI / CD
 
 on:
   push:

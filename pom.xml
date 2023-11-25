@@ -72,6 +72,14 @@
 		<jbehave.version>4.8.3</jbehave.version>
 		<junit.version>4.13.2</junit.version>
 		<mockito.version>4.11.0</mockito.version>
+		<apache.maven-compiler-plugin.version>3.11.0</apache.maven-compiler-plugin.version>
+		<apache.maven-source-plugin.version>3.3.0</apache.maven-source-plugin.version>
+		<apache.maven-javadoc-plugin.version>3.6.2</apache.maven-javadoc-plugin.version>
+		<apache.maven-release-plugin.version>3.0.1</apache.maven-release-plugin.version>
+		<apache.maven-surefire-plugin.version>3.2.2</apache.maven-surefire-plugin.version>
+		<apache.maven-gpg-plugin.version>3.1.0</apache.maven-gpg-plugin.version>
+		<jacoco.jacoco-maven-plugin.version>0.8.11</jacoco.jacoco-maven-plugin.version>
+		<eluder.coveralls-maven-plugin.version>4.3.0</eluder.coveralls-maven-plugin.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -79,8 +87,9 @@
 		<plugins>
 			<plugin>
 				<!-- Ensure we compile with the correct version of the JDK -->
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.11.0</version>
+				<version>${apache.maven-compiler-plugin.version}</version>
 				<configuration>
 					<source>${jdk.version}</source>
 					<target>${jdk.version}</target>
@@ -90,7 +99,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>3.3.0</version>
+				<version>${apache.maven-source-plugin.version}</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -103,7 +112,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.6.2</version>
+				<version>${apache.maven-javadoc-plugin.version}</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -116,7 +125,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
-				<version>3.0.1</version>
+				<version>${apache.maven-release-plugin.version}</version>
 				<configuration>
 					<localCheckout>true</localCheckout>
 					<pushChanges>false</pushChanges>
@@ -125,6 +134,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${apache.maven-surefire-plugin.version}</version>
 				<configuration>
 					<includes>
 						<include>**/*Test.java</include>
@@ -201,7 +211,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>3.1.0</version>
+						<version>${apache.maven-gpg-plugin.version}</version>
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>
@@ -228,7 +238,7 @@
 					<plugin>
 						<groupId>org.jacoco</groupId>
 						<artifactId>jacoco-maven-plugin</artifactId>
-						<version>0.8.11</version>
+						<version>${jacoco.jacoco-maven-plugin.version}</version>
 						<executions>
 							<!-- Prepares the property pointing to the JaCoCo
 							runtime agent which is passed as VM argument when Maven the Surefire plugin
@@ -253,7 +263,7 @@
 					<plugin>
 						<groupId>org.eluder.coveralls</groupId>
 						<artifactId>coveralls-maven-plugin</artifactId>
-						<version>4.3.0</version>
+						<version>${eluder.coveralls-maven-plugin.version}</version>
 						<dependencies>
 							<dependency>
 								<groupId>javax.xml.bind</groupId>

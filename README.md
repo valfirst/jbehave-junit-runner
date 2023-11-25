@@ -16,11 +16,8 @@ JBehave JUnit Integration
 [![Known Vulnerabilities](https://snyk.io/test/github/TurquoiseSpace/jbehave-junit-runner/badge.svg?targetFile=pom.xml)](https://snyk.io/test/github/TurquoiseSpace/jbehave-junit-runner?targetFile=pom.xml)
 
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/TurquoiseSpace/jbehave-junit-runner/master/LICENSE)
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FTurquoiseSpace%2Fjbehave-junit-runner.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FTurquoiseSpace%2Fjbehave-junit-runner?ref=badge_shield)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FTurquoiseSpace%2Fjbehave-junit-runner.svg?type=shield&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2FTurquoiseSpace%2Fjbehave-junit-runner?ref=badge_shield&issueType=license)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FTurquoiseSpace%2Fjbehave-junit-runner.svg?type=small)](https://app.fossa.com/projects/git%2Bgithub.com%2FTurquoiseSpace%2Fjbehave-junit-runner?ref=badge_small)
-
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FTurquoiseSpace%2Fjbehave-junit-runner.svg?type=large&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2FTurquoiseSpace%2Fjbehave-junit-runner?ref=badge_large&issueType=license)
 
 
 This little project is designed to make JBehave
@@ -45,7 +42,7 @@ all available from Maven Central.
 <dependency>
     <groupId>com.github.TurquoiseSpace</groupId>
     <artifactId>jbehave-junit-runner</artifactId>
-    <version>2.3.2</version>
+    <version>2.3.3</version>
 </dependency>
 ```
 
@@ -194,4 +191,11 @@ This project is based on the original implementation by Mark Burnett, located at
 
 
 ## License
+
+MIT License
+
+[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/TurquoiseSpace/jbehave-junit-runner/master/LICENSE)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FTurquoiseSpace%2Fjbehave-junit-runner.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FTurquoiseSpace%2Fjbehave-junit-runner?ref=badge_shield)
+
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FTurquoiseSpace%2Fjbehave-junit-runner.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FTurquoiseSpace%2Fjbehave-junit-runner?ref=badge_large)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FTurquoiseSpace%2Fjbehave-junit-runner.svg?type=large&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2FTurquoiseSpace%2Fjbehave-junit-runner?ref=badge_large&issueType=license)

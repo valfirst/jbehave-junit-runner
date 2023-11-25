@@ -61,7 +61,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           if [[ -n $GITHUB_TOKEN && -n $SONAR_TOKEN ]]; then
-            mvn sonar:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=valfirst-github -Dsonar.projectKey=com.github.TurquoiseSpace:jbehave-junit-runner -Dsonar.token=${SONAR_TOKEN}  -Dsonar.pullrequest.branch=${{ github.event.pull_request.head.ref }} -Dsonar.pullrequest.base=${{ github.event.pull_request.base.ref }} -Dsonar.pullrequest.key=${{github.event.pull_request.number}};
+            mvn sonar:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=turquoise-space -Dsonar.projectKey=com.github.TurquoiseSpace:jbehave-junit-runner -Dsonar.token=${SONAR_TOKEN}  -Dsonar.pullrequest.branch=${{ github.event.pull_request.head.ref }} -Dsonar.pullrequest.base=${{ github.event.pull_request.base.ref }} -Dsonar.pullrequest.key=${{github.event.pull_request.number}};
           else
             echo No GITHUB_TOKEN and/or SONAR_TOKEN, the publishing to SonarCloud is skipped;
           fi;

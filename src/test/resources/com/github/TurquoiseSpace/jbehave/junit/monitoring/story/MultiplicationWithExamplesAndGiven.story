@@ -28,9 +28,9 @@ Examples:
 
 Scenario: 2 x 3 success with given stories
 
-GivenStories: 	com/github/valfirst/jbehave/junit/monitoring/story/Init.story,
-				com/github/valfirst/jbehave/junit/monitoring/story/Greetings.story,
-				com/github/valfirst/jbehave/junit/monitoring/story/GreetingsFromExtraterrestrials.story
+GivenStories: 	com/github/TurquoiseSpace/jbehave/junit/monitoring/story/Init.story,
+				com/github/TurquoiseSpace/jbehave/junit/monitoring/story/Greetings.story,
+				com/github/TurquoiseSpace/jbehave/junit/monitoring/story/GreetingsFromExtraterrestrials.story
 
 Given a variable x with value 3
 When I multiply x by 2
@@ -38,8 +38,8 @@ Then x should equal 6
 
 Scenario: 2 x 3 fail with given stories
 
-GivenStories: 	com/github/valfirst/jbehave/junit/monitoring/story/Init.story,
-				com/github/valfirst/jbehave/junit/monitoring/story/Greetings.story
+GivenStories: 	com/github/TurquoiseSpace/jbehave/junit/monitoring/story/Init.story,
+				com/github/TurquoiseSpace/jbehave/junit/monitoring/story/Greetings.story
 
 Given a variable x with value 3
 When I multiply x by 2
@@ -47,8 +47,8 @@ Then x should equal 7
 
 Scenario: parameterized given stories
 
-GivenStories: 	com/github/valfirst/jbehave/junit/monitoring/story/ParameterizedGreetings.story#{0},
-				com/github/valfirst/jbehave/junit/monitoring/story/ParameterizedGreetings.story#{1}
+GivenStories: 	com/github/TurquoiseSpace/jbehave/junit/monitoring/story/ParameterizedGreetings.story#{0},
+				com/github/TurquoiseSpace/jbehave/junit/monitoring/story/ParameterizedGreetings.story#{1}
 
 Given a Greeting to Parameterized Stories
 And a Greeting to <name>
@@ -64,7 +64,7 @@ Examples:
 
 Scenario: non-parameterized given stories with example tables
 
-GivenStories: 	com/github/valfirst/jbehave/junit/monitoring/story/Greetings.story
+GivenStories: 	com/github/TurquoiseSpace/jbehave/junit/monitoring/story/Greetings.story
 
 Given a Greeting to Parameterized Stories
 And a Greeting to <name>

@@ -1,5 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
 	<modelVersion>4.0.0</modelVersion>
+
 	<groupId>com.github.TurquoiseSpace</groupId>
 	<artifactId>jbehave-junit-runner</artifactId>
 	<version>2.3.3</version>
@@ -8,6 +10,7 @@
 	<name>JBehave JUnit Runner</name>
 	<description>Library designed to make JBehave stories &amp; scenarios show up in the JUnit view in IDEs supportting custom test runners</description>
 	<url>https://github.com/TurquoiseSpace/jbehave-junit-runner</url>
+
 	<licenses>
 		<license>
 			<name>MIT License</name>
@@ -15,12 +18,14 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
+
 	<developers>
 		<developer>
 			<name>Prakhar Makhija</name>
 			<email>matcdac@gmail.com</email>
 		</developer>
 	</developers>
+
 	<contributors>
 		<contributor>
 			<name>Stephen Kurlow</name>
@@ -165,6 +170,7 @@
 			</plugin>
 		</plugins>
 	</build>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.jbehave</groupId>
@@ -234,7 +240,6 @@
 									<goal>prepare-agent</goal>
 								</goals>
 							</execution>
-
 							<!-- Ensures that the code coverage report for
 							unit tests is created after unit tests have been run. -->
 							<execution>
@@ -262,6 +267,5 @@
 			</build>
 		</profile>
 	</profiles>
-
 
 </project>

@@ -81,6 +81,7 @@
 		<apache.maven-gpg-plugin.version>3.1.0</apache.maven-gpg-plugin.version>
 		<jacoco.jacoco-maven-plugin.version>0.8.11</jacoco.jacoco-maven-plugin.version>
 		<eluder.coveralls-maven-plugin.version>4.3.0</eluder.coveralls-maven-plugin.version>
+		<javax.xml.bind.jaxb-api.version>2.3.1</javax.xml.bind.jaxb-api.version>
 		<jakarta.xml.bind-api.version>4.0.1</jakarta.xml.bind-api.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -272,6 +273,11 @@
 						<artifactId>coveralls-maven-plugin</artifactId>
 						<version>${eluder.coveralls-maven-plugin.version}</version>
 						<dependencies>
+							<dependency>
+								<groupId>javax.xml.bind</groupId>
+								<artifactId>jaxb-api</artifactId>
+								<version>${javax.xml.bind.jaxb-api.version}</version>
+							</dependency>
 							<dependency>
 								<groupId>jakarta.xml.bind</groupId>
 								<artifactId>jakarta.xml.bind-api</artifactId>

@@ -280,19 +280,14 @@
 						</executions>
 					</plugin>
 					<plugin>
-						<groupId>
-							org.eluder.coveralls</groupId>
+						<groupId>org.eluder.coveralls</groupId>
 						<artifactId>coveralls-maven-plugin</artifactId>
-						<version>
-							${eluder.coveralls-maven-plugin.version}</version>
+						<version>${eluder.coveralls-maven-plugin.version}</version>
 						<dependencies>
 							<dependency>
-								<groupId>
-									jakarta.xml.bind</groupId>
-								<artifactId>
-									jakarta.xml.bind-api</artifactId>
-								<version>
-									${jakarta.xml.bind-api.version}</version>
+								<groupId>jakarta.xml.bind</groupId>
+								<artifactId>jakarta.xml.bind-api</artifactId>
+								<version>${jakarta.xml.bind-api.version}</version>
 							</dependency>
 						</dependencies>
 					</plugin>

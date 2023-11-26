@@ -97,6 +97,7 @@
 		<sonar.exclusions>target/**</sonar.exclusions>
 		<maven.test.skip>false</maven.test.skip>
 		<sonar.sourceEncoding>UTF-8</sonar.sourceEncoding>
+		<sonar.scm.exclusions.disabled>true</sonar.scm.exclusions.disabled>
 	</properties>
 
 	<build>

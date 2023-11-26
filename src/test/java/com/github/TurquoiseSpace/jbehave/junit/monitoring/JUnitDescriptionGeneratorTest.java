@@ -306,7 +306,7 @@ public class JUnitDescriptionGeneratorTest {
 		mockListBeforeOrAfterScenarioCall(ScenarioType.ANY);
 		Scenario scenario = createScenario(GIVEN_STEP);
 		createDescriptionFrom(scenario);
-		assertEquals(2, generator.getTestCases());
+		assertEquals(3, generator.getTestCases());
 	}
 
 	@Test
@@ -314,7 +314,7 @@ public class JUnitDescriptionGeneratorTest {
 		mockListBeforeOrAfterScenarioCall(ScenarioType.NORMAL);
 		Scenario scenario = createScenario(GIVEN_STEP);
 		createDescriptionFrom(scenario);
-		assertEquals(2, generator.getTestCases());
+		assertEquals(3, generator.getTestCases());
 	}
 
 	@Test
@@ -322,7 +322,7 @@ public class JUnitDescriptionGeneratorTest {
 		mockListBeforeOrAfterScenarioCall(ScenarioType.ANY, ScenarioType.NORMAL);
 		Scenario scenario = createScenario(GIVEN_STEP);
 		createDescriptionFrom(scenario);
-		assertEquals(2, generator.getTestCases());
+		assertEquals(3, generator.getTestCases());
 	}
 
 	@Test

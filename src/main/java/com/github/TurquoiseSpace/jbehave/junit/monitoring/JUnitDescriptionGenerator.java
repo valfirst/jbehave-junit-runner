@@ -56,8 +56,14 @@ public class JUnitDescriptionGenerator {
 		for (CandidateSteps candidateStep : candidateSteps) {
 			allCandidates.addAll(candidateStep.listCandidates());
 			for (ScenarioType scenarioType : ScenarioType.values()) {
-				beforeOrAfterScenario.get(scenarioType).addAll(candidateStep.listBeforeScenario().get(scenarioType));
-				beforeOrAfterScenario.get(scenarioType).addAll(candidateStep.listAfterScenario().get(scenarioType));
+				if (null != beforeOrAfterScenario.get(scenarioType) && null != candidateStep.listBeforeScenario().get(scenarioType)) {
+					if (null != candidateStep.listBeforeScenario()) {
+						beforeOrAfterScenario.get(scenarioType).addAll(candidateStep.listBeforeScenario().get(scenarioType));
+					}
+					if (null != candidateStep.listAfterScenario() && null != candidateStep.listAfterScenario().get(scenarioType)) {
+						beforeOrAfterScenario.get(scenarioType).addAll(candidateStep.listAfterScenario().get(scenarioType));
+					}
+				}
 			}
 			beforeOrAfterStory.addAll(candidateStep.listBeforeStory(false));
 			beforeOrAfterStory.addAll(candidateStep.listAfterStory(false));

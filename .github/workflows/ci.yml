@@ -39,9 +39,7 @@ jobs:
           cache: 'maven'
 
       - name: Build with Maven
-        run: |
-          mvn clean
-          mvn -Dmaven.artifact.threads=25 clean eclipse:eclipse -DdownloadSources=true dependency:go-offline dependency:resolve-plugins install test verify
+        run: mvn clean install
 
       - name: Publish test coverage data to Coveralls
         if: matrix.java == '17'

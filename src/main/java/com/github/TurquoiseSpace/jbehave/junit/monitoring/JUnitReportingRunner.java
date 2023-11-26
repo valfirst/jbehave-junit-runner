@@ -130,10 +130,7 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 	private PerformableTree createPerformableTree(List<CandidateSteps> candidateSteps, List<String> storyPaths) {
 		BatchFailures failures = new BatchFailures(configuredEmbedder.embedderControls().verboseFailures());
 		PerformableTree performableTree = configuredEmbedder.performableTree();
-		StepConditionMatcher stepConditionMatcher = (condition, value) -> {
-			return condition.isInstance(value);
-		};
-		AllStepCandidates allStepCandidates = new AllStepCandidates(stepConditionMatcher, candidateSteps);
+		AllStepCandidates allStepCandidates = new AllStepCandidates(configuration.stepConditionMatcher(), candidateSteps);
 		RunContext context = performableTree.newRunContext(configuration, allStepCandidates,
 				configuredEmbedder.embedderMonitor(), configuredEmbedder.metaFilter(), failures);
 		performableTree.addStories(context, configuredEmbedder.storyManager().storiesOfPaths(storyPaths));

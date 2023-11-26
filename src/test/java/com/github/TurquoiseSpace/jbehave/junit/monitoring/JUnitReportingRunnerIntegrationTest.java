@@ -83,7 +83,7 @@ public class JUnitReportingRunnerIntegrationTest {
 			System.out.println("verified start " + displayName);
 		}
 		for (Description child : description.getChildren()) {
-			verifyAllChildDescriptionsFired(child, false);
+			verifyAllChildDescriptionsFired(child, true);
 		}
 		if (!onlyChildren && considerStepForVerification(description)) {
 			verify(notifier).fireTestFinished(description);

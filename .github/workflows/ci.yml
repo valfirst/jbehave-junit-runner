@@ -70,7 +70,7 @@ jobs:
         run: |
           if [[ -n $GITHUB_TOKEN && -n $SONAR_TOKEN ]]; then
         #    mvn sonar:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=turquoise-space -Dsonar.projectKey=TurquoiseSpace_jbehave-junit-runner -Dsonar.token=${SONAR_TOKEN} -Dsonar.branch.name=${GITHUB_BRANCH} -Dsonar.pullrequest.branch=${{ github.event.pull_request.head.ref }} -Dsonar.pullrequest.base=${{ github.event.pull_request.base.ref }} -Dsonar.pullrequest.key=${{github.event.pull_request.number}};
-            mvn sonar:sonar -Dsonar.token=${SONAR_TOKEN} -Dsonar.branch.name=${GITHUB_BRANCH} -Pcoverage
+            mvn clean verify sonar:sonar -Dsonar.token=${SONAR_TOKEN} -Dsonar.branch.name=${GITHUB_BRANCH} -Pcoverage
           else
             echo No GITHUB_TOKEN and/or SONAR_TOKEN, the publishing to SonarCloud is skipped;
           fi;

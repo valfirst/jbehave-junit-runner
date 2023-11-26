@@ -68,7 +68,7 @@
 	</distributionManagement>
 
 	<properties>
-		<jdk.version>1.8</jdk.version>
+		<jdk.version>11</jdk.version>
 		<jbehave.version>5.2.0</jbehave.version>
 		<junit.version>4.13.2</junit.version>
 		<mockito.version>5.7.0</mockito.version>

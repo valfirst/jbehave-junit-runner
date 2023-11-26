@@ -45,7 +45,7 @@ public class MathStories extends JUnitStories {
 	}
 
 	@Override
-	protected List<String> storyPaths() {
+	public List<String> storyPaths() {
 		return Collections.singletonList("com/github/TurquoiseSpace/jbehave/junit/monitoring/story/Multiplication.story");
 	}
 

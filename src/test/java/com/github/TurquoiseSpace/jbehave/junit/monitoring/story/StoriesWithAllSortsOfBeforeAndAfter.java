@@ -11,12 +11,12 @@ import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.failures.FailingUponPendingStep;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.junit.JUnitStories;
-import org.jbehave.core.reporters.CrossReference;
 import org.jbehave.core.reporters.Format;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.DelegatingStepMonitor;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
+import org.jbehave.core.steps.NullStepMonitor;
 import org.jbehave.core.steps.ParameterControls;
 import org.jbehave.core.steps.StepMonitor;
 import org.junit.runner.RunWith;
@@ -38,19 +38,15 @@ public class StoriesWithAllSortsOfBeforeAndAfter extends JUnitStories {
 	private final Configuration configuration;
 
 	public StoriesWithAllSortsOfBeforeAndAfter() {
-		CrossReference crossReference = new CrossReference("dummy")
-				.withJsonOnly().withOutputAfterEachStory(true)
-				.excludingStoriesWithNoExecutedScenarios(true);
 		StepMonitor stepMonitor = new DelegatingStepMonitor(
-				crossReference.getStepMonitor());
+				new NullStepMonitor());
 		configuration = new MostUsefulConfiguration()
 				.useStepMonitor(stepMonitor)
 				.usePendingStepStrategy(new FailingUponPendingStep())
 				.useStoryReporterBuilder(
 						new StoryReporterBuilder().withDefaultFormats()
 								.withFailureTrace(true)
-								.withFormats(Format.XML, Format.HTML)
-								.withCrossReference(crossReference))
+								.withFormats(Format.XML, Format.HTML))
 				.useParameterControls(new ParameterControls("<", ">", true));
 		JUnitReportingRunner.recommendedControls(configuredEmbedder());
 	}
@@ -70,7 +66,7 @@ public class StoriesWithAllSortsOfBeforeAndAfter extends JUnitStories {
 	}
 
 	@Override
-	protected List<String> storyPaths() {
+	public List<String> storyPaths() {
 		return Collections.singletonList(
 				"com/github/TurquoiseSpace/jbehave/junit/monitoring/story/MultiplicationWithExamplesAndGiven.story");
 	}

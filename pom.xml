@@ -70,8 +70,9 @@
 	<properties>
 		<jdk.version>11</jdk.version>
 		<jbehave.version>5.2.0</jbehave.version>
-		<junit.version>4.13.2</junit.version>
+		<junit.version>5.10.1</junit.version>
 		<mockito.version>5.7.0</mockito.version>
+		<hamcrest.version>2.2</hamcrest.version>
 		<apache.maven-compiler-plugin.version>3.11.0</apache.maven-compiler-plugin.version>
 		<apache.maven-source-plugin.version>3.3.0</apache.maven-source-plugin.version>
 		<apache.maven-javadoc-plugin.version>3.6.2</apache.maven-javadoc-plugin.version>
@@ -185,37 +186,49 @@
 		<dependency>
 			<groupId>org.jbehave</groupId>
 			<artifactId>jbehave-core</artifactId>
-			<scope>provided</scope>
 			<version>${jbehave.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
+			<groupId>
+				org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>
+				${junit.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
+			<artifactId>
+				mockito-core</artifactId>
 			<version>${mockito.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest</artifactId>
+			<version>${hamcrest.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
 	<profiles>
 		<profile>
-			<id>sign-artifacts</id>
+			<id>
+				sign-artifacts</id>
 			<activation>
 				<activeByDefault>false</activeByDefault>
 			</activation>
 			<build>
 				<plugins>
 					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
+						<groupId>
+							org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>${apache.maven-gpg-plugin.version}</version>
+						<version>
+							${apache.maven-gpg-plugin.version}</version>
 						<executions>
 							<execution>
-								<id>sign-artifacts</id>
+								<id>
+									sign-artifacts</id>
 								<phase>verify</phase>
 								<goals>
 									<goal>sign</goal>
@@ -227,7 +240,8 @@
 			</build>
 		</profile>
 		<profile>
-			<id>ci</id>
+			<id>
+				ci</id>
 			<activation>
 				<property>
 					<name>env.CI</name>
@@ -237,15 +251,18 @@
 			<build>
 				<plugins>
 					<plugin>
-						<groupId>org.jacoco</groupId>
+						<groupId>
+							org.jacoco</groupId>
 						<artifactId>jacoco-maven-plugin</artifactId>
-						<version>${jacoco.jacoco-maven-plugin.version}</version>
+						<version>
+							${jacoco.jacoco-maven-plugin.version}</version>
 						<executions>
 							<!-- Prepares the property pointing to the JaCoCo
 							runtime agent which is passed as VM argument when Maven the Surefire plugin
 							is executed. -->
 							<execution>
-								<id>pre-unit-test</id>
+								<id>
+									pre-unit-test</id>
 								<goals>
 									<goal>prepare-agent</goal>
 								</goals>
@@ -253,7 +270,8 @@
 							<!-- Ensures that the code coverage report for
 							unit tests is created after unit tests have been run. -->
 							<execution>
-								<id>post-unit-test</id>
+								<id>
+									post-unit-test</id>
 								<phase>test</phase>
 								<goals>
 									<goal>report</goal>
@@ -262,14 +280,19 @@
 						</executions>
 					</plugin>
 					<plugin>
-						<groupId>org.eluder.coveralls</groupId>
+						<groupId>
+							org.eluder.coveralls</groupId>
 						<artifactId>coveralls-maven-plugin</artifactId>
-						<version>${eluder.coveralls-maven-plugin.version}</version>
+						<version>
+							${eluder.coveralls-maven-plugin.version}</version>
 						<dependencies>
 							<dependency>
-								<groupId>jakarta.xml.bind</groupId>
-								<artifactId>jakarta.xml.bind-api</artifactId>
-								<version>${jakarta.xml.bind-api.version}</version>
+								<groupId>
+									jakarta.xml.bind</groupId>
+								<artifactId>
+									jakarta.xml.bind-api</artifactId>
+								<version>
+									${jakarta.xml.bind-api.version}</version>
 							</dependency>
 						</dependencies>
 					</plugin>

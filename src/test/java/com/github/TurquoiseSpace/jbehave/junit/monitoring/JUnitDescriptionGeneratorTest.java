@@ -22,6 +22,7 @@ import static java.util.Collections.singletonList;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -335,8 +336,15 @@ public class JUnitDescriptionGeneratorTest {
 	private void mockListBeforeOrAfterScenarioCall(ScenarioType... scenarioTypes) {
 		Method method = new Object(){}.getClass().getEnclosingMethod();
 		for(ScenarioType scenarioType : scenarioTypes) {
-			when(steps.listBeforeOrAfterScenario(scenarioType)).thenReturn(
-					singletonList(new BeforeOrAfterStep(Stage.BEFORE, method, null)));
+			List<BeforeOrAfterStep> list = singletonList(new BeforeOrAfterStep(method, 1, Outcome.ANY, null));
+			Map<ScenarioType, List<BeforeOrAfterStep>> map = new HashMap<ScenarioType, List<BeforeOrAfterStep>>();
+			map.put(scenarioType, list);
+			when(steps.listBeforeScenario()).thenReturn(map);
+
+			list = singletonList(new BeforeOrAfterStep(method, 1, Outcome.ANY, null));
+			map = new HashMap<ScenarioType, List<BeforeOrAfterStep>>();
+			map.put(scenarioType, list);
+			when(steps.listAfterScenario()).thenReturn(map);
 		}
 	}
 
@@ -359,7 +367,7 @@ public class JUnitDescriptionGeneratorTest {
 				story.getScenarios());
 
 		PerformableStory performableStory = mock(PerformableStory.class);
-		when(performableStory.isAllowed()).thenReturn(Boolean.valueOf(storyAllowed));
+		when(performableStory.isExcluded()).thenReturn(Boolean.valueOf(!storyAllowed));
 		when(performableStory.getStory()).thenReturn(story);
 		when(performableStory.getScenarios()).thenReturn(performableScenarios);
 
@@ -387,7 +395,7 @@ public class JUnitDescriptionGeneratorTest {
 
 	private PerformableScenario mockPerformableScenario(Scenario scenario, String storyPath, boolean allowed) {
 		PerformableScenario performableScenario = new PerformableScenario(scenario, storyPath);
-		performableScenario.allowed(allowed);
+		performableScenario.excluded(!allowed);
 		if (scenario.hasExamplesTable()) {
 			for (Map<String, String> row : scenario.getExamplesTable().getRows()) {
 				ExamplePerformableScenario exampleScenario = mock(ExamplePerformableScenario.class);

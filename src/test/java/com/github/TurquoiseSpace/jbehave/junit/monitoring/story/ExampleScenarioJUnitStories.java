@@ -31,7 +31,7 @@ public class ExampleScenarioJUnitStories extends JUnitStories {
 	}
 
 	@Override
-	protected List<String> storyPaths() {
+	public List<String> storyPaths() {
 		return Arrays.asList("com/github/TurquoiseSpace/jbehave/junit/monitoring/story/Multiplication.story",
 				"com/github/TurquoiseSpace/jbehave/junit/monitoring/story/Empty.story");
 	}

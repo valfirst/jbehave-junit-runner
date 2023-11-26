@@ -56,16 +56,18 @@ public class JUnitDescriptionGenerator {
 		for (CandidateSteps candidateStep : candidateSteps) {
 			allCandidates.addAll(candidateStep.listCandidates());
 			for (ScenarioType scenarioType : ScenarioType.values()) {
-				beforeOrAfterScenario.get(scenarioType).addAll(candidateStep.listBeforeOrAfterScenario(scenarioType));
+				beforeOrAfterScenario.get(scenarioType).addAll(candidateStep.listBeforeScenario().get(scenarioType));
+				beforeOrAfterScenario.get(scenarioType).addAll(candidateStep.listAfterScenario().get(scenarioType));
 			}
-			beforeOrAfterStory.addAll(candidateStep.listBeforeOrAfterStory(false));
+			beforeOrAfterStory.addAll(candidateStep.listBeforeStory(false));
+			beforeOrAfterStory.addAll(candidateStep.listAfterStory(false));
 		}
 	}
 
 	public List<Description> createDescriptionFrom(PerformableTree performableTree) {
 		List<Description> storyDescriptions = new ArrayList<>();
 		for (PerformableStory performableStory : performableTree.getRoot().getStories()) {
-			if (performableStory.isAllowed()) {
+			if (!performableStory.isExcluded()) {
 				Story story = performableStory.getStory();
 				Lifecycle lifecycle = story.getLifecycle();
 				Description storyDescription = createDescriptionForStory(story);
@@ -131,7 +133,7 @@ public class JUnitDescriptionGenerator {
 			String stepName)
 	{
 		for (BeforeOrAfterStep beforeOrAfterStep : beforeOrAfterSteps) {
-			if (beforeOrAfterStep.getStage() == stage) {
+			if (!beforeOrAfterSteps.isEmpty()) {
 				testCases++;
 				addBeforeOrAfterStep(beforeOrAfterStep, description, stepName);
 				break;
@@ -274,7 +276,7 @@ public class JUnitDescriptionGenerator {
 	private List<Description> getScenarioDescriptions(Lifecycle lifecycle, List<PerformableScenario> performableScenarios) {
 		List<Description> scenarioDescriptions = new ArrayList<>();
 		for (PerformableScenario scenario : performableScenarios) {
-			if (scenario.isAllowed()) {
+			if (!scenario.isExcluded()) {
 				scenarioDescriptions.add(createDescriptionFrom(lifecycle, scenario));
 			}
 		}

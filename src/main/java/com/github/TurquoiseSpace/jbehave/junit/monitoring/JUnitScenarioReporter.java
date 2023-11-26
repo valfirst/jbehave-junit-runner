@@ -157,7 +157,6 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 		return Collections.emptyList();
 	}
 
-	@Override
 	public void afterScenario() {
 		TestState testState = this.testState.get();
 		if (!testState.isGivenStoryRunning()) {
@@ -238,7 +237,6 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 		}
 	}
 
-	@Override
 	public void beforeStep(String title) {
 		TestState testState = this.testState.get();
 		if (!testState.isGivenStoryRunning() && testState.currentStep != null) {
@@ -354,7 +352,6 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 	 * @param scenario Scenario
 	 * @param filter Filter
 	 */
-	@Override
 	public void scenarioNotAllowed(Scenario scenario, String filter) {
 		TestState testState = this.testState.get();
 		notifier.fireTestIgnored(testState.currentStep);

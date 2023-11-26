@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jbehave.core.ConfigurableEmbedder;
+import org.jbehave.core.condition.StepConditionMatcher;
 import org.jbehave.core.configuration.Configuration;
+import org.jbehave.core.embedder.AllStepCandidates;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.PerformableTree;
@@ -97,10 +99,7 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 		if (stepsFactory != null) {
 			candidateSteps = stepsFactory.createCandidateSteps();
 		} else {
-			candidateSteps = configuredEmbedder.candidateSteps();
-			if (candidateSteps == null || candidateSteps.isEmpty()) {
-				candidateSteps = configuredEmbedder.stepsFactory().createCandidateSteps();
-			}
+			candidateSteps = configuredEmbedder.stepsFactory().createCandidateSteps();
 		}
 		return candidateSteps;
 	}
@@ -131,7 +130,11 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 	private PerformableTree createPerformableTree(List<CandidateSteps> candidateSteps, List<String> storyPaths) {
 		BatchFailures failures = new BatchFailures(configuredEmbedder.embedderControls().verboseFailures());
 		PerformableTree performableTree = configuredEmbedder.performableTree();
-		RunContext context = performableTree.newRunContext(configuration, candidateSteps,
+		StepConditionMatcher stepConditionMatcher = (condition, value) -> {
+			return condition.isInstance(value);
+		};
+		AllStepCandidates allStepCandidates = new AllStepCandidates(stepConditionMatcher, candidateSteps);
+		RunContext context = performableTree.newRunContext(configuration, allStepCandidates,
 				configuredEmbedder.embedderMonitor(), configuredEmbedder.metaFilter(), failures);
 		performableTree.addStories(context, configuredEmbedder.storyManager().storiesOfPaths(storyPaths));
 		return performableTree;

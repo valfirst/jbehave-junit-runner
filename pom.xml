@@ -91,8 +91,8 @@
 		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 		<sonar.jacoco.reportPath>${project.basedir}/target/jacoco.exec</sonar.jacoco.reportPath>
 		<sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
-		<sonar.sources>.</sonar.sources>
-		<sonar.tests>.</sonar.tests>
+		<sonar.sources>src/main</sonar.sources>
+		<sonar.tests>src/test</sonar.tests>
 		<sonar.tests.inclusions>src/test/**</sonar.tests.inclusions>
 		<sonar.exclusions>target/**</sonar.exclusions>
 		<maven.test.skip>false</maven.test.skip>

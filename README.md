@@ -41,7 +41,7 @@ all available from Maven Central.
 <dependency>
     <groupId>com.github.TurquoiseSpace</groupId>
     <artifactId>jbehave-junit-runner</artifactId>
-    <version>2.3.3</version>
+    <version>3.0.0</version>
 </dependency>
 ```
 

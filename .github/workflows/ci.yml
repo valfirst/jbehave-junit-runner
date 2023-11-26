@@ -35,7 +35,9 @@ jobs:
           cache: 'maven'
 
       - name: Build with Maven
-        run: mvn clean verify
+        run: |
+          mvn clean
+          mvn -Dmaven.artifact.threads=25 clean eclipse:eclipse -DdownloadSources=true dependency:go-offline dependency:resolve-plugins install test verify
 
       - name: Publish test coverage data to Coveralls
         if: matrix.java == '17'
@@ -69,7 +71,7 @@ jobs:
           GITHUB_BRANCH: ${{ steps.extract_branch.outputs.branch }}
         run: |
           if [[ -n $GITHUB_TOKEN && -n $SONAR_TOKEN ]]; then
-            mvn clean verify sonar:sonar -Dsonar.token=${SONAR_TOKEN} -Dsonar.branch.name=${GITHUB_BRANCH} -Pcoverage
+            mvn verify sonar:sonar -Dsonar.token=${SONAR_TOKEN} -Dsonar.branch.name=${GITHUB_BRANCH} -Pcoverage
           else
             echo No GITHUB_TOKEN and/or SONAR_TOKEN, the publishing to SonarCloud is skipped;
           fi;

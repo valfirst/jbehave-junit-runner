@@ -271,6 +271,12 @@
 			</build>
 		</profile>
 		<profile>
+			<id>sonar</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+		</profile>
+		<profile>
 			<id>sign-artifacts</id>
 			<activation>
 				<activeByDefault>false</activeByDefault>

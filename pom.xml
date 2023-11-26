@@ -189,16 +189,13 @@
 			<version>${jbehave.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>
-				org.junit.jupiter</groupId>
+			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
-			<version>
-				${junit.version}</version>
+			<version>${junit.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
-			<artifactId>
-				mockito-core</artifactId>
+			<artifactId>mockito-core</artifactId>
 			<version>${mockito.version}</version>
 			<scope>test</scope>
 		</dependency>
@@ -212,23 +209,19 @@
 
 	<profiles>
 		<profile>
-			<id>
-				sign-artifacts</id>
+			<id>sign-artifacts</id>
 			<activation>
 				<activeByDefault>false</activeByDefault>
 			</activation>
 			<build>
 				<plugins>
 					<plugin>
-						<groupId>
-							org.apache.maven.plugins</groupId>
+						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>
-							${apache.maven-gpg-plugin.version}</version>
+						<version>${apache.maven-gpg-plugin.version}</version>
 						<executions>
 							<execution>
-								<id>
-									sign-artifacts</id>
+								<id>sign-artifacts</id>
 								<phase>verify</phase>
 								<goals>
 									<goal>sign</goal>
@@ -240,8 +233,7 @@
 			</build>
 		</profile>
 		<profile>
-			<id>
-				ci</id>
+			<id>ci</id>
 			<activation>
 				<property>
 					<name>env.CI</name>
@@ -251,18 +243,15 @@
 			<build>
 				<plugins>
 					<plugin>
-						<groupId>
-							org.jacoco</groupId>
+						<groupId>org.jacoco</groupId>
 						<artifactId>jacoco-maven-plugin</artifactId>
-						<version>
-							${jacoco.jacoco-maven-plugin.version}</version>
+						<version>${jacoco.jacoco-maven-plugin.version}</version>
 						<executions>
 							<!-- Prepares the property pointing to the JaCoCo
 							runtime agent which is passed as VM argument when Maven the Surefire plugin
 							is executed. -->
 							<execution>
-								<id>
-									pre-unit-test</id>
+								<id>pre-unit-test</id>
 								<goals>
 									<goal>prepare-agent</goal>
 								</goals>
@@ -270,8 +259,7 @@
 							<!-- Ensures that the code coverage report for
 							unit tests is created after unit tests have been run. -->
 							<execution>
-								<id>
-									post-unit-test</id>
+								<id>post-unit-test</id>
 								<phase>test</phase>
 								<goals>
 									<goal>report</goal>

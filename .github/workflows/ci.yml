@@ -22,10 +22,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Extract branch name
-        shell: bash
-        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
-        id: extract_branch
+      #- name: Extract branch name
+      #  shell: bash
+      #  run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+      #  id: extract_branch
 
       - name: Setup JDK
         uses: actions/setup-java@v3
@@ -63,13 +63,14 @@ jobs:
 
       - name: Anazlyze with SonarCloud
         if: matrix.java == '17'
+        uses: SonarSource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          GITHUB_BRANCH: ${{ steps.extract_branch.outputs.branch }}
-        run: |
-          if [[ -n $GITHUB_TOKEN && -n $SONAR_TOKEN ]]; then
-            mvn sonar:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=turquoise-space -Dsonar.projectKey=TurquoiseSpace_jbehave-junit-runner -Dsonar.token=${SONAR_TOKEN} -Dsonar.branch.name=${GITHUB_BRANCH} -Dsonar.pullrequest.branch=${{ github.event.pull_request.head.ref }} -Dsonar.pullrequest.base=${{ github.event.pull_request.base.ref }} -Dsonar.pullrequest.key=${{github.event.pull_request.number}};
-          else
-            echo No GITHUB_TOKEN and/or SONAR_TOKEN, the publishing to SonarCloud is skipped;
-          fi;
+          #GITHUB_BRANCH: ${{ steps.extract_branch.outputs.branch }}
+        #run: |
+        #  if [[ -n $GITHUB_TOKEN && -n $SONAR_TOKEN ]]; then
+        #    mvn sonar:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=turquoise-space -Dsonar.projectKey=TurquoiseSpace_jbehave-junit-runner -Dsonar.token=${SONAR_TOKEN} -Dsonar.branch.name=${GITHUB_BRANCH} -Dsonar.pullrequest.branch=${{ github.event.pull_request.head.ref }} -Dsonar.pullrequest.base=${{ github.event.pull_request.base.ref }} -Dsonar.pullrequest.key=${{github.event.pull_request.number}};
+        #  else
+        #    echo No GITHUB_TOKEN and/or SONAR_TOKEN, the publishing to SonarCloud is skipped;
+        #  fi;

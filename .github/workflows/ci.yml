@@ -16,7 +16,7 @@ jobs:
         java: [ 8, 11, 17, 21, 24 ]
     name: Java ${{ matrix.java }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
